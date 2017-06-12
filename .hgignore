@@ -1,0 +1,11 @@
+syntax: glob
+BlockchainDLib/.idea/libraries/*
+BlockchainDLib/.idea/misc.xml
+BlockchainDLib/.idea/modules.xml
+BlockchainDLib/.idea/modules/blockchaindlib-build.iml
+BlockchainDLib/.idea/modules/blockchaindlib.iml
+BlockchainDLib/.idea/sbt.xml
+BlockchainDLib/.idea/scala_compiler.xml
+BlockchainDLib/.idea/workspace.xml
+BlockchainDLib/org/bitcoinj/core/annotations.xml
+BlockchainDLib/project/target/*
