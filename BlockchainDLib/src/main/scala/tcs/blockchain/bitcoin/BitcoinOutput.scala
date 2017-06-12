@@ -12,8 +12,4 @@ class BitcoinOutput(
                      val index: Integer,
                      val value: Long,
                      val outScript: BitcoinScript){
-
-  def BitcoinOutput: bitcoinOutputFactory(pippo: Integer){
-    return this
-  }
 }
