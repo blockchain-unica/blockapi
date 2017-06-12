@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="ivy-report.xsl"?>
+<ivy-report version="1.0">
+	<info
+		organisation="default"
+		module="blockchaindlib$sources_2.12"
+		revision="1.0"
+		conf="test"
+		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool"
+		date="20170612121356"/>
+	<dependencies>
+		<module organisation="org.scala-lang" name="scala-library">
+			<revision name="2.12.1" status="release" pubdate="20161205120923" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.scala-lang.org/" extra-info.apiURL="http://www.scala-lang.org/api/2.12.1/" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="14">
+				<license name="BSD 3-Clause" url="http://www.scala-lang.org/license.html"/>
+				<metadata-artifact status="no" details="" size="2653" time="0" location="/home/stefano/.ivy2/cache/org.scala-lang/scala-library/ivy-2.12.1.xml" searched="false" origin-is-local="false" origin-location="https://jcenter.bintray.com/org/scala-lang/scala-library/2.12.1/scala-library-2.12.1.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="2.12.1" rev-constraint-default="2.12.1" rev-constraint-dynamic="2.12.1" callerrev="1.0" extra-info.apiURL="http://www.scala-lang.org/api/2.12.1/"/>
+				<artifacts>
+					<artifact name="scala-library" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="988614" time="0" location="/home/stefano/.ivy2/cache/org.scala-lang/scala-library/srcs/scala-library-2.12.1-sources.jar">
+						<origin-location is-local="false" location="https://jcenter.bintray.com/org/scala-lang/scala-library/2.12.1/scala-library-2.12.1-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.bitcoinj" name="bitcoinj-core">
+			<revision name="0.14.4" status="release" pubdate="20170207191429" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://bitcoinj.github.io" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="10">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="6195" time="0" location="/home/stefano/.ivy2/cache/org.bitcoinj/bitcoinj-core/ivy-0.14.4.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/bitcoinj/bitcoinj-core/0.14.4/bitcoinj-core-0.14.4.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="0.14.4" rev-constraint-default="0.14.4" rev-constraint-dynamic="0.14.4" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="bitcoinj-core" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="1042348" time="0" location="/home/stefano/.ivy2/cache/org.bitcoinj/bitcoinj-core/srcs/bitcoinj-core-0.14.4-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/bitcoinj/bitcoinj-core/0.14.4/bitcoinj-core-0.14.4-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.bitcoinj" name="orchid">
+			<revision name="1.2.1" status="release" pubdate="20160508215829" resolver="sbt-chain" artresolver="sbt-chain" homepage="" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="13">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="3970" time="0" location="/home/stefano/.ivy2/cache/org.bitcoinj/orchid/ivy-1.2.1.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/bitcoinj/orchid/1.2.1/orchid-1.2.1.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="1.2.1" rev-constraint-default="1.2.1" rev-constraint-dynamic="1.2.1" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="orchid" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="258398" time="0" location="/home/stefano/.ivy2/cache/org.bitcoinj/orchid/srcs/orchid-1.2.1-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/bitcoinj/orchid/1.2.1/orchid-1.2.1-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.google.protobuf" name="protobuf-java">
+			<revision name="2.6.1" status="release" pubdate="20141023031025" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://developers.google.com/protocol-buffers/" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="12">
+				<license name="New BSD license" url="http://www.opensource.org/licenses/bsd-license.php"/>
+				<metadata-artifact status="no" details="" size="3153" time="0" location="/home/stefano/.ivy2/cache/com.google.protobuf/protobuf-java/ivy-2.6.1.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java/2.6.1/protobuf-java-2.6.1.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="2.6.1" rev-constraint-default="2.6.1" rev-constraint-dynamic="2.6.1" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="protobuf-java" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="308705" time="0" location="/home/stefano/.ivy2/cache/com.google.protobuf/protobuf-java/srcs/protobuf-java-2.6.1-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java/2.6.1/protobuf-java-2.6.1-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.github.briandilley.jsonrpc4j" name="jsonrpc4j">
+			<revision name="1.1" status="release" pubdate="20140517104348" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://github.com/briandilley/jsonrpc4j" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="8">
+				<license name="The MIT License (MIT)" url="http://opensource.org/licenses/MIT"/>
+				<metadata-artifact status="no" details="" size="5684" time="0" location="/home/stefano/.ivy2/cache/com.github.briandilley.jsonrpc4j/jsonrpc4j/ivy-1.1.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/github/briandilley/jsonrpc4j/jsonrpc4j/1.1/jsonrpc4j-1.1.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="1.1" rev-constraint-default="1.1" rev-constraint-dynamic="1.1" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="jsonrpc4j" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="64923" time="0" location="/home/stefano/.ivy2/cache/com.github.briandilley.jsonrpc4j/jsonrpc4j/srcs/jsonrpc4j-1.1-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/github/briandilley/jsonrpc4j/jsonrpc4j/1.1/jsonrpc4j-1.1-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.google.guava" name="guava">
+			<revision name="18.0" status="release" pubdate="20140825204834" resolver="sbt-chain" artresolver="sbt-chain" homepage="" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="7">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="5524" time="0" location="/home/stefano/.ivy2/cache/com.google.guava/guava/ivy-18.0.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/google/guava/guava/18.0/guava-18.0.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="18.0" rev-constraint-default="18.0" rev-constraint-dynamic="18.0" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="guava" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="1277909" time="0" location="/home/stefano/.ivy2/cache/com.google.guava/guava/srcs/guava-18.0-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/google/guava/guava/18.0/guava-18.0-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.madgag.spongycastle" name="core">
+			<revision name="1.51.0.0" status="release" pubdate="20140726130532" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://rtyley.github.io/spongycastle/" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="6">
+				<license name="Bouncy Castle Licence" url="http://www.bouncycastle.org/licence.html"/>
+				<metadata-artifact status="no" details="" size="2948" time="0" location="/home/stefano/.ivy2/cache/com.madgag.spongycastle/core/ivy-1.51.0.0.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/madgag/spongycastle/core/1.51.0.0/core-1.51.0.0.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="1.51.0.0" rev-constraint-default="1.51.0.0" rev-constraint-dynamic="1.51.0.0" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="core" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="1735883" time="0" location="/home/stefano/.ivy2/cache/com.madgag.spongycastle/core/srcs/core-1.51.0.0-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/madgag/spongycastle/core/1.51.0.0/core-1.51.0.0-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.lambdaworks" name="scrypt">
+			<revision name="1.4.0" status="release" pubdate="20130526055434" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://github.com/wg/scrypt" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="5">
+				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="3028" time="0" location="/home/stefano/.ivy2/cache/com.lambdaworks/scrypt/ivy-1.4.0.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/lambdaworks/scrypt/1.4.0/scrypt-1.4.0.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="1.4.0" rev-constraint-default="1.4.0" rev-constraint-dynamic="1.4.0" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="scrypt" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="41994" time="0" location="/home/stefano/.ivy2/cache/com.lambdaworks/scrypt/srcs/scrypt-1.4.0-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/lambdaworks/scrypt/1.4.0/scrypt-1.4.0-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.slf4j" name="slf4j-api">
+			<revision name="1.7.20" status="release" pubdate="20160329171222" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.slf4j.org" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="4">
+				<license name="MIT License" url="http://www.opensource.org/licenses/mit-license.php"/>
+				<metadata-artifact status="no" details="" size="5199" time="0" location="/home/stefano/.ivy2/cache/org.slf4j/slf4j-api/ivy-1.7.20.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.20/slf4j-api-1.7.20.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="1.7.20" rev-constraint-default="1.7.20" rev-constraint-dynamic="1.7.20" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="slf4j-api" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="55454" time="0" location="/home/stefano/.ivy2/cache/org.slf4j/slf4j-api/srcs/slf4j-api-1.7.20-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.20/slf4j-api-1.7.20-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.fasterxml.jackson.core" name="jackson-databind">
+			<revision name="2.0.2" status="release" pubdate="20120515041637" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://wiki.fasterxml.com/JacksonHome" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="3">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<license name="Lesser Gnu Public License (LGPL), Version 2.1" url="http://www.gnu.org/licenses/lgpl-2.1.html"/>
+				<metadata-artifact status="no" details="" size="4408" time="0" location="/home/stefano/.ivy2/cache/com.fasterxml.jackson.core/jackson-databind/ivy-2.0.2.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.0.2/jackson-databind-2.0.2.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="2.0.2" rev-constraint-default="2.0.2" rev-constraint-dynamic="2.0.2" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="jackson-databind" type="src" ext="jar" extra-classifier="sources" status="successful" details="" size="609089" time="533" location="/home/stefano/.ivy2/cache/com.fasterxml.jackson.core/jackson-databind/srcs/jackson-databind-2.0.2-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.0.2/jackson-databind-2.0.2-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.fasterxml.jackson.core" name="jackson-core">
+			<revision name="2.0.2" status="release" pubdate="20120515035040" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://wiki.fasterxml.com/JacksonHome" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="9">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="3523" time="0" location="/home/stefano/.ivy2/cache/com.fasterxml.jackson.core/jackson-core/ivy-2.0.2.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.0.2/jackson-core-2.0.2.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="2.0.2" rev-constraint-default="2.0.2" rev-constraint-dynamic="2.0.2" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="jackson-core" type="src" ext="jar" extra-classifier="sources" status="successful" details="" size="198653" time="399" location="/home/stefano/.ivy2/cache/com.fasterxml.jackson.core/jackson-core/srcs/jackson-core-2.0.2-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.0.2/jackson-core-2.0.2-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.squareup.okhttp" name="okhttp">
+			<revision name="2.7.2" status="release" pubdate="20160108063010" resolver="sbt-chain" artresolver="sbt-chain" homepage="" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="2">
+				<license name="Apache 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="5500" time="0" location="/home/stefano/.ivy2/cache/com.squareup.okhttp/okhttp/ivy-2.7.2.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/squareup/okhttp/okhttp/2.7.2/okhttp-2.7.2.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="2.7.2" rev-constraint-default="2.7.2" rev-constraint-dynamic="2.7.2" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="okhttp" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="219302" time="0" location="/home/stefano/.ivy2/cache/com.squareup.okhttp/okhttp/srcs/okhttp-2.7.2-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/squareup/okhttp/okhttp/2.7.2/okhttp-2.7.2-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.squareup.okio" name="okio">
+			<revision name="1.6.0" status="release" pubdate="20150826015953" resolver="sbt-chain" artresolver="sbt-chain" homepage="" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="11">
+				<license name="Apache 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="4340" time="0" location="/home/stefano/.ivy2/cache/com.squareup.okio/okio/ivy-1.6.0.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/squareup/okio/okio/1.6.0/okio-1.6.0.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="1.6.0" rev-constraint-default="1.6.0" rev-constraint-dynamic="1.6.0" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="okio" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="53644" time="0" location="/home/stefano/.ivy2/cache/com.squareup.okio/okio/srcs/okio-1.6.0-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/squareup/okio/okio/1.6.0/okio-1.6.0-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.fasterxml.jackson.core" name="jackson-annotations">
+			<revision name="2.0.2" status="release" pubdate="20120515034406" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://wiki.fasterxml.com/JacksonHome" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="1">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="no" details="" size="4165" time="0" location="/home/stefano/.ivy2/cache/com.fasterxml.jackson.core/jackson-annotations/ivy-2.0.2.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.0.2/jackson-annotations-2.0.2.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="2.0.2" rev-constraint-default="2.0.2" rev-constraint-dynamic="2.0.2" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="jackson-annotations" type="src" ext="jar" extra-classifier="sources" status="successful" details="" size="36339" time="439" location="/home/stefano/.ivy2/cache/com.fasterxml.jackson.core/jackson-annotations/srcs/jackson-annotations-2.0.2-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.0.2/jackson-annotations-2.0.2-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="net.jcip" name="jcip-annotations">
+			<revision name="1.0" status="release" pubdate="20080814084805" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://jcip.net/" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="0">
+				<metadata-artifact status="no" details="" size="2341" time="0" location="/home/stefano/.ivy2/cache/net.jcip/jcip-annotations/ivy-1.0.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.pom"/>
+				<caller organisation="default" name="blockchaindlib$sources_2.12" conf="test, compile, runtime" rev="1.0" rev-constraint-default="1.0" rev-constraint-dynamic="1.0" callerrev="1.0"/>
+				<artifacts>
+					<artifact name="jcip-annotations" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="5002" time="0" location="/home/stefano/.ivy2/cache/net.jcip/jcip-annotations/srcs/jcip-annotations-1.0-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+	</dependencies>
+</ivy-report>
