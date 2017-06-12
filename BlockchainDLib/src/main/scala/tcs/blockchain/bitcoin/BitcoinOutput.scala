@@ -15,7 +15,7 @@ class BitcoinOutput(
 }
 
 object BitcoinOutput {
-  def bitcoinOutputFactory(output: TransactionOutput): BitcoinOutput = {
+  def factory(output: TransactionOutput): BitcoinOutput = {
     new BitcoinOutput(output.getHash, output.getIndex, output.getValue.longValue(), new BitcoinScript(output.getScriptBytes))
   }
 }
