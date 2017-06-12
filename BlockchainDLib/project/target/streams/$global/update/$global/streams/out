@@ -1,4 +1,4 @@
-[info] Updating {file:/home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/}blockchaindlib-build...
+[info] Updating {file:/D:/Repo/blockchain-api/BlockchainDLib/project/}blockchaindlib-build...
 [debug] :: resolving dependencies :: default#blockchaindlib-build;0.1-SNAPSHOT
 [debug] 	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool]
 [debug] 	validate = true
@@ -6009,19 +6009,19 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#template-resolver;0.1!template-resolver.jar
 [debug] 	[NOT REQUIRED] org.scala-lang#jline;2.10.6!jline.jar
 [debug] 	[NOT REQUIRED] org.fusesource.jansi#jansi;1.4!jansi.jar
-[debug] :: resolution report :: resolve 952ms :: artifacts dl 15ms
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT compile produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-compile.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT runtime produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-runtime.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT test produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-test.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT provided produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-provided.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT optional produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-optional.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT compile-internal produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-compile-internal.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT runtime-internal produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-runtime-internal.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT test-internal produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-test-internal.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT plugin produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-plugin.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT sources produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-sources.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT docs produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-docs.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT pom produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-pom.xml
-[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT scala-tool produced in /home/stefano/universita/borsa/articoli/blockchain-api/BlockchainDLib/project/target/resolution-cache/reports/default-blockchaindlib-build-scala-tool.xml
-[debug] 	resolve done (952ms resolve - 15ms download)
+[debug] :: resolution report :: resolve 1896ms :: artifacts dl 56ms
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT compile produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-compile.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT runtime produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-runtime.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT test produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-test.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT provided produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-provided.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT optional produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-optional.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT compile-internal produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-compile-internal.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT runtime-internal produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-runtime-internal.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT test-internal produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-test-internal.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT plugin produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-plugin.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT sources produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-sources.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT docs produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-docs.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT pom produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-pom.xml
+[debug] 	report for default#blockchaindlib-build;0.1-SNAPSHOT scala-tool produced in D:\Repo\blockchain-api\BlockchainDLib\project\target\resolution-cache\reports\default-blockchaindlib-build-scala-tool.xml
+[debug] 	resolve done (1896ms resolve - 56ms download)
 [info] Done updating.

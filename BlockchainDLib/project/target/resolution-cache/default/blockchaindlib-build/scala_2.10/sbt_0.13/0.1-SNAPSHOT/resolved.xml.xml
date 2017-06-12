@@ -4,7 +4,7 @@
 		module="blockchaindlib-build"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20170612155916"
+		publication="20170612152929"
 		e:sbtVersion="0.13" e:scalaVersion="2.10"
 	>
 		<description>
