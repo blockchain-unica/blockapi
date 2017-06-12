@@ -1,23 +1,26 @@
 syntax: glob
 
-# Created by https://www.gitignore.io/api/sbt,scala
-
-### SBT ###
-# Simple Build Tool
-# http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
-
+*.class
+*.log
+*.iml
+*.ipr
+*.iws
+.idea
+out
+.cache/
+.history/
+.lib/
 dist/*
 target/
+bin/
+libexec/
 lib_managed/
 src_managed/
 project/boot/
 project/plugins/project/
-.history
-.cache
-.lib/
-
-### Scala ###
-*.class
-*.log
-
-# End of https://www.gitignore.io/api/sbt,scala
+logs/
+project/*-shim.sbt
+project/project/
+project/target/
+.scala_dependencies
+.worksheet
