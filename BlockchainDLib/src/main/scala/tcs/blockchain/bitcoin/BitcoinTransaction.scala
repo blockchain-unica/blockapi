@@ -16,7 +16,7 @@ class BitcoinTransaction(
     inputs.map(input => input.value).reduce(_ + _)
   }
 
-  def getOutputSum(): Long = {
+  def getOutputsSum(): Long = {
     outputs.map(output => output.value).reduce(_ + _)
   }
 

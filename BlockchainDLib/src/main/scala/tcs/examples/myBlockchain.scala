@@ -7,7 +7,7 @@ import tcs.mongo.Collection
 /**
   * Created by stefano on 13/06/17.
   */
-object myBlockchain {
+object MyBlockchain {
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("tcs", "telecostasmeralda", "8332", MainNet, false))
