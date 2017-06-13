@@ -8,7 +8,7 @@ class BitcoinSettings(
                        val rpcPassword: String,
                        val rpcPort: String,
                        val network: Network,
-                       val retrieveInputValues: Boolean) {
+                       val retrieveInputValues: Boolean = false) {
 
 }
 
