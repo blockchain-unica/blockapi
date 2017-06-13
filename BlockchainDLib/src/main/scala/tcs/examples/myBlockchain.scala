@@ -7,7 +7,7 @@ import tcs.mongo.Collection
 /**
   * Created by stefano on 13/06/17.
   */
-class myBlockchain {
+object myBlockchain {
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("tcs", "telecostasmeralda", "8332", MainNet, false))
@@ -16,7 +16,7 @@ class myBlockchain {
 
     blockchain.foreach(block => {
       block.bitcoinTxs.foreach(tx => {
-        myBlockchain.append(List(
+          myBlockchain.append(List(
           ("txHash", tx.hash),
           ("blockHash", block.hash),
           ("date", block.date),
@@ -25,5 +25,6 @@ class myBlockchain {
         ))
       })
     })
+
   }
 }

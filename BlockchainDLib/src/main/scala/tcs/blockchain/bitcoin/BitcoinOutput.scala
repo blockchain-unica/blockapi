@@ -11,6 +11,9 @@ class BitcoinOutput(
                      val index: Integer,
                      val value: Long,
                      val outScript: BitcoinScript){
+
+  override def toString(): String =
+    index + " " + value + " " + outScript
 }
 
 object BitcoinOutput {

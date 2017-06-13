@@ -19,6 +19,13 @@ class BitcoinTransaction(
   def getOutputSum(): Long = {
     outputs.map(output => output.value).reduce(_ + _)
   }
+
+  override def toString() : String = {
+    val stringInputs: String = "[ " + inputs.map(i => i.toString() + " ") + "]"
+    val stringOutputs: String = "[ " + outputs.map(o => o.toString() + " ") + "]"
+
+    return hash + " " + txSize + " " + stringInputs + " " + stringOutputs
+  }
 }
 
 object BitcoinTransaction {

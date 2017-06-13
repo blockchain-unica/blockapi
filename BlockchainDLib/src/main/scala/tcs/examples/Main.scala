@@ -12,7 +12,7 @@ object Main {
     val settings = new BitcoinSettings("tcs","telecostasmeralda","8332", MainNet, false)
     val blockchain = BlockchainDlib.getBitcoinBlockchain(settings)
 
-    blockchain.foreach(b => println(b.hash))
+    blockchain.foreach(b => println(b.bitcoinTxs(0).outputs(0)))
 
   }
 

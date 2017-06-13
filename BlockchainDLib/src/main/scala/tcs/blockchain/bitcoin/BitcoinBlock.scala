@@ -14,6 +14,11 @@ class BitcoinBlock(
                     val blockSize: Int,
                     val height: Long,
                     val bitcoinTxs: List[BitcoinTransaction]){
+
+  override def toString(): String ={
+    val stringTransactions: String = "[ " + bitcoinTxs.map(tx => tx.toString() + " ") + "]"
+    return hash + " " + date + " " + blockSize + " " + height + " " + stringTransactions
+  }
 }
 
 object BitcoinBlock {
