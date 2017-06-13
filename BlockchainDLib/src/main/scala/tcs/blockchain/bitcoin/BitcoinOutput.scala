@@ -8,7 +8,6 @@ import org.bitcoinj.core.{Sha256Hash, TransactionOutput}
   */
 
 class BitcoinOutput(
-                     val txHash: Sha256Hash,
                      val index: Integer,
                      val value: Long,
                      val outScript: BitcoinScript){
@@ -16,6 +15,8 @@ class BitcoinOutput(
 
 object BitcoinOutput {
   def factory(output: TransactionOutput): BitcoinOutput = {
-    new BitcoinOutput(output.getHash, output.getIndex, output.getValue.longValue(), new BitcoinScript(output.getScriptBytes))
+    new BitcoinOutput(output.getIndex,
+                      output.getValue.longValue(),
+                      new BitcoinScript(output.getScriptBytes))
   }
 }

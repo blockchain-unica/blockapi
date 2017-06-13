@@ -7,6 +7,11 @@ class BitcoinSettings(
                        val rpcUser: String,
                        val rpcPassword: String,
                        val rpcPort: String,
+                       val network: Network,
                        val retrieveInputValues: Boolean) {
 
 }
+
+abstract class Network
+object MainNet extends Network
+object TestNet extends Network

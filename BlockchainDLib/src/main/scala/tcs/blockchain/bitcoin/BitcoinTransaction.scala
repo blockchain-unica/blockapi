@@ -7,19 +7,26 @@ import collection.JavaConverters._
   * Created by Livio on 12/06/2017.
   */
 class BitcoinTransaction(
-                          val blockHash: Sha256Hash,
                           val hash: Sha256Hash,
                           val txSize: Integer,
                           val inputs: List[BitcoinInput],
-                          val outputs: List[BitcoinOutput]){
+                          val outputs: List[BitcoinOutput]) {
+
+  def getInputsSum(): Long = {
+    inputs.map(input => input.value).reduce(_ + _)
+  }
+
+  def getOutputSum(): Long = {
+    outputs.map(output => output.value).reduce(_ + _)
+  }
 }
 
 object BitcoinTransaction {
-  def factory(tx: Transaction, blockHash: Sha256Hash): BitcoinTransaction = {
-    val inputs: List[BitcoinInput] = tx.getInputs.asScala.map( i => BitcoinInput.factory(i)).toList
-    val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map (o => BitcoinOutput.factory(o)).toList
+  def factory(tx: Transaction): BitcoinTransaction = {
+    val inputs: List[BitcoinInput] = tx.getInputs.asScala.map(i => BitcoinInput.factory(i)).toList
+    val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o)).toList
 
     // Is getMessageSize correct?
-    return new BitcoinTransaction(blockHash, tx.getHash, tx.getMessageSize , inputs, outputs)
+    return new BitcoinTransaction(tx.getHash, tx.getMessageSize, inputs, outputs)
   }
 }

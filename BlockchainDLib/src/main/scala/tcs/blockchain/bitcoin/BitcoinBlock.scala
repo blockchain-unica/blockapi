@@ -11,14 +11,21 @@ import collection.JavaConverters._
 class BitcoinBlock(
                     val hash: Sha256Hash,
                     val date: Date,
-                    val blockSize: Integer,
+                    val blockSize: Int,
+                    val height: Long,
                     val bitcoinTxs: List[BitcoinTransaction]){
 }
 
 object BitcoinBlock {
-  def factory(block: Block): BitcoinBlock = {
-    val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map( tx => BitcoinTransaction.factory(tx, block.getHash)).toList
+  def factory(block: Block, height: Long): BitcoinBlock = {
+    val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map( tx => BitcoinTransaction.factory(tx)).toList
 
-    return new BitcoinBlock(block.getHash, block.getTime, block.getMessageSize, transactions)
+    return new BitcoinBlock(block.getHash, block.getTime, block.getMessageSize, height, transactions)
+  }
+
+  def factory(block: Block): BitcoinBlock = {
+    val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map( tx => BitcoinTransaction.factory(tx)).toList
+
+    return new BitcoinBlock(block.getHash, block.getTime, block.getMessageSize, 0, transactions)
   }
 }

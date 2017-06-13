@@ -7,14 +7,19 @@ import org.bitcoinj.core.{Sha256Hash, TransactionInput}
   */
 
 class BitcoinInput(
-                    val txHash: Sha256Hash,
-                    val index: Integer,
+                    val redeemedTxHash: Sha256Hash,
+                    val redeemedOutIndex: Integer,
                     val value: Long,
-                    val inScript: BitcoinScript){
+                    val inScript: BitcoinScript,
+                    val isCoinbase: Boolean){
 }
 
 object BitcoinInput {
   def factory(input: TransactionInput): BitcoinInput = {
-    new BitcoinInput(input.getHash, input.getParentTransaction.getInputs.indexOf(input), input.getValue.longValue(), new BitcoinScript(input.getScriptBytes))
+    new BitcoinInput(if (input.getConnectedOutput!=null) input.getConnectedOutput.getParentTransactionHash else null,
+                    input.getParentTransaction.getInputs.indexOf(input),
+                    0,
+                    new BitcoinScript(input.getScriptBytes),
+                    if (input.getConnectedOutput==null) true else false)
   }
 }

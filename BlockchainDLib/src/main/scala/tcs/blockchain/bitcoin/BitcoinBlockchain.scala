@@ -5,7 +5,7 @@ import java.net.{InetAddress, URL}
 import com._37coins.bcJsonRpc.{BitcoindClientFactory, BitcoindInterface}
 import com.googlecode.jsonrpc4j.HttpException
 import org.bitcoinj.core.{Context, PeerAddress, PeerGroup, Sha256Hash}
-import org.bitcoinj.params.MainNetParams
+import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 
 
 /**
@@ -22,8 +22,10 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
   val client: BitcoindInterface = clientFactory.getClient
 
-
-  val networkParameters = MainNetParams.get
+  val networkParameters = settings.network match {
+    case MainNet => MainNetParams.get
+    case TestNet => TestNet3Params.get
+  }
   Context.getOrCreate(networkParameters)
   val peerGroup = new PeerGroup(networkParameters)
   peerGroup.start()
@@ -38,17 +40,26 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
   private def getBlock(hash: String) = {
     val future = peer.getBlock(new Sha256Hash(hash))
-    future.get
+    val coreBlock = client.getblock(hash)
+    val height = coreBlock.getHeight
+    BitcoinBlock.factory(future.get, height)
+  }
+
+  private def getBlock(height: Int) = {
+    val blockHash = client.getblockhash(height)
+    val future = peer.getBlock(new Sha256Hash(blockHash))
+    BitcoinBlock.factory(future.get, height)
   }
 
   override def foreach[U](f: (BitcoinBlock) => U): Unit = {
 
-    val i = 1
+    var height = 1
 
     try {
       while (true) {
-        val blockHash = client.getblockhash(i)
-        val block = getBlock(blockHash)
+        val block = getBlock(height)
+        f(block)
+        height += 1
       }
     } catch {
       case e: HttpException => println("Done")
