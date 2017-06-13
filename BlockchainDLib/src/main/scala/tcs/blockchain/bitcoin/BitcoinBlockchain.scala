@@ -38,14 +38,14 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   peerGroup.getDownloadPeer
   val peer = peerGroup.getDownloadPeer
 
-  private def getBlock(hash: String) = {
+  def getBlock(hash: String) = {
     val future = peer.getBlock(new Sha256Hash(hash))
     val coreBlock = client.getblock(hash)
     val height = coreBlock.getHeight
     BitcoinBlock.factory(future.get, height)
   }
 
-  private def getBlock(height: Int) = {
+  def getBlock(height: Int) = {
     val blockHash = client.getblockhash(height)
     val future = peer.getBlock(new Sha256Hash(blockHash))
     BitcoinBlock.factory(future.get, height)

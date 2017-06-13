@@ -1,12 +1,7 @@
-package tcs.blockchain
+package tcs.examples
 
-import java.net.{InetAddress, URL}
-import java.util.concurrent.Future
-
-import com._37coins.bcJsonRpc.{BitcoindClientFactory, BitcoindInterface}
-import org.bitcoinj.core._
-import org.bitcoinj.params.MainNetParams
-import tcs.blockchain.bitcoin.{BitcoinScript, BitcoinSettings, MainNet}
+import tcs.blockchain.BlockchainDlib
+import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 
 /**
   * Created by stefano on 12/06/17.
