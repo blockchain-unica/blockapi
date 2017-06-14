@@ -14,6 +14,18 @@ class BitcoinOutput(
 
   override def toString(): String =
     index + " " + value + " " + outScript
+
+  def isOpreturn(): Boolean = outScript.isOpReturn
+
+  def getMetadata(): String =
+    if(!isOpreturn) null else {
+      var v1: Integer = outScript.toString.indexOf("[");
+      var v2: Integer = outScript.toString.indexOf("]");
+      if((v1 == -1) || (v2 == -1))
+        return null;
+      else
+        return outScript.toString.substring(v1+1, v2)
+    }
 }
 
 object BitcoinOutput {
