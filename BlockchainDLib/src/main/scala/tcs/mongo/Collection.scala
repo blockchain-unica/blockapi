@@ -21,6 +21,8 @@ class Collection(val name: String, val settings: MongoSettings) {
 
   def append(list: List[(String, Any)]): Unit = {
 
+
+    //TODO: handle lists
     val doc = list.map(e => e._2 match {
       case x: Boolean => Document(e._1 -> x)
       case x: Int => Document(e._1 -> x)
