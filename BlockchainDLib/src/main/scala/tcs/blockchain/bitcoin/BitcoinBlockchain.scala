@@ -20,21 +20,25 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
       new URL("http://localhost:" + settings.rpcPort + "/"),
       settings.rpcUser,
       settings.rpcPassword);
+
+
   val client: BitcoindInterface = clientFactory.getClient
+
   val networkParameters = settings.network match {
     case MainNet => MainNetParams.get
     case TestNet => TestNet3Params.get
   }
-  val peerGroup = new PeerGroup(networkParameters)
   Context.getOrCreate(networkParameters)
-  val addr = new PeerAddress(InetAddress.getLocalHost, networkParameters.getPort)
+  val peerGroup = new PeerGroup(networkParameters)
   peerGroup.start()
-  val peer = peerGroup.getDownloadPeer
+
+  val addr = new PeerAddress(InetAddress.getLocalHost, networkParameters.getPort)
   peerGroup.addAddress(addr)
   peerGroup.waitForPeers(1).get
   peerGroup.setUseLocalhostPeerWhenPossible(true)
 
-  peerGroup.getDownloadPeer
+  val peer = peerGroup.getDownloadPeer
+
   var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long]
 
   def getBlock(hash: String) = {

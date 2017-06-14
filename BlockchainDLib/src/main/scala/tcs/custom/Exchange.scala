@@ -30,8 +30,12 @@ object Exchange {
         val reader = new BufferedReader(new InputStreamReader(connection.getInputStream))
         var line: String = null
 
-        while ((line = reader.readLine()) != null) {
-          text.append(line);
+        var exit = false
+        while (exit) {
+          reader.readLine() match {
+            case line: String => text.append(line);
+            case null => exit = true;
+          }
         }
       } catch {
         case e: IOException =>
