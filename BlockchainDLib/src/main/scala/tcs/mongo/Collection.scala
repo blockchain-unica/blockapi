@@ -2,7 +2,7 @@ package tcs.mongo
 
 import java.util.Date
 
-import org.mongodb.scala.MongoClient
+import org.mongodb.scala.{Completed, MongoClient, Observer}
 import org.mongodb.scala.bson._
 
 /**
@@ -32,7 +32,15 @@ class Collection(val name: String, val settings: MongoSettings) {
       case x: Any => Document(e._1 -> x.toString)
     }).reduce((a, b) => a ++ b)
 
-    collection.insertOne(doc)
+    collection.insertOne(doc).subscribe(new Observer[Completed] {
+
+      override def onNext(result: Completed): Unit = {}
+
+      override def onError(e: Throwable): Unit = {}
+
+      override def onComplete(): Unit = {}
+
+    })
 
   }
 }
