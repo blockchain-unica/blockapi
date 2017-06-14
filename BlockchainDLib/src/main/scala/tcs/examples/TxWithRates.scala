@@ -10,7 +10,7 @@ import tcs.mongo.{Collection, MongoSettings}
   */
 
 object TxWithRates {
-  def main(args: Array[String]): Unit ={
+  def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, false))
     val mongo = new MongoSettings("myDatabase")
@@ -22,7 +22,7 @@ object TxWithRates {
         txWithRates.append(List(
           ("txHash", tx.hash),
           ("date", block.date),
-          ("outputSum", tx.getOutputsSum() ),
+          ("outputSum", tx.getOutputsSum()),
           ("rate", Exchange.getRate(block.date))
         ))
       })

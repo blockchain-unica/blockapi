@@ -13,5 +13,7 @@ class BitcoinSettings(
 }
 
 abstract class Network
+
 object MainNet extends Network
+
 object TestNet extends Network

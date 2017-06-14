@@ -1,14 +1,14 @@
 package tcs.examples
 
 import tcs.blockchain.BlockchainDlib
-import tcs.blockchain.bitcoin.{BitcoinBlockchain, BitcoinSettings, MainNet}
+import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.mongo.{Collection, MongoSettings}
 
 /**
   * Created by stefano on 13/06/17.
   */
 object MyBlockchain {
-  def main(args: Array[String]): Unit ={
+  def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, false))
     val mongo = new MongoSettings("myDatabase")
@@ -17,7 +17,7 @@ object MyBlockchain {
 
     blockchain.foreach(block => {
       block.bitcoinTxs.foreach(tx => {
-          myBlockchain.append(List(
+        myBlockchain.append(List(
           ("txHash", tx.hash),
           ("blockHash", block.hash),
           ("date", block.date),

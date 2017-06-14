@@ -1,14 +1,11 @@
 package tcs.custom
 
+import java.io.{BufferedReader, IOException, InputStreamReader}
+import java.net.{HttpURLConnection, URL}
 import java.util.Date
 
-import org.apache.commons.lang3.time.DateUtils
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.net.{HttpURLConnection, URL}
-
 import com.codesnippets4all.json.parsers.JsonParserFactory
+import org.apache.commons.lang3.time.DateUtils
 
 /**
   * Created by Livio on 13/06/2017.
@@ -31,7 +28,7 @@ object Exchange {
         var connection: HttpURLConnection = url.openConnection().asInstanceOf[HttpURLConnection];
         connection.setRequestMethod("GET");
         val reader = new BufferedReader(new InputStreamReader(connection.getInputStream))
-        var line : String = null
+        var line: String = null
 
         while ((line = reader.readLine()) != null) {
           text.append(line);

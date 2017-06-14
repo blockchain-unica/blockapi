@@ -7,6 +7,8 @@ import com.googlecode.jsonrpc4j.HttpException
 import org.bitcoinj.core.{Context, PeerAddress, PeerGroup, Sha256Hash}
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 
+import scala.collection.mutable
+
 
 /**
   * Created by stefano on 12/06/17.
@@ -18,37 +20,28 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
       new URL("http://localhost:" + settings.rpcPort + "/"),
       settings.rpcUser,
       settings.rpcPassword);
-
-
   val client: BitcoindInterface = clientFactory.getClient
-
   val networkParameters = settings.network match {
     case MainNet => MainNetParams.get
     case TestNet => TestNet3Params.get
   }
-  Context.getOrCreate(networkParameters)
   val peerGroup = new PeerGroup(networkParameters)
-  peerGroup.start()
-
+  Context.getOrCreate(networkParameters)
   val addr = new PeerAddress(InetAddress.getLocalHost, networkParameters.getPort)
+  peerGroup.start()
+  val peer = peerGroup.getDownloadPeer
   peerGroup.addAddress(addr)
   peerGroup.waitForPeers(1).get
   peerGroup.setUseLocalhostPeerWhenPossible(true)
 
   peerGroup.getDownloadPeer
-  val peer = peerGroup.getDownloadPeer
+  var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long]
 
   def getBlock(hash: String) = {
-    val future = peer.getBlock(new Sha256Hash(hash))
+    val future = peer.getBlock(Sha256Hash.wrap(hash))
     val coreBlock = client.getblock(hash)
     val height = coreBlock.getHeight
-    BitcoinBlock.factory(future.get, height)
-  }
-
-  def getBlock(height: Int) = {
-    val blockHash = client.getblockhash(height)
-    val future = peer.getBlock(new Sha256Hash(blockHash))
-    BitcoinBlock.factory(future.get, height)
+    BitcoinBlock.factory(future.get, height, UTXOmap)
   }
 
   override def foreach[U](f: (BitcoinBlock) => U): Unit = {
@@ -57,7 +50,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
     try {
       while (true) {
-        val block = getBlock(height)
+        val block = if (settings.retrieveInputValues) getBlock(height, UTXOmap) else getBlock(height)
         f(block)
         height += 1
       }
@@ -66,6 +59,26 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     }
 
 
+  }
+
+  def getBlock(height: Int) = {
+    val blockHash = client.getblockhash(height)
+    val future = peer.getBlock(Sha256Hash.wrap(blockHash))
+    BitcoinBlock.factory(future.get, height)
+  }
+
+  /**
+    * This get block call the factories to build transaction with input values,
+    * passing the UTXO map.
+    *
+    * @param height height of the block to retrieve
+    * @param UTXOmap
+    * @return BitcoinBlock
+    */
+  private def getBlock(height: Int, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]) = {
+    val blockHash = client.getblockhash(height)
+    val future = peer.getBlock(Sha256Hash.wrap(blockHash))
+    BitcoinBlock.factory(future.get, height, UTXOmap)
   }
 
 
