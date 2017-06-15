@@ -10,7 +10,7 @@ import scala.collection.mutable
   */
 
 class BitcoinOutput(
-                     val index: Integer,
+                     val index: Int,
                      val value: Long,
                      val outScript: BitcoinScript) {
 

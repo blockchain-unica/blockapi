@@ -6,7 +6,7 @@ package tcs.custom
 object OpReturn {
   private var protocol: String = null
 
-  def getProtocol(metadata: String): String = {
+  def getApplication(metadata: String): String = {
       if(!metadata.contains("[")){
         this.protocol = Protocol.EMPTY;
         return metadata;

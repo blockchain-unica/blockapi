@@ -10,7 +10,7 @@ import scala.collection.mutable
   */
 class BitcoinTransaction(
                           val hash: Sha256Hash,
-                          val txSize: Integer,
+                          val txSize: Int,
                           val inputs: List[BitcoinInput],
                           val outputs: List[BitcoinOutput]) {
 

@@ -17,13 +17,16 @@ object OpReturnOutputs {
     val opReturnOutputs = new Collection("opReturnOutputs", mongo)
 
     blockchain.foreach(block => {
+      if(block.height % 1000 == 0){
+        println(block.height)
+      }
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
           if(out.isOpreturn()) {
             opReturnOutputs.append(List(
               ("txHash", tx.hash),
               ("date", block.date),
-              ("protocol", OpReturn.getProtocol(out.outScript.toString)),
+              ("protocol", OpReturn.getApplication(out.outScript.toString)),
               ("metadata", out.getMetadata())
             ))
           }

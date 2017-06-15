@@ -11,7 +11,7 @@ import scala.collection.mutable
 class BitcoinInput(
                     val redeemedTxHash: Sha256Hash,
                     val value: Long,
-                    val redeemedOutIndex: Integer,
+                    val redeemedOutIndex: Int,
                     val isCoinbase: Boolean,
                     val inScript: BitcoinScript) {
 
@@ -25,7 +25,13 @@ object BitcoinInput {
       0,
       input.getParentTransaction.getInputs.indexOf(input),
       if (input.getConnectedOutput == null) true else false,
-      new BitcoinScript(input.getScriptBytes))
+
+      try {
+        new BitcoinScript(input.getScriptBytes)
+      } catch {
+        case e: Exception => new BitcoinScript(Array())
+      }
+    )
   }
 
   def factory(input: TransactionInput, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): BitcoinInput = {
@@ -42,7 +48,12 @@ object BitcoinInput {
       value,
       input.getOutpoint.getIndex.toInt,
       if (input.getConnectedOutput == null) true else false,
-      new BitcoinScript(input.getScriptBytes))
+      try {
+        new BitcoinScript(input.getScriptBytes)
+      } catch {
+        case e: Exception => new BitcoinScript(Array())
+      }
+    )
   }
 
 }
