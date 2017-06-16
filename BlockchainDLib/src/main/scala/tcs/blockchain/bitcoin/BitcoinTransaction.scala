@@ -39,8 +39,8 @@ object BitcoinTransaction {
     return new BitcoinTransaction(tx.getHash, tx.getMessageSize, inputs, outputs)
   }
 
-  def factory(tx: Transaction, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): BitcoinTransaction = {
-    val inputs: List[BitcoinInput] = tx.getInputs.asScala.map(i => BitcoinInput.factory(i, UTXOmap)).toList
+  def factory(tx: Transaction, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long], blockHeight: Long): BitcoinTransaction = {
+    val inputs: List[BitcoinInput] = tx.getInputs.asScala.map(i => BitcoinInput.factory(i, UTXOmap, blockHeight)).toList
     val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o, tx.getHash, UTXOmap)).toList
 
     // Is getMessageSize correct?

@@ -34,13 +34,18 @@ object BitcoinInput {
     )
   }
 
-  def factory(input: TransactionInput, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): BitcoinInput = {
+  def factory(input: TransactionInput, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long], blockHeight: Long): BitcoinInput = {
     val value = UTXOmap.get((input.getOutpoint.getHash, input.getOutpoint.getIndex)) match {
       case Some(l) => {
         UTXOmap.remove((input.getOutpoint.getHash, input.getOutpoint.getIndex))
         l
       }
-      case None => 0
+      case None =>
+        if(! input.isCoinBase)
+          0 // Error case
+        else {
+          500000000 / (2 ^ (blockHeight % 210000).toInt)
+        }
     }
 
 

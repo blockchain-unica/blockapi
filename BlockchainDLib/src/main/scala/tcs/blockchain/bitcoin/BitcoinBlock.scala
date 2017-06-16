@@ -31,7 +31,7 @@ object BitcoinBlock {
   }
 
   def factory(block: Block, height: Long, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): BitcoinBlock = {
-    val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map(tx => BitcoinTransaction.factory(tx, UTXOmap)).toList
+    val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map(tx => BitcoinTransaction.factory(tx, UTXOmap, height)).toList
 
     return new BitcoinBlock(block.getHash, block.getTime, block.getMessageSize, height, transactions)
   }
