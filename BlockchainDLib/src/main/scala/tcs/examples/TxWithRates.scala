@@ -18,6 +18,10 @@ object TxWithRates {
     val txWithRates = new Collection("txWithRates", mongo)
 
     blockchain.foreach(block => {
+      if (block.height % 1000 == 0) {
+        println(block.height)
+      }
+
       block.bitcoinTxs.foreach(tx => {
         txWithRates.append(List(
           ("txHash", tx.hash),

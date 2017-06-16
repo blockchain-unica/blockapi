@@ -34,8 +34,14 @@ object BitcoinOutput {
   def factory(output: TransactionOutput): BitcoinOutput = {
     new BitcoinOutput(output.getIndex,
       output.getValue.longValue(),
-      new BitcoinScript(output.getScriptBytes))
+
+      try {
+        new BitcoinScript(output.getScriptBytes)
+      } catch {
+        case e: Exception => new BitcoinScript(Array())
+      })
   }
+
 
   def factory(output: TransactionOutput, txHash: Sha256Hash, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): BitcoinOutput = {
 
@@ -43,6 +49,10 @@ object BitcoinOutput {
 
     new BitcoinOutput(output.getIndex,
       output.getValue.longValue(),
-      new BitcoinScript(output.getScriptBytes))
+      try {
+        new BitcoinScript(output.getScriptBytes)
+      } catch {
+        case e: Exception => new BitcoinScript(Array())
+      })
   }
 }
