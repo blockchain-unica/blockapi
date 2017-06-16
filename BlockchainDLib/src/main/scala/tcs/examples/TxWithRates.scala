@@ -12,7 +12,7 @@ import tcs.mongo.{Collection, MongoSettings}
 object TxWithRates {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, false))
+    val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mongo = new MongoSettings("myDatabase")
 
     val txWithRates = new Collection("txWithRates", mongo)

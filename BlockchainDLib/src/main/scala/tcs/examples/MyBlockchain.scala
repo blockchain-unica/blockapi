@@ -10,7 +10,7 @@ import tcs.mongo.{Collection, MongoSettings}
 object MyBlockchain {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, false))
+    val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mongo = new MongoSettings("myDatabase")
 
     val myBlockchain = new Collection("myBlockchain", mongo)
