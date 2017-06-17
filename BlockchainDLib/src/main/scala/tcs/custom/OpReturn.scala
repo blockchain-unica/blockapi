@@ -7,121 +7,99 @@ object OpReturn {
   private var protocol: String = null
 
   def getApplication(metadata: String): String = {
-      if(!metadata.contains("[")){
-        this.protocol = Protocol.EMPTY;
-        return metadata;
+      if(!metadata.contains(Codes.BRACKET)){
+        return Protocol.EMPTY;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.ASCRIBE_CODE1)){
-        this.protocol = Protocol.ASCRIBE;
-        return metadata;
+        return Protocol.ASCRIBE;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.BITPROOF_CODE1)){
-        this.protocol = Protocol.BITPROOF;
-        return metadata;
+        return Protocol.BITPROOF;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.BLOCKAI_CODE1)){
-        this.protocol = Protocol.BLOCKAI;
-        return metadata;
+        return Protocol.BLOCKAI;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.BLOCKSIGN_CODE1)){
-        this.protocol = Protocol.BLOCKSIGN;
-        return metadata;
+        return Protocol.BLOCKSIGN;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.BLOCKSTORE_CODE1) ||
         metadata.contains(Codes.BRACKET + Codes.BLOCKSTORE_CODE2) ||
         metadata.contains(Codes.BRACKET + Codes.BLOCKSTORE_CODE3)){
-        this.protocol = Protocol.BLOCKSTORE;
-        return metadata;
+        return Protocol.BLOCKSTORE;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.COINSPARK_CODE1)){
-        this.protocol = Protocol.COINSPARK;
-        return metadata;
+        return Protocol.COINSPARK;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.COLU_CODE1)){
-        this.protocol = Protocol.COLU;
-        return metadata;
+        return Protocol.COLU;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.CRYPTOCOPYRIGHT_CODE1) ||
         metadata.contains(Codes.BRACKET + Codes.CRYPTOCOPYRIGHT_CODE2)){
-        this.protocol = Protocol.CRYPTOCOPYRIGHT;
-        return metadata;
+        return Protocol.CRYPTOCOPYRIGHT;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.ETERNITYWALL_CODE1)){
-        this.protocol = Protocol.ETERNITYWALL;
-        return metadata;
+        return Protocol.ETERNITYWALL;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.FACTOM_CODE1) ||
         metadata.contains(Codes.BRACKET + Codes.FACTOM_CODE2) ||
         metadata.contains(Codes.BRACKET + Codes.FACTOM_CODE3) ||
         metadata.contains(Codes.BRACKET + Codes.FACTOM_CODE4)){
-        this.protocol = Protocol.FACTOM;
-        return metadata;
+        return Protocol.FACTOM;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.LAPREUVE_CODE1)){
-        this.protocol = Protocol.LAPREUVE;
-        return metadata;
+        return Protocol.LAPREUVE;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.MONEGRAPH_CODE1)){
-        this.protocol = Protocol.MONEGRAPH;
-        return metadata;
+        return Protocol.MONEGRAPH;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.NICOSIA_CODE1)){
-        this.protocol = Protocol.NICOSIA;
-        return metadata;
+        return Protocol.NICOSIA;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.OMNI_CODE1)){
-        this.protocol = Protocol.OMNI;
-        return metadata;
+        return Protocol.OMNI;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.OPENASSETS_CODE1)){
-        this.protocol = Protocol.OPENASSETS;
-        return metadata;
+        return Protocol.OPENASSETS;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.ORIGINALMY_CODE1)){
-        this.protocol = Protocol.ORIGINALMY;
-        return metadata;
+        return Protocol.ORIGINALMY;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.PROOFOFEXISTENCE_CODE1)){
-        this.protocol = Protocol.PROOFOFEXISTENCE;
-        return metadata;
+        return Protocol.PROOFOFEXISTENCE;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.PROVEBIT_CODE1)){
-        this.protocol = Protocol.PROVEBIT;
-        return metadata;
+        return Protocol.PROVEBIT;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.REMEMBR_CODE1) ||
         metadata.contains(Codes.BRACKET + Codes.REMEMBR_CODE2)){
-        this.protocol = Protocol.REMEMBR;
-        return metadata;
+        return Protocol.REMEMBR;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.SMARTBIT_CODE1)){
-        this.protocol = Protocol.SMARTBIT;
-        return metadata;
+        return Protocol.SMARTBIT;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.STAMPD_CODE1)){
-        this.protocol = Protocol.STAMPD;
-        return metadata;
+        return Protocol.STAMPD;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.STAMPERY_CODE1) ||
@@ -129,16 +107,13 @@ object OpReturn {
         metadata.contains(Codes.BRACKET + Codes.STAMPERY_CODE3) ||
         metadata.contains(Codes.BRACKET + Codes.STAMPERY_CODE4) ||
         metadata.contains(Codes.BRACKET + Codes.STAMPERY_CODE5)){
-        this.protocol = Protocol.STAMPERY;
-        return metadata;
+        return Protocol.STAMPERY;
       }
 
       if(metadata.contains(Codes.BRACKET + Codes.TRADLE_CODE1)){
-        this.protocol = Protocol.TRADLE;
-        return metadata;
+        return Protocol.TRADLE;
       }
 
-    this.protocol = Protocol.UNKNOWN;
-    return metadata;
+    return Protocol.UNKNOWN;
   }
 }
