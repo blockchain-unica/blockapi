@@ -50,7 +50,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
   override def foreach[U](f: (BitcoinBlock) => U): Unit = {
 
-    var height = 	289069
+    var height = 	1
 
     val bestBlockHash = client.getbestblockhash()
     val bestBlock = client.getblock(bestBlockHash)
