@@ -22,7 +22,11 @@ public class Block {
 	private long confirmations;
 	private long version;
 	private long size;
-	
+	private long strippedsize;
+	private long weight;
+	private String versionHex;
+	private long mediantime;
+	private String chainwork;
 	
 	public List<String> getTx() {
 		return tx;
@@ -102,5 +106,38 @@ public class Block {
 	public void setNextblockhash(String nextblockhash) {
 		this.nextblockhash = nextblockhash;
 	}
-	
+    public long getStrippedsize() { return strippedsize;}
+    public void setStrippedsize(long strippedsize) {this.strippedsize = strippedsize;}
+
+    public long getWeight() {
+        return weight;
+    }
+
+    public void setWeight(long weight) {
+        this.weight = weight;
+    }
+
+    public String getVersionHex() {
+        return versionHex;
+    }
+
+    public void setVersionHex(String versionHex) {
+        this.versionHex = versionHex;
+    }
+
+    public long getMediantime() {
+        return mediantime;
+    }
+
+    public void setMediantime(long mediantime) {
+        this.mediantime = mediantime;
+    }
+
+    public String getChainwork() {
+        return chainwork;
+    }
+
+    public void setChainwork(String chainwork) {
+        this.chainwork = chainwork;
+    }
 }
