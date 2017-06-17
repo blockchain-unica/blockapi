@@ -50,16 +50,20 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
   override def foreach[U](f: (BitcoinBlock) => U): Unit = {
 
-    var height = 1
+    var height = 	289069
+
+    val bestBlockHash = client.getbestblockhash()
+    val bestBlock = client.getblock(bestBlockHash)
 
     try {
-      while (true) {
+      while (height <= bestBlock.getHeight) {
         val block = if (settings.retrieveInputValues) getBlock(height, UTXOmap) else getBlock(height)
         f(block)
         height += 1
       }
+      println("Done")
     } catch {
-      case e: HttpException => println("Done")
+      case e: HttpException => println("Error occurred:\n" + e.getMessage)
     }
 
 
