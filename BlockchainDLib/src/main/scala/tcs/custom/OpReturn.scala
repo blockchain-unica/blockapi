@@ -4,8 +4,6 @@ package tcs.custom
   * Created by Livio on 14/06/2017.
   */
 object OpReturn {
-  private var protocol: String = null
-
   def getApplication(metadata: String): String = {
       if(!metadata.contains(Codes.BRACKET)){
         return Protocol.EMPTY;
