@@ -12,7 +12,7 @@ class BitcoinSettings(
 
 }
 
-abstract class Network
+class Network
 
 object MainNet extends Network
 

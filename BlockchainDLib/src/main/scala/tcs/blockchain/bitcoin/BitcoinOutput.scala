@@ -1,7 +1,10 @@
 package tcs.blockchain.bitcoin
 
 
-import org.bitcoinj.core.{Sha256Hash, TransactionOutput}
+import javax.script.ScriptException
+
+import org.bitcoinj.core.{Address, Sha256Hash, TransactionOutput}
+import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 
 import scala.collection.mutable
 
@@ -28,6 +31,20 @@ class BitcoinOutput(
     }
 
   def isOpreturn(): Boolean = outScript.isOpReturn
+
+  def getAddress(params: BitcoinSettings): Address = {
+    try {
+      if (outScript.isPayToScriptHash || outScript.isSentToAddress) {
+        params.network match {
+          case MainNet => outScript.getToAddress(MainNetParams.get)
+          case TestNet => outScript.getToAddress(TestNet3Params.get)
+        }
+      }
+    } catch {
+      case e: ScriptException => return null
+    }
+    return null
+  }
 }
 
 object BitcoinOutput {
