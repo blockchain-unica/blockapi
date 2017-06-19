@@ -22,7 +22,7 @@ class BitcoinOutput(
       var v1: Integer = outScript.toString.indexOf("[");
       var v2: Integer = outScript.toString.indexOf("]");
       if ((v1 == -1) || (v2 == -1))
-        return null;
+        return ""
       else
         return outScript.toString.substring(v1 + 1, v2)
     }

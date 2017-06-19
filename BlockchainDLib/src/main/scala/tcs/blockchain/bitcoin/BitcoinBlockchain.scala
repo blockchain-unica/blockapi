@@ -15,6 +15,9 @@ import scala.collection.mutable
   */
 class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBlock] {
 
+  private var starBlock = 1l
+  private var endBlock = 0l
+
   val clientFactory =
     new BitcoindClientFactory(
       new URL("http://localhost:" + settings.rpcPort + "/"),
@@ -50,13 +53,17 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
   override def foreach[U](f: (BitcoinBlock) => U): Unit = {
 
-    var height = 	1
+    var height = starBlock
+    var endHeight = 0l
 
-    val bestBlockHash = client.getbestblockhash()
-    val bestBlock = client.getblock(bestBlockHash)
+    if(endBlock == 0) {
+      val bestBlockHash = client.getbestblockhash()
+      val bestBlock = client.getblock(bestBlockHash)
+      endHeight =  bestBlock.getHeight
+    }
 
     try {
-      while (height <= bestBlock.getHeight) {
+      while (height <= endHeight) {
         val block = if (settings.retrieveInputValues) getBlock(height, UTXOmap) else getBlock(height)
         f(block)
         height += 1
@@ -69,7 +76,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
   }
 
-  def getBlock(height: Int) = {
+  def getBlock(height: Long) = {
     val blockHash = client.getblockhash(height)
     val future = peer.getBlock(Sha256Hash.wrap(blockHash))
     BitcoinBlock.factory(future.get, height)
@@ -83,10 +90,21 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @param UTXOmap
     * @return BitcoinBlock
     */
-  private def getBlock(height: Int, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]) = {
+  private def getBlock(height: Long, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]) = {
     val blockHash = client.getblockhash(height)
     val future = peer.getBlock(Sha256Hash.wrap(blockHash))
     BitcoinBlock.factory(future.get, height, UTXOmap)
+  }
+
+  def start(height: Long): BitcoinBlockchain = {
+    starBlock = height
+
+    return this
+  }
+
+  def end(height: Long): BitcoinBlockchain = {
+    endBlock = height
+    return this
   }
 
 
