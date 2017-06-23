@@ -27,6 +27,5 @@ object TxWithFees {
         ))
       })
     })
-
   }
 }
