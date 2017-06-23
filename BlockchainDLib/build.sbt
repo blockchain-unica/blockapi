@@ -16,3 +16,5 @@ libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.5"
 // https://mvnrepository.com/artifact/com.codesnippets4all/quick-json
 libraryDependencies += "com.codesnippets4all" % "quick-json" % "1.0.4"
 
+// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.25" % "compile"
