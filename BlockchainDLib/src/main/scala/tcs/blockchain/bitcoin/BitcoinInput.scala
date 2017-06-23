@@ -63,9 +63,6 @@ object BitcoinInput {
 
 
   private def sum(xs: List[TransactionOutput]): Long = {
-    xs match {
-      case x :: tail => x.getValue.longValue() + sum(tail)
-      case Nil => 0
-    }
+    xs.map(_.getValue.longValue()).sum
   }
 }
