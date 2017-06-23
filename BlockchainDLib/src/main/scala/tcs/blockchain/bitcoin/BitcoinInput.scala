@@ -1,6 +1,6 @@
 package tcs.blockchain.bitcoin
 
-import org.bitcoinj.core.{Sha256Hash, TransactionInput}
+import org.bitcoinj.core.{Sha256Hash, TransactionInput, TransactionOutput}
 
 import scala.collection.mutable
 
@@ -34,7 +34,7 @@ object BitcoinInput {
     )
   }
 
-  def factory(input: TransactionInput, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long], blockHeight: Long): BitcoinInput = {
+  def factory(input: TransactionInput, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long], blockHeight: Long, outputs: List[TransactionOutput]): BitcoinInput = {
     val value = UTXOmap.get((input.getOutpoint.getHash, input.getOutpoint.getIndex)) match {
       case Some(l) => {
         UTXOmap.remove((input.getOutpoint.getHash, input.getOutpoint.getIndex))
@@ -44,7 +44,7 @@ object BitcoinInput {
         if(! input.isCoinBase)
           0 // Error case
         else {
-          500000000 / (2 ^ (blockHeight % 210000).toInt)
+          sum(outputs)
         }
     }
 
@@ -61,4 +61,11 @@ object BitcoinInput {
     )
   }
 
+
+  private def sum(xs: List[TransactionOutput]): Long = {
+    xs match {
+      case x :: tail => x.getValue.longValue() + sum(tail)
+      case Nil => 0
+    }
+  }
 }
