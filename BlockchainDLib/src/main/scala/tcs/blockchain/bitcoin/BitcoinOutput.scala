@@ -32,10 +32,10 @@ class BitcoinOutput(
 
   def isOpreturn(): Boolean = outScript.isOpReturn
 
-  def getAddress(params: BitcoinSettings): Address = {
+  def getAddress(network: Network): Address = {
     try {
       if (outScript.isPayToScriptHash || outScript.isSentToAddress) {
-        params.network match {
+        network match {
           case MainNet => outScript.getToAddress(MainNetParams.get)
           case TestNet => outScript.getToAddress(TestNet3Params.get)
         }

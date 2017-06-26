@@ -15,22 +15,22 @@ object AddressesWithTags {
     val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, true))
     val mongo = new MongoSettings("myDatabase")
 
-    val txWithTags = new Collection("AddressesWithTags", mongo)
-    val tags = new Tag("identities.txt")
+    val outWithTags = new Collection("outWithTags", mongo)
+    val tags = new Tag("src\\main\\scala\\tcs\\custom\\input.txt")
 
     blockchain.foreach(block => {
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
-          val add: Address = out.getAddress(MainNet.asInstanceOf);
-          if(tags.getValue(add) != null) {
-            txWithTags.append(List(
-              ("txHash", tx.hash),
-              ("date", block.date),
-              ("value", out.value),
-              ("address", add),
-              ("tags", tags.getValue(add))
-            ))
-          }
+          val add: Address = out.getAddress(MainNet);
+          if(add != null)
+            if(tags.getValue(add) != null)
+              outWithTags.append(List(
+                ("txHash", tx.hash),
+                ("date", block.date),
+                ("value", out.value),
+                ("address", add),
+                ("tags", tags.getValue(add))
+              ))
         })
       })
     })
