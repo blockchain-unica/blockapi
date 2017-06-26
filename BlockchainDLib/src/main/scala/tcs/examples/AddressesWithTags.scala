@@ -1,6 +1,5 @@
 package tcs.examples
 
-import org.bitcoinj.core.Address
 import tcs.blockchain.BlockchainDlib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.custom.Tag
@@ -16,21 +15,31 @@ object AddressesWithTags {
     val mongo = new MongoSettings("myDatabase")
 
     val outWithTags = new Collection("outWithTags", mongo)
-    val tags = new Tag("src\\main\\scala\\tcs\\custom\\input.txt")
+    val tags = new Tag("src/main/scala/tcs/custom/input.txt")
 
     blockchain.foreach(block => {
+
+      if(block.height % 1000 == 0){
+        println(block.height)
+      }
+
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
-          val add: Address = out.getAddress(MainNet);
-          if(add != null)
-            if(tags.getValue(add) != null)
-              outWithTags.append(List(
-                ("txHash", tx.hash),
-                ("date", block.date),
-                ("value", out.value),
-                ("address", add),
-                ("tags", tags.getValue(add))
-              ))
+          out.getAddress(MainNet) match {
+            case Some(add) =>
+              tags.getValue(add) match {
+                case Some(tag) =>
+                  outWithTags.append(List(
+                    ("txHash", tx.hash),
+                    ("date", block.date),
+                    ("value", out.value),
+                    ("address", add),
+                    ("tags", tag)
+                  ))
+                case None =>
+              }
+            case None =>
+          }
         })
       })
     })
