@@ -60,6 +60,8 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
       val bestBlockHash = client.getbestblockhash()
       val bestBlock = client.getblock(bestBlockHash)
       endHeight =  bestBlock.getHeight
+    } else {
+      endHeight = endBlock
     }
 
     try {

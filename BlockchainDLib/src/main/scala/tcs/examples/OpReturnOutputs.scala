@@ -1,6 +1,6 @@
 package tcs.examples
 
-import tcs.blockchain.BlockchainDlib
+import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.custom.OpReturn
 import tcs.mongo.{Collection, MongoSettings}
@@ -11,7 +11,7 @@ import tcs.mongo.{Collection, MongoSettings}
 object OpReturnOutputs {
   def main(args: Array[String]): Unit ={
 
-    val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mongo = new MongoSettings("myDatabase")
 
     val opReturnOutputs = new Collection("opReturnOutputs1", mongo)

@@ -1,6 +1,6 @@
 package tcs.examples
 
-import tcs.blockchain.BlockchainDlib
+import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 
 /**
@@ -10,7 +10,7 @@ object Main {
   def main(args: Array[String]) = {
 
     val settings = new BitcoinSettings("tcs", "telecostasmeralda", "8332", MainNet, false)
-    val blockchain = BlockchainDlib.getBitcoinBlockchain(settings)
+    val blockchain = BlockchainLib.getBitcoinBlockchain(settings)
 
     blockchain.foreach(b => println(b.bitcoinTxs(0).outputs(0)))
 

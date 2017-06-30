@@ -1,6 +1,6 @@
 package tcs.examples
 
-import tcs.blockchain.BlockchainDlib
+import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.custom.Tag
 import tcs.mongo.{Collection, MongoSettings}
@@ -11,7 +11,7 @@ import tcs.mongo.{Collection, MongoSettings}
 object AddressesWithTags {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainDlib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, true))
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, true))
     val mongo = new MongoSettings("myDatabase")
 
     val outWithTags = new Collection("outWithTags", mongo)
