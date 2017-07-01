@@ -30,5 +30,6 @@ object MyBlockchain {
       })
     })
 
+    myBlockchain.close
   }
 }

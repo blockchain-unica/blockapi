@@ -34,5 +34,6 @@ object OpReturnOutputs {
       })
     })
 
+    opReturnOutputs.close
   }
 }

@@ -43,5 +43,7 @@ object AddressesWithTags {
         })
       })
     })
+
+    outWithTags.close
   }
 }

@@ -70,6 +70,10 @@ class Collection(val name: String, val settings: MongoSettings) {
       case x: Any => Document(x.toString)
     }
   }
+
+  def close = {
+    mongoClient.close()
+  }
 }
 
 

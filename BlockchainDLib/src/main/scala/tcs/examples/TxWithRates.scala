@@ -32,5 +32,6 @@ object TxWithRates {
       })
     })
 
+    txWithRates.close
   }
 }

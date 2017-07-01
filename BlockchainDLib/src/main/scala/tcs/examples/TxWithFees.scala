@@ -32,5 +32,7 @@ object TxWithFees {
         ))
       })
     })
+
+    txWithFees.close
   }
 }
