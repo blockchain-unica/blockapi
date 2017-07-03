@@ -1,0 +1,12 @@
+db.myBlockchain.aggregate([
+    { $group : {
+        _id: {
+            year : { $year : "$date" },        
+            month : { $month : "$date" },        
+            day : { $dayOfMonth : "$date" },
+        },
+        avgIn: { $avg: {$size : "$inputs"} },
+        avgOut: { $avg: {$size : "$outputs"} }
+    }},
+    { $sort : { _id : 1}}
+]);

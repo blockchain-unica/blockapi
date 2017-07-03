@@ -1,0 +1,27 @@
+db.getCollection('txWithFees').aggregate(
+   [
+     {
+       $group:
+         {
+           _id: "1",
+           avg: { $avg: { $multiply: [ { $divide: ["$fee", 100000000] }, "$rate" ] } },
+           stddev: { $stdDevPop: { $multiply: [ { $divide: ["$fee", 100000000] }, "$rate" ] } }
+         }
+     }
+   ]
+)
+
+
+db.getCollection('txWithFees').aggregate([
+{ $project: {
+    _id: 1,
+    txHash: 1,
+    date: 1,
+    feeUSD: { $multiply: [ { $divide: ["$fee", 100000000] }, "$rate" ] }
+    }
+},
+{ $match: {
+    feeUSD: {$gte : 10.6632753873}
+    }
+}
+])

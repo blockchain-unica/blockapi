@@ -67,7 +67,7 @@ class Collection(val name: String, val settings: MongoSettings) {
         Document("index" -> x.index,
           "value" -> x.value,
           "outScript" -> x.outScript.toString)
-      case x: Any => Document(x.toString)
+      case x: Any => Document("v" -> x.toString)
     }
   }
 
