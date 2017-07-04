@@ -23,15 +23,11 @@ mongodb
 4. Clone the [Bitcoin analytics API](https://github.com/bitbart/bitcoin-analytics-api/) repository
 5. From your IDE: select "import project" and provide your local path to the [build.sbt](https://github.com/bitbart/bitcoin-analytics-api/blob/master/build.sbt) file
 
-__or use the command line in place of an IDE__
-
-5. proceed to the Running instrcutions
-
 ### Running 
 1. From your IDE: open the file one of the available [examples](https://github.com/bitbart/bitcoin-analytics-api/tree/master/src/main/scala/tcs/examples) and select run
 
 __or use the command line in place of an IDE__
-1. Execute
+1. From the root directory of the project, execute
 ```bash
 sbt "runMain tcs.examples.ClassName"
 ```
