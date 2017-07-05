@@ -1,6 +1,7 @@
 # Bitcoin analytics API
 A Scala library for the development of custom analytics on Bitcoin, by [Stefano Lande](http://tcs.unica.it/members/stefano-lande) and [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu).
-The library is discussed in [A general framework for Bitcoin analytics](https://arxiv.org/pdf/1707.01021.pdf)
+
+The library is discussed in [A general framework for Bitcoin analytics](https://arxiv.org/pdf/1707.01021.pdf).
 
 ### Install prerequisites
 1. [Bitcoin Core](https://bitcoin.org/en/bitcoin-core/)
