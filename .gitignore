@@ -1,11 +1,4 @@
-.idea/libraries/*
-.idea/misc.xml
-.idea/modules.xml
-.idea/modules/blockchaindlib-build.iml
-.idea/modules/blockchaindlib.iml
-.idea/sbt.xml
-.idea/scala_compiler.xml
-.idea/workspace.xml
+.idea/*
 org/bitcoinj/core/annotations.xml
 project/target/**/*.class
 .idea/blockchain-api.iml
