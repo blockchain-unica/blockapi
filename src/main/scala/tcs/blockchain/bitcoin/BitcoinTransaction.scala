@@ -6,7 +6,7 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 
 /**
-  * Created by Livio on 12/06/2017.
+  *
   */
 class BitcoinTransaction(
                           val hash: Sha256Hash,
