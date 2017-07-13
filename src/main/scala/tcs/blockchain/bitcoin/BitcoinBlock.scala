@@ -37,11 +37,21 @@ class BitcoinBlock(
 
 
 /**
-  * Factory for [[tcs.blockchain.bitcoin.BitcoinBlock]] instances.
+  * Factories for [[tcs.blockchain.bitcoin.BitcoinBlock]] instances.
   */
 object BitcoinBlock {
 
 
+  /**
+    * Factory for [[tcs.blockchain.bitcoin.BitcoinBlock]] instances.
+    * Creates a new block given its BitcoinJ representation and its height
+    * in the blockchain (height is not specified in the BitcoinJ objects).
+    * Input values of each appended transaction will be set to 0.
+    *
+    * @param block BitcoinJ representation of the block
+    * @param height Height of the block given in the previous parameter
+    * @return A new BitcoinBlock
+    */
   def factory(block: Block, height: Long): BitcoinBlock = {
     val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map(tx => BitcoinTransaction.factory(tx)).toList
 
@@ -49,6 +59,18 @@ object BitcoinBlock {
   }
 
 
+  /**
+    * Factory for [[tcs.blockchain.bitcoin.BitcoinBlock]] instances.
+    * Creates a new block given its BitcoinJ representation and its height
+    * in the blockchain (height is not specified in the BitcoinJ objects).
+    * Input values of each appended transaction will be set to the correct value
+    * by exploiting the UTXOmap provided.
+    *
+    * @param block BitcoinJ representation of the block
+    * @param height Height of the block given in the previous parameter
+    * @param UTXOmap Unspent transaction outputs map
+    * @return A new BitcoinBlock
+    */
   def factory(block: Block, height: Long, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): BitcoinBlock = {
     val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map(tx => BitcoinTransaction.factory(tx, UTXOmap, height)).toList
 
@@ -56,6 +78,15 @@ object BitcoinBlock {
   }
 
 
+  /**
+    * Factory for [[tcs.blockchain.bitcoin.BitcoinBlock]] instances.
+    * Creates a new block given its BitcoinJ representation.
+    * Block height will be set to 0 since is not provided in the BitcoinJ block provided.
+    * Input values of each appended transaction will be set to 0.
+    *
+    * @param block BitcoinJ representation of the block
+    * @return A new BitcoinBlock
+    */
   def factory(block: Block): BitcoinBlock = {
     val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map(tx => BitcoinTransaction.factory(tx)).toList
 
