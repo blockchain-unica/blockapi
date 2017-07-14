@@ -2,7 +2,9 @@
 A Scala library for the development of custom analytics on Bitcoin, by [Stefano Lande](http://tcs.unica.it/members/stefano-lande) and [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu).
 
 The library is dicussed in [A general framework for Bitcoin analytics](https://arxiv.org/pdf/1707.01021.pdf).
+
 More material is available in the [project page](http://blockchain.unica.it/projects/blockchain-analytics/).
+
 The Scaladoc (uploaded on this repository in the [doc folder](https://github.com/bitbart/bitcoin-analytics-api/tree/master/docs)) is also available at the following [link](https://bitbart.github.io/bitcoin-analytics-api/).
 
 ### Install prerequisites
