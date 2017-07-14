@@ -114,7 +114,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     *
     * @param height height of the block to retrieve
     * @param UTXOmap The Unspent Transaction Output map
-    * @return BitcoinBlock epresentation of the block
+    * @return BitcoinBlock representation of the block
     */
   private def getBlock(height: Long, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): BitcoinBlock = {
     val blockHash = client.getblockhash(height)

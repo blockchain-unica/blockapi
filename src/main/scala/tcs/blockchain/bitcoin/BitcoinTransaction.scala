@@ -81,7 +81,7 @@ object BitcoinTransaction {
     * Factory for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
     * Creates a new transaction given its BitcoinJ representation.
     * Values of each appended BitcoinInput will be set to the correct value
-    * by exploiting the UTXOmap provided.
+    * by exploiting the UTXO map provided.
     *
     * @param tx BitcoinJ representation of the transaction
     * @param UTXOmap Unspent transaction outputs map

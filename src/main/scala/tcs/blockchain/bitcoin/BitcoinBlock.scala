@@ -64,7 +64,7 @@ object BitcoinBlock {
     * Creates a new block given its BitcoinJ representation and its height
     * in the blockchain (height is not specified in the BitcoinJ objects).
     * Input values of each appended transaction will be set to the correct value
-    * by exploiting the UTXOmap provided.
+    * by exploiting the UTXO map provided.
     *
     * @param block BitcoinJ representation of the block
     * @param height Height of the block given in the previous parameter
