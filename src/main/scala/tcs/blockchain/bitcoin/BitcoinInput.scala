@@ -66,8 +66,8 @@ object BitcoinInput {
     * Creates a new input given its BitcoinJ representation.
     * The value will be set to 0.
     *
-    * @param input BitcoinJ representation of the input
-    * @return A new BitcoinInput
+    * @param input BitcoinJ representation of the input.
+    * @return A new BitcoinInput.
     */
   def factory(input: TransactionInput): BitcoinInput = {
     new BitcoinInput(if (input.getConnectedOutput != null) input.getConnectedOutput.getParentTransactionHash else null,
@@ -90,11 +90,11 @@ object BitcoinInput {
     * The value will be set to the correct value
     * by exploiting the UTXO map provided.
     *
-    * @param input BitcoinJ representation of the input
-    * @param UTXOmap Unspent transaction outputs map
-    * @param blockHeight Height of the block including the enclosing transaction
-    * @param outputs List of outputs of the enclosing transaction
-    * @return A new BitcoinInput
+    * @param input BitcoinJ representation of the input.
+    * @param UTXOmap Unspent transaction outputs map.
+    * @param blockHeight Height of the block including the enclosing transaction.
+    * @param outputs List of outputs of the enclosing transaction.
+    * @return A new BitcoinInput.
     */
   def factory(input: TransactionInput, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long], blockHeight: Long, outputs: List[TransactionOutput]): BitcoinInput = {
     val value = UTXOmap.get((input.getOutpoint.getHash, input.getOutpoint.getIndex)) match {
