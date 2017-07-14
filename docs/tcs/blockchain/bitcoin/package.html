@@ -1,0 +1,279 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>bitcoin - Bitcoin Analytics API documentation - tcs.blockchain.bitcoin</title>
+          <meta name="description" content="bitcoin - Bitcoin Analytics API documentation - tcs.blockchain.bitcoin" />
+          <meta name="keywords" content="bitcoin Bitcoin Analytics API documentation tcs.blockchain.bitcoin" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'tcs.blockchain.bitcoin.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="tcs">tcs</a>.<a href="../package.html" class="extype" name="tcs.blockchain">blockchain</a></p>
+        <h1>bitcoin</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bitcoin</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="tcs.blockchain.bitcoin.BitcoinBlock" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinBlockextendsAnyRef"></a>
+      <a id="BitcoinBlock:BitcoinBlock"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinBlock.html"><span class="name">BitcoinBlock</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Defines a block of the Bitcoin blockchain.</p>
+    </li><li name="tcs.blockchain.bitcoin.BitcoinBlockchain" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinBlockchainextendsTraversable[tcs.blockchain.bitcoin.BitcoinBlock]"></a>
+      <a id="BitcoinBlockchain:BitcoinBlockchain"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinBlockchain.html"><span class="name">BitcoinBlockchain</span></a><span class="result"> extends <span class="extype" name="scala.Traversable">Traversable</span>[<a href="BitcoinBlock.html" class="extype" name="tcs.blockchain.bitcoin.BitcoinBlock">BitcoinBlock</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Defines a Bitcoin blockchain given the Bitcoin Core settings.</p>
+    </li><li name="tcs.blockchain.bitcoin.BitcoinInput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinInputextendsAnyRef"></a>
+      <a id="BitcoinInput:BitcoinInput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinInput.html"><span class="name">BitcoinInput</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Defines a transaction input of the Bitcoin blockchain.</p>
+    </li><li name="tcs.blockchain.bitcoin.BitcoinOutput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinOutputextendsAnyRef"></a>
+      <a id="BitcoinOutput:BitcoinOutput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinOutput.html"><span class="name">BitcoinOutput</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Defines a transaction output of the Bitcoin blockchain.</p>
+    </li><li name="tcs.blockchain.bitcoin.BitcoinScript" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinScriptextendsScript"></a>
+      <a id="BitcoinScript:BitcoinScript"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinScript.html"><span class="name">BitcoinScript</span></a><span class="result"> extends <span class="extype" name="org.bitcoinj.script.Script">Script</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Created by Livio on 12/06/2017.</p>
+    </li><li name="tcs.blockchain.bitcoin.BitcoinSettings" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinSettingsextendsAnyRef"></a>
+      <a id="BitcoinSettings:BitcoinSettings"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinSettings.html"><span class="name">BitcoinSettings</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Framework settings for the Bitcoin blockchain.</p>
+    </li><li name="tcs.blockchain.bitcoin.BitcoinTransaction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinTransactionextendsAnyRef"></a>
+      <a id="BitcoinTransaction:BitcoinTransaction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinTransaction.html"><span class="name">BitcoinTransaction</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Defines a transaction of the Bitcoin blockchain.</p>
+    </li><li name="tcs.blockchain.bitcoin.Network" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="NetworkextendsAnyRef"></a>
+      <a id="Network:Network"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Network.html"><span class="name">Network</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Bitcoin networks: either Main network or Test network.</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="tcs.blockchain.bitcoin.BitcoinBlock" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinBlock"></a>
+      <a id="BitcoinBlock:BitcoinBlock"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinBlock$.html"><span class="name">BitcoinBlock</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Factories for <a href="BitcoinBlock.html" class="extype" name="tcs.blockchain.bitcoin.BitcoinBlock">tcs.blockchain.bitcoin.BitcoinBlock</a> instances.</p>
+    </li><li name="tcs.blockchain.bitcoin.BitcoinInput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinInput"></a>
+      <a id="BitcoinInput:BitcoinInput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinInput$.html"><span class="name">BitcoinInput</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Factories for <a href="BitcoinInput.html" class="extype" name="tcs.blockchain.bitcoin.BitcoinInput">tcs.blockchain.bitcoin.BitcoinInput</a> instances.</p>
+    </li><li name="tcs.blockchain.bitcoin.BitcoinOutput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinOutput"></a>
+      <a id="BitcoinOutput:BitcoinOutput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinOutput$.html"><span class="name">BitcoinOutput</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Factories for <a href="BitcoinOutput.html" class="extype" name="tcs.blockchain.bitcoin.BitcoinOutput">tcs.blockchain.bitcoin.BitcoinOutput</a> instances.</p>
+    </li><li name="tcs.blockchain.bitcoin.BitcoinTransaction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BitcoinTransaction"></a>
+      <a id="BitcoinTransaction:BitcoinTransaction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BitcoinTransaction$.html"><span class="name">BitcoinTransaction</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Factories for <a href="BitcoinTransaction.html" class="extype" name="tcs.blockchain.bitcoin.BitcoinTransaction">tcs.blockchain.bitcoin.BitcoinTransaction</a> instances.</p>
+    </li><li name="tcs.blockchain.bitcoin.MainNet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MainNet"></a>
+      <a id="MainNet:MainNet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="MainNet$.html"><span class="name">MainNet</span></a><span class="result"> extends <a href="Network.html" class="extype" name="tcs.blockchain.bitcoin.Network">Network</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Bitcoin Main network
+</p>
+    </li><li name="tcs.blockchain.bitcoin.TestNet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TestNet"></a>
+      <a id="TestNet:TestNet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="TestNet$.html"><span class="name">TestNet</span></a><span class="result"> extends <a href="Network.html" class="extype" name="tcs.blockchain.bitcoin.Network">Network</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Bitcoin Test network
+</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+    </body>
+      </html>
