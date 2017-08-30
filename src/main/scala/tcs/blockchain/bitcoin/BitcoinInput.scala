@@ -22,7 +22,8 @@ class BitcoinInput(
                     val value: Long,
                     val redeemedOutIndex: Int,
                     val isCoinbase: Boolean,
-                    val inScript: BitcoinScript) {
+                    val inScript: BitcoinScript,
+                    val sequenceNo: Long) {
 
 
   /**
@@ -53,6 +54,22 @@ class BitcoinInput(
       case _: ScriptException => None
     }
   }
+
+
+  /**
+    * Returns the Bitcoin script
+    *
+    * @return Bitcoin Script of the current input
+    */
+  def getScript: BitcoinScript = inScript
+
+
+  /**
+    * Returns the sequence no
+    *
+    * @return Input sequence number
+    */
+  def getSequenceNo: Long = sequenceNo
 }
 
 
@@ -74,12 +91,12 @@ object BitcoinInput {
       0,
       input.getParentTransaction.getInputs.indexOf(input),
       if (input.getConnectedOutput == null) true else false,
-
       try {
         new BitcoinScript(input.getScriptBytes)
       } catch {
         case e: Exception => new BitcoinScript(Array())
-      }
+      },
+      input.getSequenceNumber
     )
   }
 
@@ -121,7 +138,8 @@ object BitcoinInput {
         new BitcoinScript(input.getScriptBytes)
       } catch {
         case e: Exception => new BitcoinScript(Array())
-      }
+      },
+      input.getSequenceNumber
     )
   }
 

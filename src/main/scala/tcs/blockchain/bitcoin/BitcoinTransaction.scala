@@ -17,7 +17,8 @@ class BitcoinTransaction(
                           val hash: Sha256Hash,
                           val txSize: Int,
                           val inputs: List[BitcoinInput],
-                          val outputs: List[BitcoinOutput]) {
+                          val outputs: List[BitcoinOutput],
+                          val lock_time: Long) {
 
 
   /**
@@ -38,6 +39,16 @@ class BitcoinTransaction(
     */
   def getOutputsSum(): Long = {
     outputs.map(output => output.value).reduce(_ + _)
+  }
+
+
+  /**
+    * Returns the transaction lock time.
+    *
+    * @return Transaction lock time
+    */
+  def getLockTime(): Long = {
+    lock_time
   }
 
 
@@ -74,7 +85,7 @@ object BitcoinTransaction {
     val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o)).toList
 
     // TODO: Test getMessageSize
-    return new BitcoinTransaction(tx.getHash, tx.getMessageSize, inputs, outputs)
+    return new BitcoinTransaction(tx.getHash, tx.getMessageSize, inputs, outputs, tx.getLockTime)
   }
 
   /**
@@ -93,6 +104,6 @@ object BitcoinTransaction {
     val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o, tx.getHash, UTXOmap)).toList
 
     // TODO: Test getMessageSize
-    return new BitcoinTransaction(tx.getHash, tx.getMessageSize, inputs, outputs)
+    return new BitcoinTransaction(tx.getHash, tx.getMessageSize, inputs, outputs, tx.getLockTime)
   }
 }
