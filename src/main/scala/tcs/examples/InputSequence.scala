@@ -16,7 +16,7 @@ object InputSequence {
     var allValues : mutable.HashMap[Long, Int] = new mutable.HashMap[Long, Int]()
     var metadataValues : mutable.HashMap[Long, Int] = new mutable.HashMap[Long, Int]()
 
-    var bkTot : Int = 200000
+    var bkTot : Int = 480000
     var txTot : Long = 0
     var inTot : Long = 0
 
@@ -27,8 +27,8 @@ object InputSequence {
           inTot += 1
           allValues.update(i.sequenceNo, allValues.getOrElse(i.sequenceNo, 0) + 1)
 
-          if(tx.getLockTime() != 0){
-            metadataValues.update(i.sequenceNo, allValues.getOrElse(i.sequenceNo, 0) + 1)
+          if(tx.getLockTime() == 0){
+            metadataValues.update(i.sequenceNo, metadataValues.getOrElse(i.sequenceNo, 0) + 1)
           }
         })
       })
