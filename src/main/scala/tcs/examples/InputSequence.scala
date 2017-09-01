@@ -6,7 +6,7 @@ import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import scala.collection.mutable
 
 /**
-  * Created by Livio on 30/08/2017.
+  * Created by Livio on 30/08/2017. 
   */
 object InputSequence {
   def main(args: Array[String]): Unit ={
