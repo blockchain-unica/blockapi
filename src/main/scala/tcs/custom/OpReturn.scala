@@ -15,6 +15,10 @@ object OpReturn {
       return Protocol.ASCRIBE;
     }
 
+    if (metadata.contains(Codes.BRACKET + Codes.BITALIAS_CODE1)) {
+      return Protocol.BITALIAS;
+    }
+
     if (metadata.contains(Codes.BRACKET + Codes.BITPROOF_CODE1)) {
       return Protocol.BITPROOF;
     }
@@ -41,6 +45,10 @@ object OpReturn {
       return Protocol.COLU;
     }
 
+    if (metadata.contains(Codes.BRACKET + Codes.COUNTERPARTY_CODE1)) {
+      return Protocol.COUNTERPARTY;
+    }
+
     if (metadata.contains(Codes.BRACKET + Codes.CRYPTOCOPYRIGHT_CODE1) ||
       metadata.contains(Codes.BRACKET + Codes.CRYPTOCOPYRIGHT_CODE2)) {
       return Protocol.CRYPTOCOPYRIGHT;
@@ -57,6 +65,10 @@ object OpReturn {
       return Protocol.FACTOM;
     }
 
+    if (metadata.contains(Codes.BRACKET + Codes.HELPERBIT_CODE1)) {
+      return Protocol.HELPERBIT;
+    }
+
     if (metadata.contains(Codes.BRACKET + Codes.LAPREUVE_CODE1)) {
       return Protocol.LAPREUVE;
     }
@@ -69,12 +81,20 @@ object OpReturn {
       return Protocol.NICOSIA;
     }
 
+    if (metadata.contains(Codes.BRACKET + Codes.NOTARY_CODE1)) {
+      return Protocol.NOTARY;
+    }
+
     if (metadata.contains(Codes.BRACKET + Codes.OMNI_CODE1)) {
       return Protocol.OMNI;
     }
 
     if (metadata.contains(Codes.BRACKET + Codes.OPENASSETS_CODE1)) {
       return Protocol.OPENASSETS;
+    }
+
+    if (metadata.contains(Codes.BRACKET + Codes.OPENCHAIN_CODE1)) {
+      return Protocol.OPENCHAIN;
     }
 
     if (metadata.contains(Codes.BRACKET + Codes.ORIGINALMY_CODE1)) {

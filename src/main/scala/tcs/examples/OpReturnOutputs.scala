@@ -16,7 +16,7 @@ object OpReturnOutputs {
 
     val opReturnOutputs = new Collection("opReturnOutputs", mongo)
 
-    blockchain.start(290000).foreach(block => {
+    blockchain.start(480000).foreach(block => {
       if(block.height % 1000 == 0){
         println(block.height)
       }
