@@ -1,6 +1,5 @@
 package tcs.examples
 
-import org.bitcoinj.core.Address
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.mongo.{Collection, MongoSettings}

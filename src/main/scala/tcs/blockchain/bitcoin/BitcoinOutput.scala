@@ -47,8 +47,10 @@ class BitcoinOutput(
     if (!isOpreturn) null else {
       var v1: Integer = outScript.toString.indexOf("[");
       var v2: Integer = outScript.toString.indexOf("]");
-      if ((v1 == -1) || (v2 == -1))
-        return ""
+      if ((v1 == -1) || (v2 == -1)) {
+        //TODO decide when it should return an empty string
+        return outScript.toString
+      }
       else
         return outScript.toString.substring(v1 + 1, v2)
     }

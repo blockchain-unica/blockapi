@@ -26,7 +26,7 @@ object OpReturnOutputs {
             opReturnOutputs.append(List(
               ("txHash", tx.hash),
               ("date", block.date),
-              ("protocol", OpReturn.getApplication(out.outScript.toString)),
+              ("protocol", OpReturn.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.outScript.toString)),
               ("metadata", out.getMetadata())
             ))
           }

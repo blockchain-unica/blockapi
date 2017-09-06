@@ -2,11 +2,11 @@ package tcs.custom
 
 import java.io.{BufferedReader, IOException, InputStreamReader}
 import java.net.{HttpURLConnection, URL}
+import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.codesnippets4all.json.parsers.JsonParserFactory
 import org.apache.commons.lang3.time.DateUtils
-import java.text.SimpleDateFormat
 
 /**
   * Created by Livio on 13/06/2017.

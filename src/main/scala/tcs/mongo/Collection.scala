@@ -2,8 +2,8 @@ package tcs.mongo
 
 import java.util.Date
 
-import org.mongodb.scala.{Completed, MongoClient, Observer}
 import org.mongodb.scala.bson._
+import org.mongodb.scala.{Completed, MongoClient, Observer}
 import tcs.blockchain.bitcoin.{BitcoinInput, BitcoinOutput}
 
 /**

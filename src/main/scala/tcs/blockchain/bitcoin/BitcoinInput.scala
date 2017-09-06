@@ -2,7 +2,7 @@ package tcs.blockchain.bitcoin
 
 import javax.script.ScriptException
 
-import org.bitcoinj.core.{Address, Sha256Hash, TransactionInput, TransactionOutput}
+import org.bitcoinj.core._
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 
 import scala.collection.mutable
@@ -23,7 +23,8 @@ class BitcoinInput(
                     val redeemedOutIndex: Int,
                     val isCoinbase: Boolean,
                     val inScript: BitcoinScript,
-                    val sequenceNo: Long) {
+                    val sequenceNo: Long,
+                    val outPoint: TransactionOutPoint) {
 
 
   /**
@@ -96,7 +97,8 @@ object BitcoinInput {
       } catch {
         case e: Exception => new BitcoinScript(Array())
       },
-      input.getSequenceNumber
+      input.getSequenceNumber,
+      input.getOutpoint
     )
   }
 
@@ -139,7 +141,8 @@ object BitcoinInput {
       } catch {
         case e: Exception => new BitcoinScript(Array())
       },
-      input.getSequenceNumber
+      input.getSequenceNumber,
+      input.getOutpoint
     )
   }
 
