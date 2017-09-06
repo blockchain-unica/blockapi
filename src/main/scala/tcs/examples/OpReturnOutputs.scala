@@ -14,9 +14,9 @@ object OpReturnOutputs {
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mongo = new MongoSettings("myDatabase")
 
-    val opReturnOutputs = new Collection("opReturnOutputs", mongo)
+    val opReturnOutputs = new Collection("opReturn", mongo)
 
-    blockchain.start(480000).foreach(block => {
+    blockchain.end(480000).foreach(block => {
       if(block.height % 1000 == 0){
         println(block.height)
       }
