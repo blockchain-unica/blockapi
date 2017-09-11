@@ -24,12 +24,12 @@ object OpReturnOutputs {
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
           if(out.isOpreturn()) {
-            opReturnOutputs.append(List(
+/*            opReturnOutputs.append(List(
               ("txHash", tx.hash),
               ("date", block.date),
               ("protocol", OpReturn.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.outScript.toString)),
               ("metadata", out.getMetadata())
-            ))
+            )) */
           }
         })
       })
