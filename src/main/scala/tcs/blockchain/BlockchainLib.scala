@@ -1,5 +1,6 @@
 package tcs.blockchain
 
+import tcs.blockchain.ethereum.EthereumBlockchain
 import tcs.blockchain.bitcoin.{BitcoinBlockchain, BitcoinSettings}
 
 /** Factory for [[tcs.blockchain.bitcoin.BitcoinBlockchain]] istances. */
@@ -12,5 +13,14 @@ object BlockchainLib {
     */
   def getBitcoinBlockchain(settings: BitcoinSettings): BitcoinBlockchain = {
     new BitcoinBlockchain(settings)
+  }
+
+  /**
+    * Creates an Ethereum blockchain given the parity web address
+    * @param addr address where parity is listening
+    * @return an Ethereum blockchain instance
+    */
+  def getEthereumBlockchain(addr: String): EthereumBlockchain = {
+    new EthereumBlockchain(addr)
   }
 }
