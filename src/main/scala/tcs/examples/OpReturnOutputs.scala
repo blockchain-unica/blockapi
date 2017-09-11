@@ -17,9 +17,9 @@ object OpReturnOutputs {
     val opReturnOutputs = new Collection("opReturn", mongo)
 
     blockchain.end(480000).foreach(block => {
-      if(block.height % 1000 == 0){
+//      if(block.height % 500 == 0){
         println(block.height)
-      }
+//      }
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
           if(out.isOpreturn()) {
