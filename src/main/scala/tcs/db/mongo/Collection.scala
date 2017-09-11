@@ -5,11 +5,12 @@ import java.util.Date
 import org.mongodb.scala.bson._
 import org.mongodb.scala.{Completed, MongoClient, Observer}
 import tcs.blockchain.bitcoin.{BitcoinInput, BitcoinOutput}
+import tcs.db.DatabaseSettings
 
 /**
   * Created by stefano on 13/06/17.
   */
-class Collection(val name: String, val settings: MongoSettings) {
+class Collection(val name: String, val settings: DatabaseSettings) {
 
   private val mongoClient: MongoClient =
     if (settings.user.eq(""))

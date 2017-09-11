@@ -3,7 +3,8 @@ package tcs.examples
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.custom.Tag
-import tcs.mongo.{Collection, MongoSettings}
+import tcs.db.DatabaseSettings
+import tcs.mongo.Collection
 
 /**
   * Created by Livio on 19/06/2017.
@@ -12,7 +13,7 @@ object AddressesWithTags {
   def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, true))
-    val mongo = new MongoSettings("myDatabase")
+    val mongo = new DatabaseSettings("myDatabase")
 
     val outWithTags = new Collection("outWithTags", mongo)
     val tags = new Tag("src/main/scala/tcs/custom/input.txt")

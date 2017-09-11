@@ -3,7 +3,8 @@ package tcs.examples
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.custom.Exchange
-import tcs.mongo.{Collection, MongoSettings}
+import tcs.db.DatabaseSettings
+import tcs.mongo.Collection
 
 /**
   * Created by Livio on 13/06/2017.
@@ -13,7 +14,7 @@ object TxWithRates {
   def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mongo = new MongoSettings("myDatabase")
+    val mongo = new DatabaseSettings("myDatabase")
 
     val txWithRates = new Collection("txWithRates", mongo)
 

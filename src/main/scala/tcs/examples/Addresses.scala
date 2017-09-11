@@ -2,7 +2,8 @@ package tcs.examples
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.mongo.{Collection, MongoSettings}
+import tcs.db.DatabaseSettings
+import tcs.mongo.Collection
 
 /**
   * Created by Stefano on 03/07/2017.
@@ -11,7 +12,7 @@ object Addresses {
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mongo = new MongoSettings("clustering")
+    val mongo = new DatabaseSettings("clustering")
 
     val addresses = new Collection("addresses", mongo)
 
