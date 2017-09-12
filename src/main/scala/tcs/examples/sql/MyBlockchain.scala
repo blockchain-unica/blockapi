@@ -37,20 +37,28 @@ object MyBlockchain {
         outputScript varchar(40000) not null
       )""", mySQL)
 
-    blockchain.end(473100).foreach(block => {
-      block.bitcoinTxs.foreach(tx => {
-        println(tx.hash)
-        transactionTable.insert(sql"insert into transaction (transactionHash, blockHash, timestamp) values (${tx.hash}, ${block.hash}, ${block.date})")
+      blockchain.end(473100).foreach(block => {
+        block.bitcoinTxs.foreach(tx => {
+          try {
+            println(tx.hash)
+            transactionTable.insert(sql"insert into transaction (transactionHash, blockHash, timestamp) values (${tx.hash}, ${block.hash}, ${block.date})")
 
-        tx.inputs.foreach(in => {
-          inputTable.insert(sql"insert into input (transactionHash, inputScript) values (${tx.hash}, ${in.inScript.toString})")
-        })
+            tx.inputs.foreach(in => {
+              inputTable.insert(sql"insert into input (transactionHash, inputScript) values (${tx.hash}, ${in.inScript.toString})")
+            })
 
-        tx.outputs.foreach(out => {
-          outputTable.insert(sql"insert into output (transactionHash, outputScript) values (${tx.hash}, ${out.outScript.toString})")
+            tx.outputs.foreach(out => {
+              outputTable.insert(sql"insert into output (transactionHash, outputScript) values (${tx.hash}, ${out.outScript.toString})")
+            })
+          } catch {
+            case e: Exception => {
+              println(block.hash + " " + tx.hash)
+              println(e.printStackTrace())
+            }
+          }
         })
       })
-    })
+
 
     transactionTable.close
     inputTable.close
