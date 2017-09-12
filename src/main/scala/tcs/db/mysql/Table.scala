@@ -6,7 +6,7 @@ import tcs.db.DatabaseSettings
 /**
   * Created by Livio on 11/09/2017.
   */
-class Table(val tableName : String, val createQuery: SQL[Nothing, NoExtractor], val dbSettings: DatabaseSettings){
+class Table(val createQuery: SQL[Nothing, NoExtractor], val dbSettings: DatabaseSettings){
 
   // Initialize JDBC driver & connection pool
   Class.forName("org.h2.Driver")

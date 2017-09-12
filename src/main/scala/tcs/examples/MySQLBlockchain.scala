@@ -14,23 +14,46 @@ object MySQLBlockchain {
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mySQL = new DatabaseSettings("myDatabase", MySQL, "user", "password")
+    val mySQL = new DatabaseSettings("mySQLBlockchain", MySQL, "user", "password")
 
-    val tableName = "mySQLBlockchain"
-    val query = sql"""
-      create table tableName (
+    val transactionTable = new Table(sql"""
+      create table transaction (
         transactionHash varchar(256) not null primary key,
-        blockHash varchar(256) not null
-      )"""
-    val opReturn = new Table(tableName, query, mySQL)
+        blockHash varchar(256) not null,
+        timestamp TIMESTAMP not null
+      )""", mySQL)
 
+    val inputTable = new Table(sql"""
+      create table input (
+        id serial not null primary key,
+        transactionHash varchar(256) not null,
+        inputScript varchar(40000) not null
+      )""", mySQL)
 
-    blockchain.end(10).foreach(block => {
+    val outputTable = new Table(sql"""
+      create table output (
+        id serial not null primary key,
+        transactionHash varchar(256) not null,
+        outputScript varchar(40000) not null
+      )""", mySQL)
+
+    blockchain.end(100000).foreach(block => {
       block.bitcoinTxs.foreach(tx => {
-        opReturn.insert(sql"insert into tableName (transactionHash, blockHash) values (${tx.hash}, ${block.hash})")
+        println(tx.hash)
+        transactionTable.insert(sql"insert into transaction (transactionHash, blockHash, timestamp) values (${tx.hash}, ${block.hash}, ${block.date})")
+
+        tx.inputs.foreach(in => {
+          inputTable.insert(sql"insert into input (transactionHash, inputScript) values (${tx.hash}, ${in.inScript.toString})")
+        })
+
+        tx.outputs.foreach(out => {
+          outputTable.insert(sql"insert into output (transactionHash, outputScript) values (${tx.hash}, ${out.outScript.toString})")
+        })
       })
     })
 
-    opReturn.close
+    transactionTable.close
+    inputTable.close
+    outputTable.close
   }
 }
