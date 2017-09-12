@@ -1,8 +1,7 @@
-package tcs.examples
+package tcs.examples.mongo
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.custom.OpReturn
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 

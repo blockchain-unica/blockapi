@@ -1,20 +1,20 @@
-package tcs.examples
+package tcs.examples.sql
 
 import scalikejdbc._
-import tcs.db.mysql.Table
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
+import tcs.db.mysql.Table
 import tcs.db.{DatabaseSettings, MySQL}
 
 
 /**
   * Created by Livio on 14/06/2017.
   */
-object MySQLBlockchain {
+object MyBlockchain {
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mySQL = new DatabaseSettings("mySQLBlockchain", MySQL, "user", "password")
+    val mySQL = new DatabaseSettings("myBlockchain", MySQL, "user", "password")
 
     val transactionTable = new Table(sql"""
       create table transaction (

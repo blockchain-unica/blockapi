@@ -1,4 +1,4 @@
-package tcs.examples
+package tcs.examples.mongo
 
 import java.io.PrintWriter
 import java.util
