@@ -37,10 +37,11 @@ object MyBlockchain {
         outputScript varchar(40000) not null
       )""", mySQL)
 
+     var i = 0
       blockchain.end(473100).foreach(block => {
+        if(i%5000==0) println(i)
         block.bitcoinTxs.foreach(tx => {
           try {
-            println(tx.hash)
             transactionTable.insert(sql"insert into transaction (transactionHash, blockHash, timestamp) values (${tx.hash}, ${block.hash}, ${block.date})")
 
             tx.inputs.foreach(in => {
@@ -57,6 +58,7 @@ object MyBlockchain {
             }
           }
         })
+        i = i+1
       })
 
 
