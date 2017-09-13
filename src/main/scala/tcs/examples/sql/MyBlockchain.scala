@@ -14,7 +14,7 @@ object MyBlockchain {
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mySQL = new DatabaseSettings("myBlockchain", MySQL, "user", "password")
+    val mySQL = new DatabaseSettings("myblockchain", MySQL, "user", "password")
 
     val transactionTable = new Table(sql"""
       create table if not exists transaction(
@@ -38,30 +38,21 @@ object MyBlockchain {
         outputScript text not null
       )""", mySQL)
 
-     var i = 0
-      blockchain.end(473100).foreach(block => {
-        if(i%500==0) println(i)
-        block.bitcoinTxs.foreach(tx => {
-          try {
-            transactionTable.insert(sql"insert into transaction (transactionHash, blockHash, timestamp) values (${tx.hash.toString}, ${block.hash.toString}, ${block.date})")
+    blockchain.end(473100).foreach(block => {
+      if(block.height%500==0) println(block.height)
 
-            tx.inputs.foreach(in => {
-              inputTable.insert(sql"insert into input (transactionHash, inputScript) values (${tx.hash.toString}, ${in.inScript.toString})")
-            })
+      block.bitcoinTxs.foreach(tx => {
+          transactionTable.insert(sql"insert into transaction (transactionHash, blockHash, timestamp) values (${tx.hash.toString}, ${block.hash.toString}, ${block.date})")
 
-            tx.outputs.foreach(out => {
-              outputTable.insert(sql"insert into output (transactionHash, outputScript) values (${tx.hash.toString}, ${out.outScript.toString})")
-            })
-          } catch {
-            case e: Exception => {
-              println(block.hash + " " + tx.hash)
-              println(e.printStackTrace())
-            }
-          }
-        })
-        i = i+1
+          tx.inputs.foreach(in => {
+            inputTable.insert(sql"insert into input (transactionHash, inputScript) values (${tx.hash.toString}, ${in.inScript.toString})")
+          })
+
+          tx.outputs.foreach(out => {
+            outputTable.insert(sql"insert into output (transactionHash, outputScript) values (${tx.hash.toString}, ${out.outScript.toString})")
+          })
       })
-
+    })
 
     transactionTable.close
     inputTable.close
