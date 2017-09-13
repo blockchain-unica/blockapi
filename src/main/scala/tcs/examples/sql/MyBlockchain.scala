@@ -14,11 +14,12 @@ object MyBlockchain {
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mySQL = new DatabaseSettings("myblockchain", MySQL, "user", "password")
+    val mySQL = new DatabaseSettings("myBlockchain", MySQL, "user", "password")
 
     val transactionTable = new Table(sql"""
       create table if not exists transaction(
-        transactionHash varchar(256) not null primary key,
+        txid serial not null PRIMARY key,
+        transactionHash varchar(256) not null,
         blockHash varchar(256) not null,
         timestamp TIMESTAMP not null
       )""", mySQL)
@@ -38,7 +39,7 @@ object MyBlockchain {
       )""", mySQL)
 
      var i = 0
-      blockchain.start(400000).end(473100).foreach(block => {
+      blockchain.end(473100).foreach(block => {
         if(i%500==0) println(i)
         block.bitcoinTxs.foreach(tx => {
           try {
