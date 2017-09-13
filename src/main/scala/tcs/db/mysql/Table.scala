@@ -9,8 +9,8 @@ import tcs.db.DatabaseSettings
 class Table(val createQuery: SQL[Nothing, NoExtractor], val dbSettings: DatabaseSettings){
 
   // Initialize JDBC driver & connection pool
-  Class.forName("org.h2.Driver")
-  ConnectionPool.singleton("jdbc:h2:mem:"+dbSettings.database, dbSettings.user, dbSettings.psw)
+  Class.forName("com.mysql.jdbc.Driver")
+  ConnectionPool.singleton("jdbc:mysql://localhost:3306/"+dbSettings.database, dbSettings.user, dbSettings.psw)
 
   // Ad-hoc session provider on the REPL
   implicit val session = AutoSession
