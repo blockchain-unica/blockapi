@@ -1,4 +1,4 @@
-package tcs.examples.sql
+package tcs.examples.bitcoin.sql
 
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib

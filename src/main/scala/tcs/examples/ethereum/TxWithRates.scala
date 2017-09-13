@@ -11,7 +11,7 @@ import tcs.db.DatabaseSettings
 object TxWithRates {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545").setStart(70000).setEnd(150000)
-    val mongo = new DatabaseSettings()("myDatabase")
+    val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
     val txWithRates = new Collection("txWithRates", mongo)
     val format = new SimpleDateFormat("yyyy-MM-dd")

@@ -1,36 +1,38 @@
-package tcs.examples.mongo
+package tcs.examples.bitcoin.mongo
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
+import tcs.custom.Exchange
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
 /**
-  * Created by stefano on 13/06/17.
+  * Created by Livio on 13/06/2017.
   */
-object MyBlockchain {
+
+object TxWithRates {
   def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mongo = new DatabaseSettings("myDatabase")
 
-    val myBlockchain = new Collection("myBlockchain", mongo)
+    val txWithRates = new Collection("txWithRates", mongo)
 
     blockchain.foreach(block => {
-      if(block.height % 1000 == 0){
+      if (block.height % 1000 == 0) {
         println(block.height)
       }
+
       block.bitcoinTxs.foreach(tx => {
-        myBlockchain.append(List(
+        txWithRates.append(List(
           ("txHash", tx.hash),
-          ("blockHash", block.hash),
           ("date", block.date),
-          ("inputs", tx.inputs),
-          ("outputs", tx.outputs)
+          ("outputSum", tx.getOutputsSum()),
+          ("rate", Exchange.getRate(block.date))
         ))
       })
     })
 
-    myBlockchain.close
+    txWithRates.close
   }
 }
