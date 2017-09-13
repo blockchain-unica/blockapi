@@ -22,7 +22,7 @@ object OpReturnOutputs {
         transactionHash varchar(256) not null,
         txdate TIMESTAMP not null,
         protocol varchar(64) not null,
-        metadata tinytext not null
+        metadata text not null
     )""", mySQL)
 
     blockchain.start(290000).end(473100).foreach(block => {
