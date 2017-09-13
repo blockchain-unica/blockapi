@@ -25,7 +25,7 @@ object OpReturnOutputs {
         metadata tinytext not null
     )""", mySQL)
 
-    blockchain.end(473100).foreach(block => {
+    blockchain.start(290000).end(473100).foreach(block => {
       if(block.height % 500 == 0) println(block.height)
 
       block.bitcoinTxs.foreach(tx => {
