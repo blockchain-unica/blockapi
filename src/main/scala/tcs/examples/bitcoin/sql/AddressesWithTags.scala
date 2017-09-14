@@ -10,7 +10,7 @@ import tcs.custom.Tag
 /**
   * Created by Livio on 14/09/2017.
   */
-class AddressesWithTags {
+object AddressesWithTags {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mySQL = new DatabaseSettings("outwithtags", MySQL, "user", "password")
