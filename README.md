@@ -34,25 +34,20 @@ Generally speaking the framework needs at least one blockchain client and one DB
 1. Execute the blockchain client in order to obtain a local copy of the target blockchain (this process may take several hours)
 2. Enable the client RPC calls.
     * In the Bitcoin Core case
-    ```bash
-    bitcoind -datadir=path/to/blockchain -server -rpcuser=user -rpcpassword=password 
-    ```
-    * In th Parity case
-    ```bash
-    
-    ```
+        ```bash
+        bitcoind -datadir=path/to/blockchain -server -rpcuser=user -rpcpassword=password 
+        ```
 3. Run a localhost instance of the DBMS on the default port.
-4. Clone the [Blockchain analytics API](https://github.com/bitbart/blockchain-analytics-api/) repository
+4. Clone this repository.
 5. From your IDE: select "import project" and provide your local path to the [build.sbt](https://github.com/bitbart/bitcoin-analytics-api/blob/master/build.sbt) file
 
 ### Running 
-1. From your IDE: open the file one of the available [examples](https://github.com/bitbart/bitcoin-analytics-api/tree/master/src/main/scala/tcs/examples) and select run
+1. Execute of one of the available [examples](https://github.com/bitbart/bitcoin-analytics-api/tree/master/src/main/scala/tcs/examples). Either 
+    * open the file from your IDE and select run or 
+    * use the command line: from the root directory of the project, execute
+        ```bash
+        sbt "runMain tcs.examples.ClassName"
+        ```
 
-__or use the command line in place of an IDE__
-1. From the root directory of the project, execute
-```bash
-sbt "runMain tcs.examples.ClassName"
-```
-
-Our framework will build the database that you can query for performing your analysis.
+Our framework will build the selected database. Then you can query it for performing your analysis.
 For each available Scala script, we provide some default [queries along with the resulting csv files](https://github.com/bitbart/blockchain-analytics-api/tree/master/queries).
