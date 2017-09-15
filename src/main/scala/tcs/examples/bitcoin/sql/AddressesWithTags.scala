@@ -36,8 +36,7 @@ object AddressesWithTags {
             case Some(add) =>
               tags.getValue(add) match {
                 case Some(tag) => {
-                  var temp = tags.getValue(add)
-                  outTable.insert(sql"insert into tagsoutputs (transactionHash, txdate, outvalue, address, tag) values (${tx.hash.toString}, ${block.date}, ${out.value}, ${add}, ${temp})")
+                  outTable.insert(sql"insert into tagsoutputs (transactionHash, txdate, outvalue, address, tag) values (${tx.hash.toString}, ${block.date}, ${out.value}, ${add.toString}, ${tags.getValue(add)})")
                 }
                 case None =>
               }
