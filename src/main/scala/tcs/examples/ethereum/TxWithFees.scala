@@ -5,15 +5,18 @@ import java.util.Date
 
 import tcs.blockchain.BlockchainLib
 import tcs.custom.ethereum.PriceHistorical
-import tcs.mongo.Collection
 import tcs.db.DatabaseSettings
+import tcs.mongo.Collection
 
-object TxWithRates {
+/**
+  * Created by Danieru on 24/09/2017.
+  */
+object TxWithFees {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545").setStart(70000).setEnd(150000)
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
-    val txWithRates = new Collection("txWithRates", mongo)
+    val txWithFees = new Collection("txWithFees", mongo)
     val format = new SimpleDateFormat("yyyy-MM-dd")
     val priceHistorical = PriceHistorical.getPriceHistorical()
 
@@ -27,20 +30,19 @@ object TxWithRates {
         val creates = if(tx.creates == null) "" else tx.creates
         val to = if(tx.to == null) "" else tx.to
         val list = List(
+          ("blockHash", block.hash),
           ("txHash", tx.hash),
-          ("blockHeight", tx.blockNumber.toString()),
-          ("txIndex", tx.transactionIndex),
           ("date", date),
-          ("from", tx.from),
-          ("to", to),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
           ("creates", creates),
+          ("gas", tx.gas),
+          ("fee", (tx.gas * tx.gasPrice)/weiIntoEth),
           ("rate", if(block.timeStamp.longValue() < 1438905600) 0 else priceHistorical.price_usd(dateFormatted))
         )
-        txWithRates.append(list)
+        txWithFees.append(list)
       })
     })
 
-    txWithRates.close
+    txWithFees.close
   }
 }
