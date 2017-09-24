@@ -1,13 +1,17 @@
 package tcs.blockchain.ethereum
 
 import java.math.BigInteger
+
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterNumber
 import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.core.methods.response.EthBlock
+
 import scalaj.http.{Http, HttpResponse}
-import com.codahale.jerkson.Json._
 import tcs.pojos.TraceBlockHttpResponse
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 
 
 /**
@@ -104,7 +108,10 @@ class EthereumBlockchain(address: String) extends Traversable[EthereumBlock]{
     */
   private def getEthereumBlock(currBlock: EthBlock.Block): EthereumBlock = {
     val resultBlockTraceJSON = getResultBlockTrace(currBlock.getNumberRaw)
-    val resultBlockTrace = parse[TraceBlockHttpResponse](resultBlockTraceJSON.body.replaceAll("type", "traceType"))
+    val mapper = new ObjectMapper() with ScalaObjectMapper
+    mapper.registerModule(DefaultScalaModule)
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    val resultBlockTrace = mapper.readValue[TraceBlockHttpResponse](resultBlockTraceJSON.body.replaceAll("type", "traceType"))
     var internalTxs: List[EthereumInternalTransaction] = List()
     resultBlockTrace.result.foreach((blockTrace) => {
       blockTrace.getTraceType match {
