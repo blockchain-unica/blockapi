@@ -5,8 +5,10 @@ import java.net.{HttpURLConnection, URL}
 import java.text.SimpleDateFormat
 import java.util.Date
 
-import com.codahale.jerkson.Json.parse
 import com.codesnippets4all.json.parsers.JsonParserFactory
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import tcs.pojos.{CoinMarketPrices, CoinMarketPricesRaw}
 
 import scala.io.Source
@@ -24,7 +26,10 @@ object PriceHistorical {
     connection.setRequestMethod("GET")
     val br = new BufferedReader(new InputStreamReader(connection.getInputStream))
     val str = Stream.continually(br.readLine()).takeWhile(_ != null).mkString("\n")
-    val coinMarketRaw = parse[CoinMarketPricesRaw](str)
+    val mapper = new ObjectMapper() with ScalaObjectMapper
+    mapper.registerModule(DefaultScalaModule)
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    val coinMarketRaw = mapper.readValue[CoinMarketPricesRaw](str)
 
     val format = new SimpleDateFormat("yyyy-MM-dd")
 
