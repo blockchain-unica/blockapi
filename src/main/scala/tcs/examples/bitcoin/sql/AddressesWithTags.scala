@@ -12,7 +12,6 @@ import tcs.custom.Tag
   */
 object AddressesWithTags {
   def main(args: Array[String]): Unit = {
-  /*
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mySQL = new DatabaseSettings("outwithtags", MySQL, "user", "password")
     val tags = new Tag("src/main/scala/tcs/custom/input.txt")
@@ -26,18 +25,18 @@ object AddressesWithTags {
           outvalue bigint unsigned,
           address varchar(256),
           tag varchar(256)
-       )""", mySQL)
+       )""",
+      sql"""insert into tagsoutputs (transactionHash, txdate, outvalue, address, tag) values (?, ?, ?, ?, ?)""",
+      mySQL)
 
     blockchain.end(473100).foreach(block => {
-      if (block.height % 500 == 0) println(block.height)
-
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
           out.getAddress(MainNet) match {
             case Some(add) =>
               tags.getValue(add) match {
                 case Some(tag) => {
-//                  outTable.query(sql"insert into tagsoutputs (transactionHash, txdate, outvalue, address, tag) values (${tx.hash.toString}, ${block.date}, ${out.value}, ${add.toString}, ${tags.getValue(add)})")
+                  outTable.insert(Seq(tx.hash.toString, block.date, out.value, add.toString, tags.getValue(add)))
                 }
                 case None =>
               }
@@ -46,6 +45,7 @@ object AddressesWithTags {
         })
       })
     })
-    */
+
+    outTable.close
   }
 }

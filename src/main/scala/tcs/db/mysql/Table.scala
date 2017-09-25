@@ -52,7 +52,7 @@ class Table(
   }
 
 
-  def flush = writeValues
+  def close = writeValues
 
 
   private def writeValues = {

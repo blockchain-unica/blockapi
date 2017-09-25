@@ -12,7 +12,7 @@ import tcs.db.mysql.Table
   */
 object OpReturnOutputs {
   def main(args: Array[String]): Unit ={
-/*
+
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mySQL = new DatabaseSettings("opreturn", MySQL, "user", "password")
 
@@ -23,21 +23,22 @@ object OpReturnOutputs {
         txdate TIMESTAMP not null,
         protocol varchar(64) not null,
         metadata text not null
-    )""", mySQL)
+    )""",
+    sql"""insert into opreturnoutput (transactionHash, txdate, protocol, metadata) values(?,?,?,?)""",
+    mySQL)
 
     blockchain.start(290000).end(473100).foreach(block => {
-      if(block.height % 500 == 0) println(block.height)
-
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
           if(out.isOpreturn()) {
             var protocol: String = OpReturn.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.outScript.toString)
             var metadata: String = out.getMetadata()
-//            outputTable.query(sql"insert into opreturnoutput (transactionHash, txdate, protocol, metadata) values (${tx.hash.toString}, ${block.date}, ${protocol}, ${metadata})")
+            outputTable.insert(Seq(tx.hash.toString, block.date, protocol, metadata))
           }
         })
       })
     })
-    */
+
+    outputTable.close
   }
 }

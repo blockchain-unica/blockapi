@@ -55,9 +55,8 @@ object MyBlockchain{
       })
     })
 
-    // Write last values
-    txTable.flush
-    inTable.flush
-    outTable.flush
+    txTable.close
+    inTable.close
+    outTable.close
   }
 }
