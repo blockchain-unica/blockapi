@@ -21,10 +21,14 @@ class Collection(val name: String, val settings: DatabaseSettings) {
 
   def append(list: List[(String, Any)]): Unit = {
 
+    var doc: Document = Document()
 
-    //TODO: handle lists
-    val doc = list.map(Convert.convertPair(_)).reduce((a, b) => a ++ b)
-
+    doc = list.map(a => {
+      a._2 match {
+        case l: List[Any] => (a._1, if (l.isEmpty) "Empty List" else l)
+        case _ => (a._1, a._2)
+      }
+    }).map(Convert.convertPair).reduce(_ ++ _)
     collection.insertOne(doc).subscribe(new Observer[Completed] {
 
       override def onNext(result: Completed): Unit = {}

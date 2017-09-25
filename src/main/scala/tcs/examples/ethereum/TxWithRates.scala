@@ -24,6 +24,7 @@ object TxWithRates {
       val date = new Date(block.timeStamp.longValue()*1000)
       val dateFormatted = format.format(date)
       block.transactions.foreach(tx => {
+        val creates = if(tx.creates == null) "" else tx.creates
         val to = if(tx.to == null) "" else tx.to
         val list = List(
           ("txHash", tx.hash),
@@ -33,6 +34,7 @@ object TxWithRates {
           ("from", tx.from),
           ("to", to),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
+          ("creates", creates),
           ("rate", if(block.timeStamp.longValue() < 1438905600) 0 else priceHistorical.price_usd(dateFormatted))
         )
         txWithRates.append(list)
