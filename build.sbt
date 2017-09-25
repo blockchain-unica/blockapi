@@ -23,8 +23,10 @@ libraryDependencies += "com.codesnippets4all" % "quick-json" % "1.0.4"
 
 libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc"       % "3.0.2",
-  "mysql" % "mysql-connector-java" % "5.1.16"
+
+  "mysql" % "mysql-connector-java" % "6.0.6",
+
+  "com.zaxxer" % "HikariCP" % "2.7.1"
 )
 
-// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-//libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.25" % "compile"
+

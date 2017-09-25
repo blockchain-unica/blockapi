@@ -33,12 +33,10 @@ object OpReturnOutputs {
           if(out.isOpreturn()) {
             var protocol: String = OpReturn.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.outScript.toString)
             var metadata: String = out.getMetadata()
-            outputTable.insert(sql"insert into opreturnoutput (transactionHash, txdate, protocol, metadata) values (${tx.hash.toString}, ${block.date}, ${protocol}, ${metadata})")
+//            outputTable.query(sql"insert into opreturnoutput (transactionHash, txdate, protocol, metadata) values (${tx.hash.toString}, ${block.date}, ${protocol}, ${metadata})")
           }
         })
       })
     })
-
-    outputTable.close
   }
 }

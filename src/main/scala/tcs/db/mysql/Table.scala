@@ -1,5 +1,8 @@
 package tcs.db.mysql
 
+import javax.sql.DataSource
+
+import com.zaxxer.hikari.HikariDataSource
 import scalikejdbc._
 import tcs.db.DatabaseSettings
 
@@ -9,22 +12,34 @@ import tcs.db.DatabaseSettings
 class Table(val createQuery: SQL[Nothing, NoExtractor], val dbSettings: DatabaseSettings){
 
   // Initialize JDBC driver & connection pool
-  Class.forName("com.mysql.jdbc.Driver")
-  ConnectionPool.singleton("jdbc:mysql://localhost:3306/"+dbSettings.database, dbSettings.user, dbSettings.psw)
+  Class.forName("com.mysql.cj.jdbc.Driver")
+
+  val dataSource: DataSource = {
+    val ds = new HikariDataSource()
+    ds.setJdbcUrl("jdbc:mysql://localhost:3306/" + dbSettings.database + "?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&rewriteBatchedStatements=true")
+    ds.addDataSourceProperty("autoCommit", "false")
+    ds.setMaximumPoolSize(10)
+    ds.addDataSourceProperty("user", dbSettings.user)
+    ds.addDataSourceProperty("password", dbSettings.psw)
+    ds
+  }
+
+  ConnectionPool.singleton(new DataSourceConnectionPool(dataSource))
+
 
   // Ad-hoc session provider on the REPL
   implicit val session = AutoSession
 
-  // Create table
-  createQuery.execute.apply()
-
-  // Insert values into table
-  def insert(insertQuery: SQL[Nothing, NoExtractor]): Unit = {
-    insertQuery.update.apply()
+  // Execute queries for table creation
+  using(ConnectionPool.borrow()) { db =>
+    createQuery.execute.apply()
   }
 
-  // All the connections are released, old connection pool will be abandoned
-  def close() {
-    ConnectionPool.close()
+
+
+  def insertBatch(batch: SQLBatch) = {
+    using(ConnectionPool.borrow()) { db =>
+      batch.apply()
+    }
   }
 }
