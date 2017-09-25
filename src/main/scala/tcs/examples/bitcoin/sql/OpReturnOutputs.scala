@@ -12,7 +12,7 @@ import tcs.db.mysql.Table
   */
 object OpReturnOutputs {
   def main(args: Array[String]): Unit ={
-
+/*
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mySQL = new DatabaseSettings("opreturn", MySQL, "user", "password")
 
@@ -38,5 +38,6 @@ object OpReturnOutputs {
         })
       })
     })
+    */
   }
 }

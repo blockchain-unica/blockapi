@@ -6,10 +6,19 @@ import com.zaxxer.hikari.HikariDataSource
 import scalikejdbc._
 import tcs.db.DatabaseSettings
 
+import scala.collection.mutable.ListBuffer
+
 /**
   * Created by Livio on 11/09/2017.
   */
-class Table(val createQuery: SQL[Nothing, NoExtractor], val dbSettings: DatabaseSettings){
+class Table(
+             val createQuery: SQL[Nothing, NoExtractor],
+             val insertQuery: SQL[Nothing, NoExtractor],
+             val dbSettings: DatabaseSettings,
+             val bulkInsertLimit: Int = 50000
+           ) {
+
+  var buffer = ListBuffer[Seq[Any]]()
 
   // Initialize JDBC driver & connection pool
   Class.forName("com.mysql.cj.jdbc.Driver")
@@ -36,10 +45,21 @@ class Table(val createQuery: SQL[Nothing, NoExtractor], val dbSettings: Database
   }
 
 
+  def insert(value: Seq[Any]): Unit = {
+    buffer += value
 
-  def insertBatch(batch: SQLBatch) = {
+    if ((buffer.size >= bulkInsertLimit)) writeValues
+  }
+
+
+  def flush = writeValues
+
+
+  private def writeValues = {
+    val batchTxParams: Seq[Seq[Any]] = buffer.toList
     using(ConnectionPool.borrow()) { db =>
-      batch.apply()
+      insertQuery.batch(batchTxParams: _*).apply()
     }
+    buffer.clear()
   }
 }
