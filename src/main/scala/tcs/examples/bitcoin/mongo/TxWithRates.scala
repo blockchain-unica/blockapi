@@ -2,7 +2,7 @@ package tcs.examples.bitcoin.mongo
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.custom.Exchange
+import tcs.custom.bitcoin.Exchange
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
@@ -19,10 +19,6 @@ object TxWithRates {
     val txWithRates = new Collection("txWithRates", mongo)
 
     blockchain.foreach(block => {
-      if (block.height % 1000 == 0) {
-        println(block.height)
-      }
-
       block.bitcoinTxs.foreach(tx => {
         txWithRates.append(List(
           ("txHash", tx.hash),

@@ -1,12 +1,12 @@
-package tcs.custom
+package tcs.custom.bitcoin.metadata
 
 /**
   * Created by Livio on 14/06/2017.
   */
-object Codes {
+object Identifiers {
   val RETURN = "RETURN"
   val BRACKET = "["
-  
+
   val COLU_CODE1 = "4343"
   val COINSPARK_CODE1 = "53504b"
   val OPENASSETS_CODE1 = "4f41"

@@ -14,7 +14,7 @@ object AddressesWithTags {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mySQL = new DatabaseSettings("outwithtags", MySQL, "user", "password")
-    val tags = new Tag("src/main/scala/tcs/custom/input.txt")
+    val tags = new Tag("src/main/scala/tcs/custom/bitcoin/tagsList.txt")
 
     val outTable = new Table(
       sql"""

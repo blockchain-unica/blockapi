@@ -17,9 +17,6 @@ object MyBlockchain {
     val myBlockchain = new Collection("myBlockchain", mongo)
 
     blockchain.foreach(block => {
-      if(block.height % 1000 == 0){
-        println(block.height)
-      }
       block.bitcoinTxs.foreach(tx => {
         myBlockchain.append(List(
           ("txHash", tx.hash),

@@ -17,19 +17,13 @@ object Addresses {
     val addresses = new Collection("addresses", mongo)
 
     blockchain.foreach(block => {
-      if(block.height % 1000 == 0){
-        println(block.height)
-      }
-
       block.bitcoinTxs.foreach(tx => {
-
         addresses.append(List(
           ("h", tx.hash),
           ("d", block.date.getTime),
           ("i", tx.inputs.flatMap(in => Seq(in.getAddress(MainNet).getOrElse("").toString))),
           ("o", tx.outputs.flatMap(out => Seq(out.getAddress(MainNet).getOrElse("").toString)))
         ))
-
       })
     })
 

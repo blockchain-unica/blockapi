@@ -1,4 +1,4 @@
-package tcs.custom
+package tcs.custom.bitcoin
 
 import java.io.{BufferedReader, IOException, InputStreamReader}
 import java.net.{HttpURLConnection, URL}

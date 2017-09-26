@@ -16,14 +16,9 @@ object AddressesWithTags {
     val mongo = new DatabaseSettings("myDatabase")
 
     val outWithTags = new Collection("outWithTags", mongo)
-    val tags = new Tag("src/main/scala/tcs/custom/input.txt")
+    val tags = new Tag("src/main/scala/tcs/custom/bitcoin/tagsList.txt")
 
     blockchain.foreach(block => {
-
-      if(block.height % 1000 == 0){
-        println(block.height)
-      }
-
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
           out.getAddress(MainNet) match {

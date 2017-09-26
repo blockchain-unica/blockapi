@@ -1,9 +1,9 @@
-package tcs.custom
+package tcs.custom.bitcoin.metadata
 
 /**
   * Created by Livio on 14/06/2017.
   */
-object Protocol {
+object Protocols {
   val COLU = "colu"
   val COINSPARK = "coinspark"
   val OPENASSETS = "openassets"
