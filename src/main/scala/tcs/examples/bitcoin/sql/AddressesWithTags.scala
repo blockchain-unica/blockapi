@@ -6,6 +6,8 @@ import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.{DatabaseSettings, MySQL}
 import tcs.db.mysql.Table
 import tcs.custom.Tag
+import tcs.utils.DateConverter.convertDate
+
 
 /**
   * Created by Livio on 14/09/2017.
@@ -36,7 +38,7 @@ object AddressesWithTags {
             case Some(add) =>
               tags.getValue(add) match {
                 case Some(tag) => {
-                  outTable.insert(Seq(tx.hash.toString, block.date, out.value, add.toString, tags.getValue(add)))
+                  outTable.insert(Seq(tx.hash.toString, convertDate(block.date), out.value, add.toString, tags.getValue(add)))
                 }
                 case None =>
               }

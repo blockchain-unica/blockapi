@@ -25,7 +25,7 @@ class Table(
 
   val dataSource: DataSource = {
     val ds = new HikariDataSource()
-    ds.setJdbcUrl("jdbc:mysql://localhost:3306/" + dbSettings.database + "?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&rewriteBatchedStatements=true")
+    ds.setJdbcUrl("jdbc:mysql://localhost:3306/" + dbSettings.database + "?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true")
     ds.addDataSourceProperty("autoCommit", "false")
     ds.setMaximumPoolSize(10)
     ds.addDataSourceProperty("user", dbSettings.user)

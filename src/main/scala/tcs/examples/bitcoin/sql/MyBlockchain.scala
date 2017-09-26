@@ -5,6 +5,8 @@ import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.mysql.Table
 import tcs.db.{DatabaseSettings, MySQL}
+import tcs.utils.DateConverter.convertDate
+
 
 /**
   * Created by Livio on 14/06/2017.
@@ -20,7 +22,7 @@ object MyBlockchain{
         txid int(10) unsigned auto_increment not null primary key,
         transactionHash varchar(256) not null,
         blockHash varchar(256) not null,
-        timestamp varchar(40) not null
+        timestamp TIMESTAMP not null
       ) """,
       sql"""insert into transaction(transactionHash, blockHash, timestamp) values (?, ?, ?)""",
       mySQL)
@@ -47,7 +49,7 @@ object MyBlockchain{
     blockchain.end(473100).foreach(block => {
       block.bitcoinTxs.foreach(tx => {
 
-        txTable.insert(Seq(tx.hash.toString, block.hash.toString, block.date))
+        txTable.insert(Seq(tx.hash.toString, block.hash.toString, convertDate(block.date)))
 
         tx.inputs.foreach(in => { inTable.insert(Seq(tx.hash.toString, in.inScript.toString)) })
 
