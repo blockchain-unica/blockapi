@@ -17,6 +17,8 @@ object MyBlockchain{
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mySQL = new DatabaseSettings("myblockchain", MySQL, "user", "password")
 
+    val startTime = System.currentTimeMillis()/1000
+
     val txTable = new Table(sql"""
       create table if not exists transaction(
         txid int(10) unsigned auto_increment not null primary key,
@@ -60,5 +62,13 @@ object MyBlockchain{
     txTable.close
     inTable.close
     outTable.close
+
+    val totalTime = System.currentTimeMillis()/1000 - startTime
+
+    println("Total time: " + totalTime)
+    println("Computational time: " + (totalTime - Table.getWriteTime))
+    println("Database time: " + Table.getWriteTime)
+
+
   }
 }

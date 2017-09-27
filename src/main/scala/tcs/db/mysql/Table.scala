@@ -11,6 +11,13 @@ import scala.collection.mutable.ListBuffer
 /**
   * Created by Livio on 11/09/2017.
   */
+
+object Table{
+  private var writeTime = 0l
+
+  def getWriteTime = writeTime
+}
+
 class Table(
              val createQuery: SQL[Nothing, NoExtractor],
              val insertQuery: SQL[Nothing, NoExtractor],
@@ -58,8 +65,11 @@ class Table(
   private def writeValues = {
     val batchTxParams: Seq[Seq[Any]] = buffer.toList
     using(ConnectionPool.borrow()) { db =>
+      val startTime = System.currentTimeMillis()/1000
       insertQuery.batch(batchTxParams: _*).apply()
+      Table.writeTime = Table.writeTime + (System.currentTimeMillis()/1000 - startTime)
     }
     buffer.clear()
   }
 }
+
