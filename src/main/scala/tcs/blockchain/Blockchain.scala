@@ -1,5 +1,5 @@
 package tcs.blockchain
 
-abstract class Blockchain {
+trait Blockchain {
 
 }

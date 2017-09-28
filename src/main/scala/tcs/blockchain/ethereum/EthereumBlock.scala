@@ -2,6 +2,8 @@ package tcs.blockchain.ethereum
 
 import org.web3j.protocol.core.methods.response.EthBlock.{Block, TransactionObject}
 
+import tcs.blockchain.{Block => TCSBLock}
+
 import scala.collection.JavaConverters._
 /**
   * Defines a block of the Etherum blockchain
@@ -54,7 +56,7 @@ case class EthereumBlock(
                           internalTransactions: List[EthereumInternalTransaction],
                           uncles: List[String],
                           sealFields: List[String]
-                   ) {
+                   ) extends TCSBLock{
   /**
     * toString override
     * @return string representation of the Ethereum block

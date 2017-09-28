@@ -3,6 +3,7 @@ package tcs.blockchain.bitcoin
 import java.util.Date
 
 import org.bitcoinj.core.{Block, Sha256Hash}
+import tcs.blockchain.Block
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -21,7 +22,7 @@ class BitcoinBlock(
                     val date: Date,
                     val blockSize: Int,
                     val height: Long,
-                    val bitcoinTxs: List[BitcoinTransaction]) {
+                    val bitcoinTxs: List[BitcoinTransaction]) extends Block{
 
 
   /**

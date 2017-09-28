@@ -12,6 +12,7 @@ import tcs.pojos.TraceBlockHttpResponse
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import tcs.blockchain.Blockchain
 
 
 /**
@@ -19,7 +20,7 @@ import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
   *
   * @param address address where parity is listening
   */
-class EthereumBlockchain(address: String) extends Traversable[EthereumBlock]{
+class EthereumBlockchain(address: String) extends Traversable[EthereumBlock] with Blockchain{
 
   private var start = 1l
   private var end = 0l

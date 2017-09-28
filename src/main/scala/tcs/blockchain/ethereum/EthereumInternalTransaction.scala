@@ -1,5 +1,7 @@
 package tcs.blockchain.ethereum
 
+import tcs.blockchain.Transaction
+
 /**
   * Defines an Ethereum Internal Transaction
   *
@@ -15,7 +17,7 @@ case class EthereumInternalTransaction(
                                 from: String,
                                 to: String,
                                 value: BigInt
-                              ){
+                              ) extends Transaction{
   override def toString(): String = {
     "parentTxHash: " + parentTxHash +
     "txType: " + txType +

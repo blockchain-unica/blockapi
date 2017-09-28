@@ -1,6 +1,7 @@
 package tcs.blockchain.ethereum
 
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
+import tcs.blockchain.Transaction
 
 /**
   * Defines an Ethereum Transaction
@@ -41,7 +42,7 @@ case class EthereumTransaction(
                           r: String,
                           s: String,
                           v: Int
-                         )
+                         ) extends Transaction
 
 /**
   * Factories for [[tcs.blockchain.ethereum.EthereumTransaction]] instances

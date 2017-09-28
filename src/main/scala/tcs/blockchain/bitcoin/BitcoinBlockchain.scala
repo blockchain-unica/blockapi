@@ -6,6 +6,7 @@ import com._37coins.bcJsonRpc.{BitcoindClientFactory, BitcoindInterface}
 import com.googlecode.jsonrpc4j.HttpException
 import org.bitcoinj.core.{Context, PeerAddress, PeerGroup, Sha256Hash}
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
+import tcs.blockchain.Blockchain
 
 import scala.collection.mutable
 
@@ -15,7 +16,7 @@ import scala.collection.mutable
   *
   * @param settings Bitcoin Core settings (e.g. network, user, password, etc.)
   */
-class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBlock] {
+class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBlock] with Blockchain {
 
   private var starBlock = 1l
   private var endBlock = 0l
