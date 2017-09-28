@@ -2,7 +2,7 @@ package tcs.blockchain.bitcoin
 
 import org.bitcoinj.core.{Sha256Hash, Transaction}
 
-import tcs.blockchain.Transaction
+import tcs.blockchain.{Transaction => TCSTransaction}
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -20,7 +20,7 @@ class BitcoinTransaction(
                           val txSize: Int,
                           val inputs: List[BitcoinInput],
                           val outputs: List[BitcoinOutput],
-                          val lock_time: Long) extends Transaction{
+                          val lock_time: Long) extends TCSTransaction{
 
 
   /**
