@@ -127,7 +127,8 @@ object MetadataParser {
       metadata.contains(Identifiers.BRACKET + Identifiers.STAMPERY_CODE2) ||
       metadata.contains(Identifiers.BRACKET + Identifiers.STAMPERY_CODE3) ||
       metadata.contains(Identifiers.BRACKET + Identifiers.STAMPERY_CODE4) ||
-      metadata.contains(Identifiers.BRACKET + Identifiers.STAMPERY_CODE5)) {
+      metadata.contains(Identifiers.BRACKET + Identifiers.STAMPERY_CODE5) ||
+      metadata.contains(Identifiers.BRACKET + Identifiers.STAMPERY_CODE6)) {
       return Protocols.STAMPERY;
     }
 
