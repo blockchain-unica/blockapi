@@ -18,6 +18,8 @@ object AddressesWithTags {
     val mySQL = new DatabaseSettings("outwithtags", MySQL, "user", "password")
     val tags = new Tag("src/main/scala/tcs/custom/bitcoin/tagsList.txt")
 
+    val startTime = System.currentTimeMillis() / 1000
+
     val outTable = new Table(
       sql"""
         create table if not exists tagsoutputs(
@@ -49,5 +51,11 @@ object AddressesWithTags {
     })
 
     outTable.close
+
+    val totalTime = System.currentTimeMillis() / 1000 - startTime
+
+    println("Total time: " + totalTime)
+    println("Computational time: " + (totalTime - Table.getWriteTime))
+    println("Database time: " + Table.getWriteTime)
   }
 }

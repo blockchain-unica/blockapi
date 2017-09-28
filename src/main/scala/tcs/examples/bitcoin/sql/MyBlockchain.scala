@@ -63,7 +63,7 @@ object MyBlockchain{
     inTable.close
     outTable.close
 
-    val totalTime = System.currentTimeMillis()/1000 - startTime
+    val totalTime = System.currentTimeMillis() / 1000 - startTime
 
     println("Total time: " + totalTime)
     println("Computational time: " + (totalTime - Table.getWriteTime))
