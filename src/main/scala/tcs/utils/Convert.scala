@@ -41,4 +41,16 @@ object Convert {
       case x: Any => Document("v" -> x.toString)
     }
   }
+
+
+  def toAscii(hex: String) = {
+    require(hex.size % 2 == 0,
+      "Hex must have an even number of characters. You had " + hex.size)
+    val sb = new StringBuilder
+    for (i <- 0 until hex.size by 2) {
+      val str = hex.substring(i, i + 2)
+      sb.append(Integer.parseInt(str, 16).toChar)
+    }
+    sb.toString
+  }
 }
