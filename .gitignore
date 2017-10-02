@@ -10,4 +10,4 @@ project/target/**/*.class
 .idea/vcs.xml
 project/target/**
 target/**
-project/src/main/scala/tcs/custom/bitcoin/metadata/test/*
+src/main/scala/tcs/custom/bitcoin/metadata/test/*
