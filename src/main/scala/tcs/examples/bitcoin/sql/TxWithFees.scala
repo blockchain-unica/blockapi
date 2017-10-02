@@ -14,7 +14,7 @@ import tcs.utils.DateConverter.convertDate
 object TxWithFees {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, true))
     val mySQL = new DatabaseSettings("fees", MySQL, "user", "password")
 
 
