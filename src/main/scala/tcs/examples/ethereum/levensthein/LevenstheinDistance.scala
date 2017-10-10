@@ -5,9 +5,6 @@ import org.mongodb.scala.model.Projections._
 import scala.math.min
 import tcs.examples.ethereum.levensthein.Helpers._
 
-/**
-  * Created by Danieru on 26/09/2017.
-  */
 object LevenstheinDistance {
   def main(args: Array[String]): Unit = {
     val mongo: MongoClient = MongoClient()
