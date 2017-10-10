@@ -15,11 +15,22 @@ object LevenstheinDistance {
     val collection: MongoCollection[Document] = db.getCollection("contractsWithCode")
 
     val documents: Seq[Document] = collection.find().results()
-    documents.map((doc: Document) => doc.toMap)
-             .map(map => (map("contractAddress").asString.getValue, map("contractCode").asString.getValue))
+    val pairDocuments: Seq[(String,String)] = documents.map((doc: Document) => doc.toMap)
+      .map(map => (map("contractAddress").asString.getValue, map("contractCode").asString.getValue))
+    var combinedDocuments: Map[(String,String), Int] = Map()
+    pairDocuments.foreach(pair1 => {
+      pairDocuments.foreach(pair2 => {
+        if(!pair1.equals(pair2)){
+          println("processing couple " + (pair1._1, pair2._1))
+          combinedDocuments += (pair1._1, pair2._1) -> levenstheinDistance(pair1._2, pair2._2)
+        }
+      })
+    })
+
+    combinedDocuments.toList.sortBy(_._2).foreach(println)
   }
 
-  private def levDistance(s1: String, s2: String): Int = {
+  private def levenstheinDistance(s1: String, s2: String): Int = {
     val dist=Array.tabulate(s2.length+1, s1.length+1){(j,i)=>if(j==0) i else if (i==0) j else 0}
 
     for(j<-1 to s2.length; i<-1 to s1.length)
