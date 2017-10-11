@@ -3,7 +3,7 @@ package tcs.blockchain.ethereum
 import java.math.BigInteger
 
 import org.web3j.protocol.Web3j
-import org.web3j.protocol.core.DefaultBlockParameterNumber
+import org.web3j.protocol.core.{DefaultBlockParameterName, DefaultBlockParameterNumber}
 import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.core.methods.response.EthBlock
 
@@ -100,6 +100,10 @@ class EthereumBlockchain(address: String) extends Traversable[EthereumBlock] wit
   def setStep(step: Int): EthereumBlockchain = {
     this.step = step
     this
+  }
+
+  def getContractCode(contractAddress: String): String = {
+    this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
 
   /**

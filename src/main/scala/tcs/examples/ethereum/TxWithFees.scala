@@ -8,9 +8,6 @@ import tcs.custom.ethereum.PriceHistorical
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
-/**
-  * Created by Danieru on 24/09/2017.
-  */
 object TxWithFees {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545").setStart(70000).setEnd(150000)
