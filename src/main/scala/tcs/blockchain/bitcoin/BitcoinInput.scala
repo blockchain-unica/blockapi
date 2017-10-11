@@ -4,6 +4,8 @@ import javax.script.ScriptException
 
 import org.bitcoinj.core._
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
+import org.bitcoinj.core.ECKey
+import org.bitcoinj.script.ScriptChunk
 
 import scala.collection.mutable
 
@@ -38,21 +40,25 @@ class BitcoinInput(
 
   /**
     * Returns the address that received the funds of this transaction
-    * input, when the information is available.
+    * input. Works only for transactions that redeem a P2PKH output
     *
     * @param network Network settings.
     * @return Either the recipient address or None.
     */
   def getAddress(network: Network): Option[Address] = {
+
+    val param = network match {
+      case MainNet => MainNetParams.get
+      case TestNet => TestNet3Params.get
+    }
+
     try {
-      if (inScript.isPayToScriptHash || inScript.isSentToAddress) {
-        network match {
-          case MainNet => Some(inScript.getToAddress(MainNetParams.get))
-          case TestNet => Some(inScript.getToAddress(TestNet3Params.get))
-        }
-      } else None
+      val chuncks = inScript.getChunks
+      val keyBytes = chuncks.get(1).data
+      val key = ECKey.fromPublicOnly(keyBytes)
+      Some(key.toAddress(param))
     } catch {
-      case _: ScriptException => None
+      case e: Exception => None
     }
   }
 
@@ -88,9 +94,9 @@ object BitcoinInput {
     * @return A new BitcoinInput.
     */
   def factory(input: TransactionInput): BitcoinInput = {
-    new BitcoinInput(if (input.getConnectedOutput != null) input.getConnectedOutput.getParentTransactionHash else null,
+    new BitcoinInput(input.getOutpoint.getHash,
       0,
-      input.getParentTransaction.getInputs.indexOf(input),
+      input.getOutpoint.getIndex.toInt,
       if (input.getConnectedOutput == null) true else false,
       try {
         new BitcoinScript(input.getScriptBytes)
@@ -132,7 +138,7 @@ object BitcoinInput {
     }
 
     // Create the new BitcoinInput
-    new BitcoinInput(if (input.getConnectedOutput != null) input.getOutpoint.getHash else null,
+    new BitcoinInput(input.getOutpoint.getHash,
       value,
       input.getOutpoint.getIndex.toInt,
       if (input.getConnectedOutput == null) true else false,

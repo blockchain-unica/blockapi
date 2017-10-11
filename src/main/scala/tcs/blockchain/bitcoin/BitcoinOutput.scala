@@ -5,7 +5,9 @@ import javax.script.ScriptException
 
 import org.bitcoinj.core.{Address, Sha256Hash, TransactionOutput}
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
-
+import org.bitcoinj.script.Script
+import org.bitcoinj.core.ECKey
+import tcs.blockchain.bitcoin.Network
 import scala.collection.mutable
 
 /**
@@ -13,12 +15,14 @@ import scala.collection.mutable
   *
   * @param value Output value (in Satoshy).
   * @param index Index of the output (w.r.t. the transaction containing this output).
-  * @param outScript Output script.
+  * @param transOut Output script.
   */
 class BitcoinOutput(
                      val index: Int,
                      val value: Long,
-                     val outScript: BitcoinScript) {
+                     val transOut: TransactionOutput) {
+
+  val outScript = transOut.getScriptPubKey
 
 
   /**
@@ -27,7 +31,7 @@ class BitcoinOutput(
     * @return String representation of a BitcoinOutput.
     */
   override def toString(): String =
-    index + " " + value + " " + outScript
+    index + " " + value + " " + transOut
 
 
   /**
@@ -35,7 +39,7 @@ class BitcoinOutput(
     *
     * @return True when OP_RETURN is used.
     */
-  def isOpreturn(): Boolean = outScript.isOpReturn
+  def isOpreturn(): Boolean = new Script(transOut.getOutPointFor.getConnectedPubKeyScript).isOpReturn
 
 
   /**
@@ -45,14 +49,14 @@ class BitcoinOutput(
     */
   def getMetadata(): String =
     if (!isOpreturn) null else {
-      var v1: Integer = outScript.toString.indexOf("[");
-      var v2: Integer = outScript.toString.indexOf("]");
+      var v1: Integer = transOut.toString.indexOf("[");
+      var v2: Integer = transOut.toString.indexOf("]");
       if ((v1 == -1) || (v2 == -1)) {
         //TODO decide when it should return an empty string
-        return outScript.toString
+        return transOut.toString
       }
       else
-        return outScript.toString.substring(v1 + 1, v2)
+        return transOut.toString.substring(v1 + 1, v2)
     }
 
 
@@ -64,13 +68,26 @@ class BitcoinOutput(
     * @return Either the recipient address or None.
     */
   def getAddress(network: Network): Option[Address] = {
+
+
+
+    val param = network match {
+      case MainNet => MainNetParams.get
+      case TestNet => TestNet3Params.get
+    }
+
     try {
-      if (outScript.isPayToScriptHash || outScript.isSentToAddress) {
-        network match {
-          case MainNet => Some(outScript.getToAddress(MainNetParams.get))
-          case TestNet => Some(outScript.getToAddress(TestNet3Params.get))
-        }
-      } else None
+
+      if (transOut.getScriptPubKey.getScriptType eq Script.ScriptType.P2PKH)
+        Some(transOut.getAddressFromP2PKHScript(param))
+
+      else if (transOut.getScriptPubKey.getScriptType eq Script.ScriptType.PUB_KEY) {
+        val key = ECKey.fromPublicOnly(transOut.getScriptPubKey.getPubKey)
+        Some(key.toAddress(param))
+      }
+
+      else None
+
     } catch {
       case _: ScriptException => None
     }
@@ -93,11 +110,10 @@ object BitcoinOutput {
   def factory(output: TransactionOutput): BitcoinOutput = {
     new BitcoinOutput(output.getIndex,
       output.getValue.longValue(),
-
       try {
-        new BitcoinScript(output.getScriptBytes)
+        output.getOutPointFor.getConnectedOutput
       } catch {
-        case e: Exception => new BitcoinScript(Array())
+        case e: Exception => null
       })
   }
 
@@ -118,10 +134,10 @@ object BitcoinOutput {
 
     new BitcoinOutput(output.getIndex,
       output.getValue.longValue(),
-      try {
-        new BitcoinScript(output.getScriptBytes)
-      } catch {
-        case e: Exception => new BitcoinScript(Array())
+    try {
+      output.getOutPointFor.getConnectedOutput
+    } catch {
+        case e: Exception => null
       })
   }
 }

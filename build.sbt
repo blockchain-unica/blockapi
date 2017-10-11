@@ -10,7 +10,7 @@ libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" 
 libraryDependencies += "com.github.briandilley.jsonrpc4j" % "jsonrpc4j" % "1.1"
 
 // https://mvnrepository.com/artifact/org.bitcoinj/bitcoinj-core
-libraryDependencies += "org.bitcoinj" % "bitcoinj-core" % "0.14.4"
+libraryDependencies += "org.bitcoinj" % "bitcoinj-core" % "0.14.5"
 
 // https://mvnrepository.com/artifact/com.github.briandilley.jsonrpc4j/jsonrpc4j
 libraryDependencies += "com.github.briandilley.jsonrpc4j" % "jsonrpc4j" % "1.1"

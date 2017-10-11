@@ -34,7 +34,7 @@ object TxWithFees {
       mySQL)
 
 
-    blockchain.end(473100).foreach(block => {
+    blockchain.foreach(block => {
 
       if (block.height % 10000 == 0) println("Block: " + block.height)
 
