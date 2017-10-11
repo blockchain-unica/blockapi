@@ -38,7 +38,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
   Context.getOrCreate(networkParameters)
 
-  val addr = new PeerAddress(InetAddress.getLocalHost, networkParameters.getPort)
+  val addr = new PeerAddress(networkParameters, InetAddress.getLocalHost)
 
   // Connects to Peer group
   val peerGroup = new PeerGroup(networkParameters)
