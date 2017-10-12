@@ -45,6 +45,16 @@ class Collection(val name: String, val settings: DatabaseSettings) {
   def close = {
     mongoClient.close()
   }
+
+  def append(x : Document) = collection.insertOne(x).subscribe(new Observer[Completed] {
+
+    override def onNext(result: Completed): Unit = {}
+
+    override def onError(e: Throwable): Unit = {}
+
+    override def onComplete(): Unit = {}
+
+  })
 }
 
 

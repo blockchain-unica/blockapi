@@ -39,7 +39,7 @@ object OpReturnOutputs {
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
           if (out.isOpreturn()) {
-            var protocol: String = MetadataParser.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.outScript.toString)
+            var protocol: String = MetadataParser.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.transOut.toString)
             var metadata: String = out.getMetadata()
             outputTable.insert(Seq(tx.hash.toString, convertDate(block.date), protocol, metadata))
           }
