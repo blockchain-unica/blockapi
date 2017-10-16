@@ -1,5 +1,5 @@
 # Blockchain analytics API
-A Scala framework for the development of general-purpose analytics on blockchains, by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu), [Stefano Lande](http://tcs.unica.it/members/stefano-lande), and [Stefano Ferru](https://github.com/ferruvich).
+A Scala framework for the development of general-purpose analytics on blockchains, by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu), [Stefano Lande](http://tcs.unica.it/members/stefano-lande), and [Daniele Stefano Ferru](https://github.com/ferruvich).
 
 Our framework allows to combine data *within* the blockchain 
 with data from the *outside* (e.g. exchange rates and tags). 
