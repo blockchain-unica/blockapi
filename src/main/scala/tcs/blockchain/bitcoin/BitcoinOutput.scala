@@ -22,7 +22,13 @@ class BitcoinOutput(
                      val value: Long,
                      val transOut: TransactionOutput) {
 
-  val outScript = transOut.getScriptPubKey
+  def outScript = {
+    try{
+      transOut.getScriptPubKey
+    } catch {
+      case _ => new Script(new Array[Byte](0))
+    }
+  }
 
 
   /**
@@ -89,7 +95,7 @@ class BitcoinOutput(
       else None
 
     } catch {
-      case _: ScriptException => None
+      case _ => None
     }
   }
 }
