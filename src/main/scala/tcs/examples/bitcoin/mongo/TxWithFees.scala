@@ -5,6 +5,7 @@ import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.custom.bitcoin.Exchange
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
+import tcs.utils.DateConverter
 
 /**
   * Created by Livio on 16/06/2017.
@@ -17,7 +18,10 @@ object TxWithFees {
 
     val txWithFees = new Collection("txWithFees", mongo)
 
-    blockchain.foreach(block => {
+    blockchain.end(473100).foreach(block => {
+
+      if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
+
       block.bitcoinTxs.foreach(tx => {
         txWithFees.append(List(
           ("blockHash", block.hash),

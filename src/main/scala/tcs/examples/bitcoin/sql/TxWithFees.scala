@@ -6,6 +6,7 @@ import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.custom.bitcoin.Exchange
 import tcs.db.{DatabaseSettings, MySQL}
 import tcs.db.mysql.Table
+import tcs.utils.DateConverter
 import tcs.utils.DateConverter.convertDate
 
 /**
@@ -36,7 +37,7 @@ object TxWithFees {
 
     blockchain.foreach(block => {
 
-      if (block.height % 10000 == 0) println("Block: " + block.height)
+      if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
       block.bitcoinTxs.foreach(tx => {
         txTable.insert(Seq(

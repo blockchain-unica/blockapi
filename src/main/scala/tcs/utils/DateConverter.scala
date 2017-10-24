@@ -11,4 +11,7 @@ object DateConverter {
     var formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     return formatter.format(date)
   }
+
+  def formatTimestamp(ms: Long) : String = "[" + new SimpleDateFormat("HH:mm:ss").format(ms) + "]"
+
 }

@@ -57,6 +57,9 @@ object MyBlockchain{
 
         tx.outputs.foreach(out => { outTable.insert(Seq(tx.hash.toString, out.outScript.toString)) })
       })
+
+      if (block.height % 10000 == 0)
+        println(block.height)
     })
 
     txTable.close

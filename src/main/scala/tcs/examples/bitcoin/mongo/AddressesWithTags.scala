@@ -19,6 +19,11 @@ object AddressesWithTags {
     val tags = new Tag("src/main/scala/tcs/custom/bitcoin/tagsList.txt")
 
     blockchain.foreach(block => {
+
+      if(block.height % 10000 == 0){
+        println(block.height)
+      }
+
       block.bitcoinTxs.foreach(tx => {
         tx.outputs.foreach(out => {
           out.getAddress(MainNet) match {

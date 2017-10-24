@@ -48,6 +48,10 @@ object AddressesWithTags {
           }
         })
       })
+
+      if(block.height % 10000 == 0){
+       println(block.height)
+      }
     })
 
     outTable.close
