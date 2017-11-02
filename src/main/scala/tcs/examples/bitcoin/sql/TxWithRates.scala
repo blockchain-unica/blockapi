@@ -15,22 +15,22 @@ import tcs.utils.DateConverter.convertDate
 object TxWithRates {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, true))
-    val mySQL = new DatabaseSettings("fees", MySQL, "user", "password")
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+    val mySQL = new DatabaseSettings("rates", MySQL, "user", "password")
 
 
     val startTime = System.currentTimeMillis() / 1000
 
     val txTable = new Table(
       sql"""
-      create table if not exists txfees(
+      create table if not exists txrates(
         id serial not null primary key,
         txHash varchar(256) not null,
         txdate TIMESTAMP not null,
         outputsum bigint,
         rate float
     )""",
-      sql"""insert into txfees (txHash, txdate, outputsum, rate) values(?,?,?,?)""",
+      sql"""insert into txrates (txHash, txdate, outputsum, rate) values(?,?,?,?)""",
       mySQL)
 
 
