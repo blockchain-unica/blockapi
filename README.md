@@ -30,6 +30,17 @@ Generally speaking the framework needs at least one blockchain client and one DB
     * use an IDE for executing a Scala SBT project (we used [IntelliJ IDEA](https://www.jetbrains.com/idea/)) or
     * use the command line in place of an IDE (Install [SBT](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html))
 
+To build the project, execute the following commands:
+
+```bash
+git clone https://github.com/bitcoinj/bitcoinj.git
+cd bitcoinj
+git checkout segwit
+mvn install -DskipTests
+cd core
+mvn install -DskipTests
+```
+
 ### Install blockchain analytics API
 1. Execute the blockchain client in order to obtain a local copy of the target blockchain (this process may take several hours)
 2. Enable the client RPC calls.
