@@ -1,8 +1,0 @@
-To build the project, execute the following commands:
-
-git clone https://github.com/bitcoinj/bitcoinj.git
-cd bitcoinj
-git checkout segwit
-mvn install -DskipTests
-cd core
-mvn install -DskipTests
