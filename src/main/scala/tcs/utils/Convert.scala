@@ -13,7 +13,6 @@ object Convert {
   def convertPair(e: (String, Any)): Document = {
     e._2 match {
 
-      case x: List[(String, Any)] =>  Document(e._1 -> x.map(i => Seq(convert(i))).reduce(_ ++ _))
       case x: Boolean => Document(e._1 -> x)
       case x: Int => Document(e._1 -> x)
       case x: Long => Document(e._1 -> x)
