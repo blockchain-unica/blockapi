@@ -3,7 +3,7 @@ package tcs.mongo
 import org.mongodb.scala.bson._
 import org.mongodb.scala.{Completed, MongoClient, Observer}
 import tcs.db.DatabaseSettings
-import tcs.utils.Convert
+import tcs.utils.BsonConverter
 
 /**
   * Created by stefano on 13/06/17.
@@ -28,7 +28,7 @@ class Collection(val name: String, val settings: DatabaseSettings) {
         case l: List[Any] => (a._1, if (l.isEmpty) "Empty List" else l)
         case _ => (a._1, a._2)
       }
-    }).map(Convert.convertPair).reduce(_ ++ _)
+    }).map(BsonConverter.convertPair).reduce(_ ++ _)
     collection.insertOne(doc).subscribe(new Observer[Completed] {
 
       override def onNext(result: Completed): Unit = {}

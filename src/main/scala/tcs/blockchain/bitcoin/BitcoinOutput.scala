@@ -1,13 +1,9 @@
 package tcs.blockchain.bitcoin
 
-
-import javax.script.ScriptException
-
-import org.bitcoinj.core.{Address, Sha256Hash, TransactionOutput}
+import org.bitcoinj.core.{Address, ECKey, Sha256Hash, TransactionOutput}
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 import org.bitcoinj.script.Script
-import org.bitcoinj.core.ECKey
-import tcs.blockchain.bitcoin.Network
+
 import scala.collection.mutable
 
 /**
@@ -26,7 +22,7 @@ class BitcoinOutput(
     try{
       transOut.getScriptPubKey
     } catch {
-      case _ => new Script(new Array[Byte](0))
+      case _: Throwable => new Script(new Array[Byte](0))
     }
   }
 
@@ -95,7 +91,7 @@ class BitcoinOutput(
       else None
 
     } catch {
-      case _ => None
+      case _: Throwable => None
     }
   }
 }
