@@ -24,7 +24,7 @@ class EthereumBlockchain(address: String) extends Traversable[EthereumBlock] wit
 
   private var start = 1l
   private var end = 0l
-  private var step = 1l
+  private var step = 1
 
   //Creating Web3J object connected with Parity
   val web3j = Web3j.build(new HttpService(address))
@@ -131,6 +131,7 @@ class EthereumBlockchain(address: String) extends Traversable[EthereumBlock] wit
           if(blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0){
             internalTxs::=EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
           }
+        case _ =>
       }
     })
     EthereumBlock.factory(currBlock, internalTxs)

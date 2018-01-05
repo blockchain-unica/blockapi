@@ -11,7 +11,7 @@ libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
 libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.1"
 libraryDependencies += "com.github.briandilley.jsonrpc4j" % "jsonrpc4j" % "1.1"
 
-libraryDependencies += "org.bitcoinj" %  "bitcoinj-core" % "0.15-SNAPSHOT"
+libraryDependencies += "org.bitcoinj" % "bitcoinj-core" % "0.14.5"
 
 // https://mvnrepository.com/artifact/com.github.briandilley.jsonrpc4j/jsonrpc4j
 libraryDependencies += "com.github.briandilley.jsonrpc4j" % "jsonrpc4j" % "1.1"
