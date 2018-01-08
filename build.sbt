@@ -6,6 +6,8 @@ scalaVersion := "2.12.1"
 
 resolvers += Resolver.mavenLocal
 
+libraryDependencies += "net.ruippeixotog" %% "scala-scraper" % "2.0.0"
+
 libraryDependencies += "org.web3j" % "core" % "2.3.0"
 libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
 libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.1"
