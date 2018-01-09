@@ -7,9 +7,9 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 
 object Exchanges {
   private var exchangesList : List[Exchange] = List[Exchange]()
+  private val browser = JsoupBrowser()
 
   private def extractExchanges: Unit = {
-    val browser = JsoupBrowser()
     val exchangesDoc = browser.get("https://www.walletexplorer.com/") >> elementList(".serviceslist td")
     val exchangesListHtml =
       exchangesDoc.filter((element) => (element >> allText("h3")).contains("Exchanges")).head >>
@@ -23,5 +23,6 @@ object Exchanges {
     if(exchangesList.isEmpty){
       extractExchanges
     }
+    val addressDoc = browser.get("https://www.walletexplorer.com/address/" + walletAddress)
   }
 }
