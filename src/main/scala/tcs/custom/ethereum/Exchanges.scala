@@ -16,13 +16,13 @@ object Exchanges {
         elementList("ul li")
     val exchangesNames = exchangesListHtml.map((element) => element >> allText("li a"))
     exchangesList = exchangesNames.map((exchange) => new Exchange(exchange))
-    println(exchangesList)
   }
 
   def getExchange(walletAddress: String): Unit = {
     if(exchangesList.isEmpty){
       extractExchanges
     }
-    val addressDoc = browser.get("https://www.walletexplorer.com/address/" + walletAddress)
+    val addressDoc = browser.get("https://www.walletexplorer.com/address/" + walletAddress) >> elementList(".walletnote")
+    println(addressDoc)
   }
 }

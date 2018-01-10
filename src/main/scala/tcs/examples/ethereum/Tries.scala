@@ -4,6 +4,6 @@ import tcs.custom.ethereum.Exchanges
 
 object Tries {
   def main(args: Array[String]): Unit = {
-    Exchanges.getExchange("miao")
+    Exchanges.getExchange("1N52wHoVR79PMDishab2XmRHsbekCdGquK")
   }
 }
