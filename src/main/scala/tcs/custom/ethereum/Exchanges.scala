@@ -18,11 +18,12 @@ object Exchanges {
     exchangesList = exchangesNames.map((exchange) => new Exchange(exchange))
   }
 
-  def getExchange(walletAddress: String): Unit = {
+  def getExchange(walletAddress: String): String = {
     if(exchangesList.isEmpty){
       extractExchanges
     }
-    val addressDoc = browser.get("https://www.walletexplorer.com/address/" + walletAddress) >> elementList(".walletnote")
-    println(addressDoc)
+    val walletExchangeDoc = browser.get("https://www.walletexplorer.com/address/" + walletAddress) >> elementList(".walletnote")
+    val exchangeLink = walletExchangeDoc >> allText("a")
+    exchangeLink.head
   }
 }
