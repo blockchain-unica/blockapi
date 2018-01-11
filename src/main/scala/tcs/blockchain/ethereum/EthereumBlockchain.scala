@@ -18,16 +18,16 @@ import tcs.blockchain.Blockchain
 /**
   * Defines an Ethereum blockchain given the parity web address
   *
-  * @param address address where parity is listening
+  * @param url address where parity is listening
   */
-class EthereumBlockchain(address: String) extends Traversable[EthereumBlock] with Blockchain{
+class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Blockchain{
 
   private var start = 1l
   private var end = 0l
   private var step = 1
 
   //Creating Web3J object connected with Parity
-  val web3j = Web3j.build(new HttpService(address))
+  val web3j = Web3j.build(new HttpService(url))
 
   /**
     * Executes the given task for each block in blockchain
@@ -113,6 +113,8 @@ class EthereumBlockchain(address: String) extends Traversable[EthereumBlock] wit
     */
   private def getEthereumBlock(currBlock: EthBlock.Block): EthereumBlock = {
     val resultBlockTraceJSON = getResultBlockTrace(currBlock.getNumberRaw)
+    if (resultBlockTraceJSON.code.toString.startsWith("40"))
+     return EthereumBlock.factory(currBlock, List())
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -142,8 +144,8 @@ class EthereumBlockchain(address: String) extends Traversable[EthereumBlock] wit
     * @param blockNumber block height
     * @return block trace
     */
-  private def getResultBlockTrace(blockNumber: String): HttpResponse[String] ={
-    Http(this.address).postData("{\"method\":\"trace_block\",\"params\":[\"" + blockNumber + "\"],\"id\":1,\"jsonrpc\":\"2.0\"}")
+  private def getResultBlockTrace(blockNumber: String): HttpResponse[String] = {
+    Http(this.url).postData("{\"method\":\"trace_block\",\"params\":[\"" + blockNumber + "\"],\"id\":1,\"jsonrpc\":\"2.0\"}")
       .header("Content-Type","application/json").asString
   }
 }
