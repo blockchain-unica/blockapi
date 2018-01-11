@@ -22,12 +22,12 @@ import tcs.blockchain.Blockchain
   */
 class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Blockchain{
 
-  private var start = 1l
-  private var end = 0l
-  private var step = 1
+  private var start: Long = 1l
+  private var end: Long = 0l
+  private var step: Long = 1l
 
   //Creating Web3J object connected with Parity
-  val web3j = Web3j.build(new HttpService(url))
+  private val web3j = Web3j.build(new HttpService(url))
 
   /**
     * Executes the given task for each block in blockchain
@@ -39,7 +39,7 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
     var height = start
     var endBlock = 0l
 
-    if(this.end == 0){
+    if(this.end == 0l){
       endBlock = web3j.ethBlockNumber().send().getBlockNumber.longValue()
     }else{
       endBlock = this.end
