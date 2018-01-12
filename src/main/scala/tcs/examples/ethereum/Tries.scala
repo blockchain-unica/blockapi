@@ -1,12 +1,17 @@
 package tcs.examples.ethereum
 
-import org.web3j.protocol.Web3j
-import tcs.blockchain.ethereum.EthereumBlockchain
-import tcs.custom.bitcoin.Exchanges
+import tcs.custom.ethereum.ICO
 
 
 object Tries {
   def main(args: Array[String]): Unit = {
-    println(Exchanges.getWallets("Bittrex.com", 10012))
+    val gameFlip = new ICO("GameFlip")
+    val neuromation = new ICO("Neuromation")
+    println(gameFlip.getHypeScore())
+    println(neuromation.getInvestmentRating())
+    println(gameFlip.getRiskScore())
+    println(neuromation.getHypeScore())
+    println(gameFlip.getInvestmentRating())
+    println(neuromation.getRiskScore())
   }
 }
