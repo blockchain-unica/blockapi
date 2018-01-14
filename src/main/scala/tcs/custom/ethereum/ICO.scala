@@ -14,11 +14,17 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 
 
 class ICO(
-         name: String
+         private var name: String
          ) {
+
+  private var contractAddress: String = _
+  private var hypeScore: Float = -1
+  private var riskScore: Float = -1
+  private var investmentRating: String = _
+
   private var browser: JsoupDocument = _
 
-  val trustAllCerts: Array[TrustManager] = Array[TrustManager](
+  private val trustAllCerts: Array[TrustManager] = Array[TrustManager](
     new X509TrustManager() {
       def getAcceptedIssuers: Array[X509Certificate] = null
 
@@ -26,10 +32,50 @@ class ICO(
       def checkServerTrusted(certs: Array[X509Certificate], authType: String): Unit = {}
   })
 
-  private def initializeBrowser(): Unit = {
-    if(browser == null){
-      browser = new JsoupBrowser().get("https://icorating.com/ico/" + this.name.replace(" ", "-").toLowerCase)
+  def getName: String = {
+    this.name
+  }
+
+  def getContractAddress: String = {
+    if(this.contractAddress == null){
+      initializeBrowser("http://etherscan.io/searchHandler?term=" + this.name.toLowerCase)
     }
+    this.contractAddress
+  }
+
+  def getHypeScore: Any = {
+    if(this.hypeScore == -1){
+      val score = getScore("Hype")
+      var scoreString = score.asInstanceOf[String]
+      scoreString = scoreString.substring(0, scoreString.indexOf("/"))
+      val scoreFloat = Option[Float](scoreString.toFloat)
+      if(scoreFloat.isEmpty){
+        score
+      }
+      this.hypeScore = scoreFloat.get
+    }
+    this.hypeScore
+  }
+
+  def getInvestmentRating: Any = {
+    if(this.investmentRating == null){
+      this.investmentRating = getScore("Investment").asInstanceOf[String]
+    }
+    this.investmentRating
+  }
+
+  def getRiskScore: Any = {
+    if(this.riskScore == -1){
+      val score = getScore("Risk")
+      var scoreString = score.asInstanceOf[String]
+      scoreString = scoreString.substring(0, scoreString.indexOf("/"))
+      val scoreFloat = Option[Float](scoreString.toFloat)
+      if(scoreFloat.isEmpty){
+        score
+      }
+      this.riskScore = scoreFloat.get
+    }
+    this.riskScore
   }
 
   private def getScore(scoreType: String): Any = {
@@ -37,16 +83,16 @@ class ICO(
       val sc = SSLContext.getInstance("SSL")
       sc.init(null, trustAllCerts, new SecureRandom)
       HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
-      initializeBrowser()
-      val scorePart = browser >> elementList("div .white-block-area div div")
-      val hypeDoc = scorePart.filter(element => {
+      initializeBrowser("https://icorating.com/ico/" + this.name.replace(" ", "-").toLowerCase)
+      val scoreParts = this.browser >> elementList("div .white-block-area div div")
+      val scoreDoc = scoreParts.filter(element => {
         (element >> allText(".title")).contains(scoreType)
       }).head
-      var hypeScore = hypeDoc >> allText(".score")
-      if (hypeScore.isEmpty) {
-        hypeScore = hypeDoc >> allText(".name")
+      var score = scoreDoc >> allText(".score")
+      if (score.isEmpty) {
+        score = scoreDoc >> allText(".name")
       }
-      hypeScore
+      score
     } catch {
       case e: Exception =>
         System.out.println(e)
@@ -54,15 +100,13 @@ class ICO(
     }
   }
 
-  def getHypeScore(): Any = {
-    getScore("Hype")
-  }
-
-  def getInvestmentRating(): Any = {
-    getScore("Investment")
-  }
-
-  def getRiskScore(): Any = {
-    getScore("Risk")
+  private def initializeBrowser(page: String): Unit = {
+    if(!(this.browser == null)){
+      if(!this.browser.underlying.baseUri.equals(page)){
+        this.browser = new JsoupBrowser("Mozilla/5.0 (X11; U; Linux i686 (x86_64); en-US) AppleWebKit/531.0 (KHTML, like Gecko) Chrome/3.0.183.1 Safari/531.0").get(page)
+      }
+    } else {
+      this.browser = new JsoupBrowser().get(page)
+    }
   }
 }
