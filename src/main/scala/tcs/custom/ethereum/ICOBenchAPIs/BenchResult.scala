@@ -4,5 +4,5 @@ case class BenchResult(
                       icos: Int,
                       pages: Int,
                       currentPage: Int,
-                      results: Array[ICOResult]
+                      results: Array[ICOShortResult]
                       )

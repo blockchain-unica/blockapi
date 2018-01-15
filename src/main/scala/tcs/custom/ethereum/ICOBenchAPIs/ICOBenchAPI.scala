@@ -9,12 +9,12 @@ import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.google.common.io.BaseEncoding
 
 import scala.collection.mutable
-import scalaj.http.Http
+import scalaj.http.{Http, HttpRequest}
 
 
 object ICOBenchAPI {
-  private val privateKey	= "privateKey"
-  private val publicKey	= "publicKey"
+  private val privateKey	= "private-key"
+  private val publicKey	= "public-key"
   private val apiUrl		= "https://icobench.com/api/v1/"
 
   private val fixedHeaders: mutable.Map[String, String] = mutable.Map(
@@ -23,18 +23,31 @@ object ICOBenchAPI {
   )
 
 
-  def getAllICOs(icoID: String = "all", data: Map[String, Any] = Map()): BenchResult = {
-    val url = String.join("/", this.apiUrl, "icos", icoID)
+  def getAllICOs(data: Map[String, Any] = Map()): BenchResult = {
+    val url = String.join("/", this.apiUrl, "icos/all")
+    val jsonData = toJSONString(data)
+    val httpRequest = send(url, jsonData)
 
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    val jsonData = mapper.writeValueAsString(data)
-    send(url, jsonData)
+    val benchResult = mapper.readValue[BenchResult](httpRequest.asString.body)
+    benchResult
   }
 
+  def getIco(icoID: Int, data: Map[String, Any] = Map()): ICOVerboseResult = {
+    val url = String.join("/", this.apiUrl, "ico", icoID.toString)
+    val jsonData = toJSONString(data)
+    val httpRequest = send(url, jsonData)
 
-  private def send(url: String, data: String): BenchResult = {
+    val mapper = new ObjectMapper() with ScalaObjectMapper
+    mapper.registerModule(DefaultScalaModule)
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    val benchResult = mapper.readValue[ICOVerboseResult](httpRequest.asString.body)
+    benchResult
+  }
+
+  private def send(url: String, data: String): HttpRequest = {
     val secret = new SecretKeySpec(this.privateKey.getBytes, "SHA384")
     val mac = Mac.getInstance("HmacSHA384")
     mac.init(secret)
@@ -46,12 +59,13 @@ object ICOBenchAPI {
       "X-ICObench-Sig" -> sig
     )
 
-    val result = Http(url).headers(currentHeaders.toMap).postData(data)
+    Http(url).headers(currentHeaders.toMap).postData(data)
+  }
 
+  private def toJSONString(data: Map[String, Any]): String = {
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    val benchResult = mapper.readValue[BenchResult](result.asString.body)
-    benchResult
+    mapper.writeValueAsString(data)
   }
 }
