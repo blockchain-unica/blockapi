@@ -12,10 +12,9 @@ import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 
-
 class ICO(private val name: String){
 
-  private val contractAddress: String = _
+  private var contractAddress: String = _
   private var hypeScore: Float = -1
   private var riskScore: Float = -1
   private var investmentRating: String = _
@@ -36,7 +35,7 @@ class ICO(private val name: String){
 
   def getContractAddress: String = {
     if(this.contractAddress == null){
-      initializeBrowser("http://etherscan.io/searchHandler?term=" + this.name.toLowerCase)
+      //ICOBenchAPI.getICO()
     }
     this.contractAddress
   }
