@@ -30,7 +30,6 @@ object ICOBenchAPI {
     mapper.registerModule(DefaultScalaModule)
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     val jsonData = mapper.writeValueAsString(data)
-
     send(url, jsonData)
   }
 
