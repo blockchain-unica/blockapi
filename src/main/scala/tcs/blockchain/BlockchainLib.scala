@@ -1,5 +1,6 @@
 package tcs.blockchain
 
+import org.web3j.protocol.http.HttpService
 import tcs.blockchain.ethereum.EthereumBlockchain
 import tcs.blockchain.bitcoin.{BitcoinBlockchain, BitcoinSettings}
 
@@ -17,10 +18,10 @@ object BlockchainLib {
 
   /**
     * Creates an Ethereum blockchain given the parity web address
-    * @param addr address where parity is listening
+    * @param url address where parity is listening
     * @return an Ethereum blockchain instance
     */
-  def getEthereumBlockchain(addr: String): EthereumBlockchain = {
-    new EthereumBlockchain(addr)
+  def getEthereumBlockchain(url: String): EthereumBlockchain = {
+    new EthereumBlockchain(url)
   }
 }
