@@ -8,7 +8,8 @@ import tcs.db.DatabaseSettings
 
 object MyBlockchain {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545").setStart(70000).setEnd(120000)
+    val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
+      .setStart(70000).setEnd(120000)
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
     val myBlockchain = new Collection("myBlockchain", mongo)

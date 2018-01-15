@@ -81,11 +81,16 @@ object EthereumBlock{
     * @return new EtherumBlock
     */
   def factory(block: Block, internalTransactions: List[EthereumInternalTransaction]): EthereumBlock = {
-    var transactions: List[EthereumTransaction] = block.getTransactions.asScala.toList.map((tx) => EthereumTransaction.factory(tx.asInstanceOf[TransactionObject]))
+    val transactions: List[EthereumTransaction] =
+      block.getTransactions.asScala.toList.map((tx) => EthereumTransaction.factory(tx.asInstanceOf[TransactionObject]))
+    var sealFields = block.getSealFields
+    if(sealFields == null){
+      sealFields = List().asJava
+    }
     new EthereumBlock(block.getNumber, block.getHash, block.getParentHash, block.getNonce, block.getSha3Uncles,
                       block.getLogsBloom, block.getTransactionsRoot, block.getStateRoot, block.getReceiptsRoot,
                       block.getAuthor, block.getMiner, block.getMixHash, block.getDifficulty, block.getTotalDifficulty,
-                      block.getExtraData, block.getSize, block.getGasLimit, block.getGasUsed, block.getTimestamp, transactions,
-                      internalTransactions, block.getUncles.asScala.toList, block.getSealFields.asScala.toList)
+                      block.getExtraData, block.getSize, block.getGasLimit, block.getGasUsed, block.getTimestamp,
+                      transactions, internalTransactions, block.getUncles.asScala.toList, sealFields.asScala.toList)
   }
 }

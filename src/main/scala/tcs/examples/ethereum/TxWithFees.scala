@@ -3,6 +3,7 @@ package tcs.examples.ethereum
 import java.text.SimpleDateFormat
 import java.util.Date
 
+import org.web3j.protocol.http.HttpService
 import tcs.blockchain.BlockchainLib
 import tcs.custom.ethereum.PriceHistorical
 import tcs.db.DatabaseSettings
@@ -10,7 +11,8 @@ import tcs.mongo.Collection
 
 object TxWithFees {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545").setStart(70000).setEnd(150000)
+    val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
+      .setStart(70000).setEnd(150000)
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
     val txWithFees = new Collection("txWithFees", mongo)
