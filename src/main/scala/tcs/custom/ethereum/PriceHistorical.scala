@@ -18,7 +18,7 @@ import scala.io.Source
   */
 object PriceHistorical {
 
-  private var marketCap: List[MarketCap] = null
+  private var marketCap: List[MarketCap] = _
 
   def getPriceHistorical(): CoinMarketPrices = {
     val url = new URL("https://graphs.coinmarketcap.com/currencies/ethereum/")
