@@ -13,11 +13,9 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 
 
-class ICO(
-         private var name: String
-         ) {
+class ICO(private val name: String){
 
-  private var contractAddress: String = _
+  private val contractAddress: String = _
   private var hypeScore: Float = -1
   private var riskScore: Float = -1
   private var investmentRating: String = _
