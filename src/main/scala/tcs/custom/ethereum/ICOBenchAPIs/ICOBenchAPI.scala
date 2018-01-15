@@ -13,8 +13,8 @@ import scalaj.http.Http
 
 
 object ICOBenchAPI {
-  private val privateKey	= "f054358a-5e1b-4503-90db-ba0f6a457c60"
-  private val publicKey	= "23773421-a69e-446f-8207-25f375467020"
+  private val privateKey	= "privateKey"
+  private val publicKey	= "publicKey"
   private val apiUrl		= "https://icobench.com/api/v1/"
 
   private val fixedHeaders: mutable.Map[String, String] = mutable.Map(
