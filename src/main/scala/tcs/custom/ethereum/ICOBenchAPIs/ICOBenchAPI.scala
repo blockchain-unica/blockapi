@@ -23,17 +23,17 @@ object ICOBenchAPI {
   )
 
 
-  def getAllICOs(data: Map[String, Any] = Map()): BenchResult = {
+  def getAllICOs(data: Map[String, Any] = Map()): ICOBenchResult = {
     val url = String.join("/", this.apiUrl, "icos/all")
     val jsonData = toJSONString(data)
     val httpRequest = send(url, jsonData)
 
     val mapper = getMapper
-    val benchResult = mapper.readValue[BenchResult](httpRequest.asString.body)
-    benchResult
+    val result = mapper.readValue[ICOBenchResult](httpRequest.asString.body)
+    result
   }
 
-  def getIco(icoID: Int, data: Map[String, Any] = Map()): ICOVerboseResult = {
+  def getICO(icoID: Int, data: Map[String, Any] = Map()): ICOVerboseResult = {
     val url = String.join("/", this.apiUrl, "ico", icoID.toString)
     val jsonData = toJSONString(data)
     val httpRequest = send(url, jsonData)
@@ -43,12 +43,22 @@ object ICOBenchAPI {
     result
   }
 
+  def getAllICORatings(data: Map[String, Any] = Map()): ICOBenchResult = {
+    val url = String.join("/", this.apiUrl, "icos/ratings")
+    val jsonData = toJSONString(data)
+    val httpRequest = send(url, jsonData)
+
+    val mapper = getMapper
+    val result = mapper.readValue[ICOBenchResult](httpRequest.asString.body)
+    result
+  }
+
   def getTrending: Array[ICOShortResult] = {
     val url = String.join("/", this.apiUrl, "icos", "trending")
     val httpRequest = send(url, "{}")
 
     val mapper = getMapper
-    val result = mapper.readValue[BenchResult](httpRequest.asString.body)
+    val result = mapper.readValue[ICOBenchResult](httpRequest.asString.body)
     result.results
   }
 
@@ -58,6 +68,15 @@ object ICOBenchAPI {
 
     val mapper = getMapper
     val result = mapper.readValue[ICOFiltersResult](httpRequest.asString.body)
+    result
+  }
+
+  def getStats: ICOStatsResult = {
+    val url = String.join("/", this.apiUrl, "other", "stats")
+    val httpRequest = send(url, "{}")
+
+    val mapper = getMapper
+    val result = mapper.readValue[ICOStatsResult](httpRequest.asString.body)
     result
   }
 

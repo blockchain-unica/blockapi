@@ -1,6 +1,6 @@
 package tcs.custom.ethereum.ICOBenchAPIs
 
-case class BenchResult(
+case class ICOBenchResult(
                       icos: Int,
                       pages: Int,
                       currentPage: Int,

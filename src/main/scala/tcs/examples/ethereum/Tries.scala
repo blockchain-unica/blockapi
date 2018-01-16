@@ -7,7 +7,7 @@ import tcs.custom.ethereum.ICOBenchAPIs.ICOBenchAPI
 object Tries {
   def main(args: Array[String]): Unit = {
     val gameFlip = new ICO("GameFlip")
-    val icosFilter = ICOBenchAPI.getFilters
+    val icosFilter = ICOBenchAPI.getStats
     print(icosFilter)
   }
 }
