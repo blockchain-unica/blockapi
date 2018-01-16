@@ -13,9 +13,9 @@ import scalaj.http.{Http, HttpRequest}
 
 
 object ICOBenchAPI {
-  private val privateKey	= "private-key"
-  private val publicKey	= "public-key"
-  private val apiUrl		= "https://icobench.com/api/v1/"
+  private val privateKey = "private-key"
+  private val publicKey = "public-key"
+  private val apiUrl = "https://icobench.com/api/v1/"
 
   private val fixedHeaders: mutable.Map[String, String] = mutable.Map(
     "Content-Type" -> "application/json",
@@ -28,9 +28,7 @@ object ICOBenchAPI {
     val jsonData = toJSONString(data)
     val httpRequest = send(url, jsonData)
 
-    val mapper = new ObjectMapper() with ScalaObjectMapper
-    mapper.registerModule(DefaultScalaModule)
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    val mapper = getMapper
     val benchResult = mapper.readValue[BenchResult](httpRequest.asString.body)
     benchResult
   }
@@ -40,11 +38,27 @@ object ICOBenchAPI {
     val jsonData = toJSONString(data)
     val httpRequest = send(url, jsonData)
 
-    val mapper = new ObjectMapper() with ScalaObjectMapper
-    mapper.registerModule(DefaultScalaModule)
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    val benchResult = mapper.readValue[ICOVerboseResult](httpRequest.asString.body)
-    benchResult
+    val mapper = getMapper
+    val result = mapper.readValue[ICOVerboseResult](httpRequest.asString.body)
+    result
+  }
+
+  def getTrending: Array[ICOShortResult] = {
+    val url = String.join("/", this.apiUrl, "icos", "trending")
+    val httpRequest = send(url, "{}")
+
+    val mapper = getMapper
+    val result = mapper.readValue[BenchResult](httpRequest.asString.body)
+    result.results
+  }
+
+  def getFilters: ICOFiltersResult = {
+    val url = String.join("/", this.apiUrl, "icos", "filters")
+    val httpRequest = send(url, "{}")
+
+    val mapper = getMapper
+    val result = mapper.readValue[ICOFiltersResult](httpRequest.asString.body)
+    result
   }
 
   private def send(url: String, data: String): HttpRequest = {
@@ -62,10 +76,17 @@ object ICOBenchAPI {
     Http(url).headers(currentHeaders.toMap).postData(data)
   }
 
-  private def toJSONString(data: Map[String, Any]): String = {
+  private def getMapper: ObjectMapper with ScalaObjectMapper = {
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+      .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+      .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+      .disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
+      .asInstanceOf[ObjectMapper with ScalaObjectMapper]
+  }
+
+  private def toJSONString(data: Map[String, Any]): String = {
+    val mapper = getMapper
     mapper.writeValueAsString(data)
   }
 }
