@@ -33,7 +33,7 @@ object ICOBenchAPI {
     result
   }
 
-  def getICO(icoID: Int, data: Map[String, Any] = Map()): ICOVerboseResult = {
+  def getICOByICOBenchID(icoID: Int, data: Map[String, Any] = Map()): ICOVerboseResult = {
     val url = String.join("/", this.apiUrl, "ico", icoID.toString)
     val jsonData = toJSONString(data)
     val httpRequest = send(url, jsonData)
@@ -41,6 +41,12 @@ object ICOBenchAPI {
     val mapper = getMapper
     val result = mapper.readValue[ICOVerboseResult](httpRequest.asString.body)
     result
+  }
+
+  def getICOByName(name: String): ICOVerboseResult = {
+    val benchResult = this.getAllICOs(Map("search" -> name))
+      .results.filter(ico => ico.name.equals(name)).head
+    this.getICOByICOBenchID(benchResult.id)
   }
 
   def getAllICORatings(data: Map[String, Any] = Map()): ICOBenchResult = {
@@ -95,7 +101,7 @@ object ICOBenchAPI {
     Http(url).headers(currentHeaders.toMap).postData(data)
   }
 
-  private def getMapper: ObjectMapper with ScalaObjectMapper = {
+  def getMapper: ObjectMapper with ScalaObjectMapper = {
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
       .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

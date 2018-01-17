@@ -12,8 +12,13 @@ import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 
-class ICO(private val name: String){
+import scalaj.http.Http
 
+import ICOBenchAPIs.ICOBenchAPI
+
+class ICO(private val name: String) {
+
+  private var symbol: String = _
   private var contractAddress: String = _
   private var hypeScore: Float = -1
   private var riskScore: Float = -1
@@ -26,27 +31,50 @@ class ICO(private val name: String){
       def getAcceptedIssuers: Array[X509Certificate] = null
 
       def checkClientTrusted(certs: Array[X509Certificate], authType: String): Unit = {}
+
       def checkServerTrusted(certs: Array[X509Certificate], authType: String): Unit = {}
-  })
+    })
 
   def getName: String = {
     this.name
   }
 
+  def getSymbol: Any = {
+    if (this.symbol == null) {
+      this.symbol = ICOBenchAPI.getICOByName(this.getName).finance.token
+    }
+    this.symbol
+  }
+
   def getContractAddress: String = {
-    if(this.contractAddress == null){
-      //ICOBenchAPI.getICO()
+    if (this.contractAddress == null) {
+      try {
+        val sc = SSLContext.getInstance("SSL")
+        sc.init(null, trustAllCerts, new SecureRandom)
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
+        this.contractAddress =
+          ICOBenchAPI.getMapper.readValue[Any](
+            Http("https://raw.githubusercontent.com/kvhnuke/etherwallet/mercury/app/scripts/tokens/ethTokens.json")
+              .asString.body
+          ).asInstanceOf[List[Any]]
+            .filter(elem => {
+              elem.asInstanceOf[Map[String, Any]].get("symbol").contains(this.getSymbol)
+            }).head.asInstanceOf[Map[String, Any]]("address").toString.toLowerCase
+      } catch {
+        case e: Exception =>
+          System.out.println(e)
+      }
     }
     this.contractAddress
   }
 
   def getHypeScore: Any = {
-    if(this.hypeScore == -1){
+    if (this.hypeScore == -1) {
       val score = getScore("Hype")
       var scoreString = score.asInstanceOf[String]
       scoreString = scoreString.substring(0, scoreString.indexOf("/"))
       val scoreFloat = Option[Float](scoreString.toFloat)
-      if(scoreFloat.isEmpty){
+      if (scoreFloat.isEmpty) {
         score
       }
       this.hypeScore = scoreFloat.get
@@ -55,19 +83,19 @@ class ICO(private val name: String){
   }
 
   def getInvestmentRating: Any = {
-    if(this.investmentRating == null){
+    if (this.investmentRating == null) {
       this.investmentRating = getScore("Investment").asInstanceOf[String]
     }
     this.investmentRating
   }
 
   def getRiskScore: Any = {
-    if(this.riskScore == -1){
+    if (this.riskScore == -1) {
       val score = getScore("Risk")
       var scoreString = score.asInstanceOf[String]
       scoreString = scoreString.substring(0, scoreString.indexOf("/"))
       val scoreFloat = Option[Float](scoreString.toFloat)
-      if(scoreFloat.isEmpty){
+      if (scoreFloat.isEmpty) {
         score
       }
       this.riskScore = scoreFloat.get
@@ -98,8 +126,8 @@ class ICO(private val name: String){
   }
 
   private def initializeBrowser(page: String): Unit = {
-    if(!(this.browser == null)){
-      if(!this.browser.underlying.baseUri.equals(page)){
+    if (!(this.browser == null)) {
+      if (!this.browser.underlying.baseUri.equals(page)) {
         this.browser = new JsoupBrowser("Mozilla/5.0 (X11; U; Linux i686 (x86_64); en-US) AppleWebKit/531.0 (KHTML, like Gecko) Chrome/3.0.183.1 Safari/531.0").get(page)
       }
     } else {
