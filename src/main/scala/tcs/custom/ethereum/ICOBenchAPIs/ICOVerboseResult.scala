@@ -91,7 +91,6 @@ case class Category(
 case class Exchanges(
                       id: Int,
                       name: String,
-                      logo: String,
                       price: Float,
                       currency: String,
                       roi: String

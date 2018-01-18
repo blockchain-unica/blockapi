@@ -3,10 +3,8 @@ package tcs.custom.ethereum.ICOBenchAPIs
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.google.common.io.BaseEncoding
+import tcs.custom.ethereum.Utils
 
 import scala.collection.mutable
 import scalaj.http.{Http, HttpRequest}
@@ -28,19 +26,22 @@ object ICOBenchAPI {
     val jsonData = toJSONString(data)
     val httpRequest = send(url, jsonData)
 
-    val mapper = getMapper
-    val result = mapper.readValue[ICOBenchResult](httpRequest.asString.body)
+    val result = Utils.getMapper.readValue[ICOBenchResult](httpRequest.asString.body)
     result
   }
 
-  def getICO(icoID: Int, data: Map[String, Any] = Map()): ICOVerboseResult = {
+  def getICOByICOBenchID(icoID: Int, data: Map[String, Any] = Map()): ICOVerboseResult = {
     val url = String.join("/", this.apiUrl, "ico", icoID.toString)
     val jsonData = toJSONString(data)
     val httpRequest = send(url, jsonData)
 
-    val mapper = getMapper
-    val result = mapper.readValue[ICOVerboseResult](httpRequest.asString.body)
-    result
+    Utils.getMapper.readValue[ICOVerboseResult](httpRequest.asString.body)
+  }
+
+  def getICOByName(name: String): ICOVerboseResult = {
+    val benchResult = this.getAllICOs(Map("search" -> name))
+      .results.filter(ico => ico.name.equals(name)).head
+    this.getICOByICOBenchID(benchResult.id)
   }
 
   def getAllICORatings(data: Map[String, Any] = Map()): ICOBenchResult = {
@@ -48,36 +49,32 @@ object ICOBenchAPI {
     val jsonData = toJSONString(data)
     val httpRequest = send(url, jsonData)
 
-    val mapper = getMapper
-    val result = mapper.readValue[ICOBenchResult](httpRequest.asString.body)
-    result
+    Utils.getMapper.readValue[ICOBenchResult](httpRequest.asString.body)
   }
 
   def getTrending: Array[ICOShortResult] = {
     val url = String.join("/", this.apiUrl, "icos", "trending")
     val httpRequest = send(url, "{}")
 
-    val mapper = getMapper
-    val result = mapper.readValue[ICOBenchResult](httpRequest.asString.body)
-    result.results
+    Utils.getMapper.readValue[ICOBenchResult](httpRequest.asString.body).results
   }
 
   def getFilters: ICOFiltersResult = {
     val url = String.join("/", this.apiUrl, "icos", "filters")
     val httpRequest = send(url, "{}")
 
-    val mapper = getMapper
-    val result = mapper.readValue[ICOFiltersResult](httpRequest.asString.body)
-    result
+    Utils.getMapper.readValue[ICOFiltersResult](httpRequest.asString.body)
   }
 
   def getStats: ICOStatsResult = {
     val url = String.join("/", this.apiUrl, "other", "stats")
     val httpRequest = send(url, "{}")
 
-    val mapper = getMapper
-    val result = mapper.readValue[ICOStatsResult](httpRequest.asString.body)
-    result
+    Utils.getMapper.readValue[ICOStatsResult](httpRequest.asString.body)
+  }
+
+  def getExchanges(name: String): Array[Exchanges] = {
+    this.getICOByName(name).exchanges
   }
 
   private def send(url: String, data: String): HttpRequest = {
@@ -95,17 +92,7 @@ object ICOBenchAPI {
     Http(url).headers(currentHeaders.toMap).postData(data)
   }
 
-  private def getMapper: ObjectMapper with ScalaObjectMapper = {
-    val mapper = new ObjectMapper() with ScalaObjectMapper
-    mapper.registerModule(DefaultScalaModule)
-      .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-      .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
-      .disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
-      .asInstanceOf[ObjectMapper with ScalaObjectMapper]
-  }
-
   private def toJSONString(data: Map[String, Any]): String = {
-    val mapper = getMapper
-    mapper.writeValueAsString(data)
+    Utils.getMapper.writeValueAsString(data)
   }
 }
