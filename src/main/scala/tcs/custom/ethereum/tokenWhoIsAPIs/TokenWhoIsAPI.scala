@@ -8,10 +8,16 @@ import tcs.custom.ethereum.Utils
 
 object TokenWhoIsAPI {
 
-  def getUsedBlockchain(tokenName: String) = {
+  def getUsedBlockchain(tokenName: String): String = {
     Utils.getMapper.readValue[TokenWhoIsResponse](
       this.sendRequest(tokenName)
     ).blockchain
+  }
+
+  def getMarketCap(tokenName: String): Double = {
+    Utils.getMapper.readValue[TokenWhoIsResponse](
+      this.sendRequest(tokenName)
+    ).marketcap
   }
 
   private def sendRequest(tokenName: String): String = {

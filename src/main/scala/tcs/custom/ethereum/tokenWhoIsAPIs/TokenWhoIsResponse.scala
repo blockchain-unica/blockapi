@@ -13,7 +13,7 @@ case class TokenWhoIsResponse(
                                market: Map[String, ICOMarket],
                                btcPrice: Double,
                                change: Double,
-                               marketcap: Long,
+                               marketcap: Double,
                                usdPrice: Double,
                                volume: Double,
                                exchanges: Array[String]

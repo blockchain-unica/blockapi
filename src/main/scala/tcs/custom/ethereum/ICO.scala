@@ -20,6 +20,7 @@ class ICO(private val name: String) {
   private var symbol: String = _
   private var contractAddress: String = _
   private var totalSupply: Double = -1
+  private var marketCap: Double = -1
   private var usedBlockchain: String = _
   private var hypeScore: Float = -1
   private var riskScore: Float = -1
@@ -67,6 +68,15 @@ class ICO(private val name: String) {
       )
     }
     this.totalSupply
+  }
+
+  def getMarketCap: Double = {
+    if (this.marketCap == -1) {
+      this.marketCap = TokenWhoIsAPI.getMarketCap(
+        this.name
+      )
+    }
+    this.marketCap
   }
 
   def getBlockchain: String = {
