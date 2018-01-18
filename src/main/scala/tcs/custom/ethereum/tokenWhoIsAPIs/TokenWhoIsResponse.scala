@@ -2,6 +2,7 @@ package tcs.custom.ethereum.tokenWhoIsAPIs
 
 case class TokenWhoIsResponse(
                                events: String,
+                               lastUpdated: String,
                                blockchain: String,
                                symbol: String,
                                name: String,
@@ -10,7 +11,7 @@ case class TokenWhoIsResponse(
                                _geo: ICOGeo,
                                _tags: Array[String],
                                _tech: Array[String],
-                               market: Map[String, ICOMarket],
+                               market: Map[String, ICOMarkets],
                                btcPrice: Double,
                                change: Double,
                                marketcap: Double,

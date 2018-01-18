@@ -22,6 +22,9 @@ class ICO(private val name: String) {
   private var totalSupply: Double = -1
   private var marketCap: Double = -1
   private var usedBlockchain: String = _
+  private var USDPrice: Double = -1
+  private var ETHPrice: Double = -1
+  private var BTCPrice: Double = -1
   private var hypeScore: Float = -1
   private var riskScore: Float = -1
   private var investmentRating: String = _
@@ -92,6 +95,33 @@ class ICO(private val name: String) {
     EtherScanAPI.getTokenAccountBalance(
       this.getContractAddress, address
     )
+  }
+
+  def getUSDPrice: Double = {
+    if(this.USDPrice == -1) {
+      this.USDPrice = TokenWhoIsAPI.getUSDUnitPrice(
+        this.getName
+      )
+    }
+    this.USDPrice
+  }
+
+  def getETHPrice: Double = {
+    if(this.ETHPrice == -1) {
+      this.ETHPrice = TokenWhoIsAPI.getETHUnitPrice(
+        this.getName, this.getSymbol.toUpperCase
+      )
+    }
+    this.ETHPrice
+  }
+
+  def getBTCPrice: Double = {
+    if(this.BTCPrice == -1) {
+      this.BTCPrice = TokenWhoIsAPI.getBTCUnitPrice(
+        this.getName
+      )
+    }
+    this.BTCPrice
   }
 
   def getHypeScore: Any = {

@@ -20,6 +20,24 @@ object TokenWhoIsAPI {
     ).marketcap
   }
 
+  def getUSDUnitPrice(tokenName: String): Double = {
+    Utils.getMapper.readValue[TokenWhoIsResponse](
+      this.sendRequest(tokenName)
+    ).usdPrice
+  }
+
+  def getETHUnitPrice(tokenName: String, tokenSymbol: String): Double = {
+    Utils.getMapper.readValue[TokenWhoIsResponse](
+      this.sendRequest(tokenName)
+    ).market(tokenSymbol).ETH.PRICE
+  }
+
+  def getBTCUnitPrice(tokenName: String): Double = {
+    Utils.getMapper.readValue[TokenWhoIsResponse](
+      this.sendRequest(tokenName)
+    ).btcPrice
+  }
+
   private def sendRequest(tokenName: String): String = {
     try {
       val sc = SSLContext.getInstance("SSL")
