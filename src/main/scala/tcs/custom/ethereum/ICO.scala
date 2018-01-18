@@ -14,7 +14,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 
 import scalaj.http.Http
 import ICOBenchAPIs.ICOBenchAPI
-import tcs.custom.ethereum.etherScanAPI.EtherScanAPI
+import tcs.custom.ethereum.etherScanAPIs.EtherScanAPI
 
 class ICO(private val name: String) {
 
