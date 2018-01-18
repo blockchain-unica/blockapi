@@ -13,13 +13,14 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 
 import scalaj.http.Http
-
 import ICOBenchAPIs.ICOBenchAPI
+import tcs.custom.ethereum.etherScanAPI.EtherScanAPI
 
 class ICO(private val name: String) {
 
   private var symbol: String = _
   private var contractAddress: String = _
+  private var totalSupply: Double = -1
   private var hypeScore: Float = -1
   private var riskScore: Float = -1
   private var investmentRating: String = _
@@ -39,7 +40,7 @@ class ICO(private val name: String) {
     this.name
   }
 
-  def getSymbol: Any = {
+  def getSymbol: String = {
     if (this.symbol == null) {
       this.symbol = ICOBenchAPI.getICOByName(this.getName).finance.token
     }
@@ -53,19 +54,34 @@ class ICO(private val name: String) {
         sc.init(null, trustAllCerts, new SecureRandom)
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
         this.contractAddress =
-          ICOBenchAPI.getMapper.readValue[Any](
+          Utils.getMapper.readValue[Any](
             Http("https://raw.githubusercontent.com/kvhnuke/etherwallet/mercury/app/scripts/tokens/ethTokens.json")
               .asString.body
           ).asInstanceOf[List[Any]]
             .filter(elem => {
               elem.asInstanceOf[Map[String, Any]].get("symbol").contains(this.getSymbol)
-            }).head.asInstanceOf[Map[String, Any]]("address").toString.toLowerCase
+            }).head.asInstanceOf[Map[String, Any]]("address").toString
       } catch {
         case e: Exception =>
           System.out.println(e)
       }
     }
     this.contractAddress
+  }
+
+  def getTotalSupply: Double = {
+    if (this.totalSupply == -1) {
+      this.totalSupply = EtherScanAPI.getTotalSupplyByAddress(
+        this.getContractAddress
+      )
+    }
+    this.totalSupply
+  }
+
+  def getAddressBalance(address: String): Double = {
+    EtherScanAPI.getTokenAccountBalance(
+      this.getContractAddress, address
+    )
   }
 
   def getHypeScore: Any = {
@@ -108,7 +124,7 @@ class ICO(private val name: String) {
       val sc = SSLContext.getInstance("SSL")
       sc.init(null, trustAllCerts, new SecureRandom)
       HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
-      initializeBrowser("https://icorating.com/ico/" + this.name.replace(" ", "-").toLowerCase)
+      initializeBrowser(String.join("/", "https://icorating.com/ico", this.name.replace(" ", "-").toLowerCase))
       val scoreParts = this.browser >> elementList("div .white-block-area div div")
       val scoreDoc = scoreParts.filter(element => {
         (element >> allText(".title")).contains(scoreType)
@@ -128,7 +144,7 @@ class ICO(private val name: String) {
   private def initializeBrowser(page: String): Unit = {
     if (!(this.browser == null)) {
       if (!this.browser.underlying.baseUri.equals(page)) {
-        this.browser = new JsoupBrowser("Mozilla/5.0 (X11; U; Linux i686 (x86_64); en-US) AppleWebKit/531.0 (KHTML, like Gecko) Chrome/3.0.183.1 Safari/531.0").get(page)
+        this.browser = new JsoupBrowser().get(page)
       }
     } else {
       this.browser = new JsoupBrowser().get(page)
