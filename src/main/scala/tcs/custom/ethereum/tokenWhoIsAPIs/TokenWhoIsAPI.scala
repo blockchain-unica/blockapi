@@ -7,7 +7,7 @@ import tcs.custom.ethereum.Utils
 object TokenWhoIsAPI {
 
   private def sendRequest(tokenName: String) = {
-    Utils.getMapper.readValue[Any](
+    Utils.getMapper.readValue[TokenWhoIsResponse](
       Http(
         String.join(
           "/", "http://tokenwhois.com/api/projects/", tokenName
