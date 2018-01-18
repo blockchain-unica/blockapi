@@ -38,6 +38,12 @@ object TokenWhoIsAPI {
     ).btcPrice
   }
 
+  def getExchangesNames(tokenName: String): Array[String] = {
+    Utils.getMapper.readValue[TokenWhoIsResponse](
+      this.sendRequest(tokenName)
+    ).exchanges
+  }
+
   private def sendRequest(tokenName: String): String = {
     try {
       val sc = SSLContext.getInstance("SSL")

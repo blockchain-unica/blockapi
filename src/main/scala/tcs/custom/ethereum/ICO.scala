@@ -10,8 +10,7 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 
 import scalaj.http.Http
-
-import ICOBenchAPIs.ICOBenchAPI
+import ICOBenchAPIs.{Exchanges, ICOBenchAPI}
 import tcs.custom.ethereum.etherScanAPIs.EtherScanAPI
 import tcs.custom.ethereum.tokenWhoIsAPIs.TokenWhoIsAPI
 
@@ -100,7 +99,7 @@ class ICO(private val name: String) {
   def getUSDPrice: Double = {
     if(this.USDPrice == -1) {
       this.USDPrice = TokenWhoIsAPI.getUSDUnitPrice(
-        this.getName
+        this.name
       )
     }
     this.USDPrice
@@ -109,7 +108,7 @@ class ICO(private val name: String) {
   def getETHPrice: Double = {
     if(this.ETHPrice == -1) {
       this.ETHPrice = TokenWhoIsAPI.getETHUnitPrice(
-        this.getName, this.getSymbol.toUpperCase
+        this.name, this.symbol.toUpperCase
       )
     }
     this.ETHPrice
@@ -118,13 +117,13 @@ class ICO(private val name: String) {
   def getBTCPrice: Double = {
     if(this.BTCPrice == -1) {
       this.BTCPrice = TokenWhoIsAPI.getBTCUnitPrice(
-        this.getName
+        this.name
       )
     }
     this.BTCPrice
   }
 
-  def getHypeScore: Any = {
+  def getHypeScore: Float = {
     if (this.hypeScore == -1) {
       val score = getScore("Hype")
       var scoreString = score.asInstanceOf[String]
@@ -138,14 +137,14 @@ class ICO(private val name: String) {
     this.hypeScore
   }
 
-  def getInvestmentRating: Any = {
+  def getInvestmentRating: String = {
     if (this.investmentRating == null) {
       this.investmentRating = getScore("Investment").asInstanceOf[String]
     }
     this.investmentRating
   }
 
-  def getRiskScore: Any = {
+  def getRiskScore: Float = {
     if (this.riskScore == -1) {
       val score = getScore("Risk")
       var scoreString = score.asInstanceOf[String]
@@ -159,7 +158,17 @@ class ICO(private val name: String) {
     this.riskScore
   }
 
-  private def getScore(scoreType: String): Any = {
+  def getExchangesNames: Array[String] = {
+    TokenWhoIsAPI.getExchangesNames(
+      this.name
+    )
+  }
+
+  def getExchangesDetails: Array[Exchanges] = {
+    ICOBenchAPI.getExchanges(this.name)
+  }
+
+  private def getScore(scoreType: String): String = {
     try {
       val sc = SSLContext.getInstance("SSL")
       sc.init(null, Utils.trustAllCerts, new SecureRandom)

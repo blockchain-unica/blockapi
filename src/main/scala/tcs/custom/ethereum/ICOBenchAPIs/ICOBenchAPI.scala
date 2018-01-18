@@ -73,6 +73,10 @@ object ICOBenchAPI {
     Utils.getMapper.readValue[ICOStatsResult](httpRequest.asString.body)
   }
 
+  def getExchanges(name: String): Array[Exchanges] = {
+    this.getICOByName(name).exchanges
+  }
+
   private def send(url: String, data: String): HttpRequest = {
     val secret = new SecretKeySpec(this.privateKey.getBytes, "SHA384")
     val mac = Mac.getInstance("HmacSHA384")
