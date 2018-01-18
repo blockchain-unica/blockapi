@@ -1,10 +1,7 @@
 package tcs.custom.ethereum
 
-import java.security.cert.X509Certificate
-import javax.net.ssl.X509TrustManager
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
 import java.security.SecureRandom
 
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
@@ -13,28 +10,22 @@ import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
 
 import scalaj.http.Http
+
 import ICOBenchAPIs.ICOBenchAPI
 import tcs.custom.ethereum.etherScanAPIs.EtherScanAPI
+import tcs.custom.ethereum.tokenWhoIsAPIs.TokenWhoIsAPI
 
 class ICO(private val name: String) {
 
   private var symbol: String = _
   private var contractAddress: String = _
   private var totalSupply: Double = -1
+  private var usedBlockchain: String = _
   private var hypeScore: Float = -1
   private var riskScore: Float = -1
   private var investmentRating: String = _
 
   private var browser: JsoupDocument = _
-
-  private val trustAllCerts: Array[TrustManager] = Array[TrustManager](
-    new X509TrustManager() {
-      def getAcceptedIssuers: Array[X509Certificate] = null
-
-      def checkClientTrusted(certs: Array[X509Certificate], authType: String): Unit = {}
-
-      def checkServerTrusted(certs: Array[X509Certificate], authType: String): Unit = {}
-    })
 
   def getName: String = {
     this.name
@@ -51,7 +42,7 @@ class ICO(private val name: String) {
     if (this.contractAddress == null) {
       try {
         val sc = SSLContext.getInstance("SSL")
-        sc.init(null, trustAllCerts, new SecureRandom)
+        sc.init(null, Utils.trustAllCerts, new SecureRandom)
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
         this.contractAddress =
           Utils.getMapper.readValue[Any](
@@ -76,6 +67,15 @@ class ICO(private val name: String) {
       )
     }
     this.totalSupply
+  }
+
+  def getBlockchain: String = {
+    if (this.usedBlockchain == null) {
+      this.usedBlockchain = TokenWhoIsAPI.getUsedBlockchain(
+        this.name
+      )
+    }
+    this.usedBlockchain
   }
 
   def getAddressBalance(address: String): Double = {
@@ -122,7 +122,7 @@ class ICO(private val name: String) {
   private def getScore(scoreType: String): Any = {
     try {
       val sc = SSLContext.getInstance("SSL")
-      sc.init(null, trustAllCerts, new SecureRandom)
+      sc.init(null, Utils.trustAllCerts, new SecureRandom)
       HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
       initializeBrowser(String.join("/", "https://icorating.com/ico", this.name.replace(" ", "-").toLowerCase))
       val scoreParts = this.browser >> elementList("div .white-block-area div div")
