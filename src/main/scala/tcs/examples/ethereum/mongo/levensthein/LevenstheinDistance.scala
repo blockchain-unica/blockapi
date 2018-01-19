@@ -1,9 +1,9 @@
-package tcs.examples.ethereum.levensthein
+package tcs.examples.ethereum.mongo.levensthein
 
 import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase}
 import org.mongodb.scala.model.Projections._
 import scala.math.min
-import tcs.examples.ethereum.levensthein.Helpers._
+import tcs.examples.ethereum.mongo.levensthein.Helpers._
 
 object LevenstheinDistance {
   def main(args: Array[String]): Unit = {

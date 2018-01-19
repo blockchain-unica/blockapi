@@ -1,4 +1,4 @@
-package tcs.examples.ethereum.levensthein
+package tcs.examples.ethereum.mongo.levensthein
 
 import java.util.concurrent.TimeUnit
 

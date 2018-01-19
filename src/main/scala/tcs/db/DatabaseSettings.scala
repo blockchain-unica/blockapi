@@ -15,6 +15,8 @@ class DatabaseSettings(val database: String,
       "3306"
     else if(dbType.equals(Mongo))
       "27017"
+    else if(dbType.equals(PostgreSQL))
+      "5432"
     else
       ""
 }
@@ -24,3 +26,5 @@ class Database
 object Mongo extends Database
 
 object MySQL extends Database
+
+object PostgreSQL extends Database
