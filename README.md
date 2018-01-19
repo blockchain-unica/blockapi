@@ -10,7 +10,7 @@ The workflow consists in two steps:
 The blockchains currently supported are Bitcoin and Ethereum.
 The DBMS currently supported are MongoDB and MySQL.
 
-The library is dicussed in [A general framework for Bitcoin analytics](https://arxiv.org/pdf/1707.01021.pdf) (an updated version is coming soon).
+The library is dicussed in [A general framework for blockchain analytics](https://arxiv.org/pdf/1707.01021.pdf).
 
 More material is available in the [project page](http://blockchain.unica.it/projects/blockchain-analytics/).
 
