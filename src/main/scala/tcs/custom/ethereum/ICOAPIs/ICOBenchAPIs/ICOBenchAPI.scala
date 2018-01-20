@@ -52,7 +52,8 @@ object ICOBenchAPI {
     * @return Detailed result of this ICO
     */
   def getICOByName(name: String): ICOVerboseResult = {
-    val benchResult = this.getAllICOs(Map("search" -> name)).results.filter(ico => ico.name.equals(name)).head
+    val benchResult = this.getAllICOs(Map("search" -> name)).results
+      .filter(ico => ico.name.toLowerCase.contains(name.toLowerCase)).head
     this.getICOByICOBenchID(benchResult.id)
   }
 

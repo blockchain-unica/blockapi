@@ -135,7 +135,7 @@ class ICO {
   def getETHPrice: Double = {
     if(this.ETHPrice == -1) {
       this.ETHPrice = TokenWhoIsAPI.getETHUnitPrice(
-        this.getName, this.symbol.toUpperCase
+        this.getName, this.getSymbol.toUpperCase
       )
     }
     this.ETHPrice
