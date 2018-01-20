@@ -1,4 +1,4 @@
-package tcs.custom.ethereum.ICOBenchAPIs
+package tcs.custom.ethereum.ICOAPIs.ICOBenchAPIs
 
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -13,8 +13,8 @@ import scalaj.http.{Http, HttpRequest}
   * Object that provides methods to ICOBench API
   */
 object ICOBenchAPI {
-  private val privateKey = "private-key"
-  private val publicKey = "public-key"
+  private val privateKey = "privateKey"
+  private val publicKey = "publicKey"
   private val apiUrl = "https://icobench.com/api/v1/"
 
   private val fixedHeaders: mutable.Map[String, String] = mutable.Map(
@@ -52,9 +52,18 @@ object ICOBenchAPI {
     * @return Detailed result of this ICO
     */
   def getICOByName(name: String): ICOVerboseResult = {
-    val benchResult = this.getAllICOs(Map("search" -> name))
-      .results.filter(ico => ico.name.equals(name)).head
+    val benchResult = this.getAllICOs(Map("search" -> name)).results.filter(ico => ico.name.equals(name)).head
     this.getICOByICOBenchID(benchResult.id)
+  }
+
+  def getICOBySymbol(symbol: String): ICOVerboseResult = {
+    this.getAllICOs(Map("search" -> symbol)).results
+      .map(icoRes => {
+        this.getICOByName(icoRes.name)
+      })
+      .filter(icoVerbRes => {
+        icoVerbRes.finance.token.equals(symbol)
+      }).head
   }
 
   /**

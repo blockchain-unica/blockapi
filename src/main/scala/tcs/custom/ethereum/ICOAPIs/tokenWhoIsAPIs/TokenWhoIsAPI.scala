@@ -1,4 +1,4 @@
-package tcs.custom.ethereum.tokenWhoIsAPIs
+package tcs.custom.ethereum.ICOAPIs.tokenWhoIsAPIs
 
 import java.security.SecureRandom
 import javax.net.ssl.{HttpsURLConnection, SSLContext}
@@ -13,9 +13,13 @@ object TokenWhoIsAPI {
     * @return Blockchain used by this token
     */
   def getUsedBlockchain(tokenName: String): String = {
-    Utils.getMapper.readValue[TokenWhoIsResponse](
-      this.sendRequest(tokenName)
-    ).blockchain
+    try{
+      Utils.getMapper.readValue[TokenWhoIsResponse](
+        this.sendRequest(tokenName)
+      ).blockchain
+    } catch {
+      case e: Exception => "Blockchain not Found"
+    }
   }
 
   /**
@@ -23,9 +27,13 @@ object TokenWhoIsAPI {
     * @return Market Cap of this token
     */
   def getMarketCap(tokenName: String): Double = {
-    Utils.getMapper.readValue[TokenWhoIsResponse](
-      this.sendRequest(tokenName)
-    ).marketcap
+    try{
+      Utils.getMapper.readValue[TokenWhoIsResponse](
+        this.sendRequest(tokenName)
+      ).marketcap
+    } catch {
+      case e: Exception => 0
+    }
   }
 
   /**
@@ -33,9 +41,13 @@ object TokenWhoIsAPI {
     * @return Token unit price (USD)
     */
   def getUSDUnitPrice(tokenName: String): Double = {
-    Utils.getMapper.readValue[TokenWhoIsResponse](
-      this.sendRequest(tokenName)
-    ).usdPrice
+    try{
+      Utils.getMapper.readValue[TokenWhoIsResponse](
+        this.sendRequest(tokenName)
+      ).usdPrice
+    } catch {
+      case e: Exception => 0
+    }
   }
 
   /**
@@ -44,9 +56,13 @@ object TokenWhoIsAPI {
     * @return Token unit price (ETH)
     */
   def getETHUnitPrice(tokenName: String, tokenSymbol: String): Double = {
-    Utils.getMapper.readValue[TokenWhoIsResponse](
-      this.sendRequest(tokenName)
-    ).market(tokenSymbol).ETH.PRICE
+    try {
+      Utils.getMapper.readValue[TokenWhoIsResponse](
+        this.sendRequest(tokenName)
+      ).market(tokenSymbol).ETH.PRICE
+    } catch {
+      case e: Exception => 0
+    }
   }
 
   /**
@@ -54,9 +70,13 @@ object TokenWhoIsAPI {
     * @return Token unit price (BTC)
     */
   def getBTCUnitPrice(tokenName: String): Double = {
-    Utils.getMapper.readValue[TokenWhoIsResponse](
-      this.sendRequest(tokenName)
-    ).btcPrice
+    try{
+      Utils.getMapper.readValue[TokenWhoIsResponse](
+        this.sendRequest(tokenName)
+      ).btcPrice
+    } catch {
+      case e: Exception => 0
+    }
   }
 
   /**
@@ -64,9 +84,13 @@ object TokenWhoIsAPI {
     * @return name of Exchanges that trade this token
     */
   def getExchangesNames(tokenName: String): Array[String] = {
-    Utils.getMapper.readValue[TokenWhoIsResponse](
-      this.sendRequest(tokenName)
-    ).exchanges
+    try{
+      Utils.getMapper.readValue[TokenWhoIsResponse](
+        this.sendRequest(tokenName)
+      ).exchanges
+    } catch {
+      case e: Exception => Array()
+    }
   }
 
   private def sendRequest(tokenName: String): String = {

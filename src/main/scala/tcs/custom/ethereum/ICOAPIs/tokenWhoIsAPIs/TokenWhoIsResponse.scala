@@ -1,4 +1,4 @@
-package tcs.custom.ethereum.tokenWhoIsAPIs
+package tcs.custom.ethereum.ICOAPIs.tokenWhoIsAPIs
 
 case class TokenWhoIsResponse(
                                events: String,

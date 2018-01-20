@@ -1,4 +1,4 @@
-package tcs.custom.ethereum.etherScanAPIs
+package tcs.custom.ethereum.ICOAPIs.etherScanAPIs
 
 import tcs.custom.ethereum.Utils
 
