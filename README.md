@@ -40,6 +40,16 @@ mvn install -DskipTests
 cd core
 mvn install -DskipTests
 ```
+### ICO Analytics
+In order to use the `ICO` class (created to retrieve ICOs data) you must require the respective API keys:
+1. [EtherScan](https://etherscan.io) 
+    * It is sufficient to sign up and then go [here](https://etherscan.io/myapikey)
+2. [ICOBench](https://icobench.com/)
+    * [Sign Up](https://icobench.com/register), then require an API key [here](https://icobench.com/developers) 
+
+After doing these steps, do the following:
+1. Copy `EtherScan` key into `EtherScanAPI.apiKey` attribute
+1. Copy `ICOBench` private key and public key into `ICOBenchAPI.privateKey` and `ICOBenchAPI.publicKey` attributes respectively
 
 ### Install blockchain analytics API
 1. Execute the blockchain client in order to obtain a local copy of the target blockchain (this process may take several hours)

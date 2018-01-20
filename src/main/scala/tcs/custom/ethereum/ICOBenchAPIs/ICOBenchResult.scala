@@ -1,5 +1,8 @@
 package tcs.custom.ethereum.ICOBenchAPIs
 
+/**
+  * Pojo classes for icos/all API
+  */
 case class ICOBenchResult(
                       icos: Int,
                       pages: Int,

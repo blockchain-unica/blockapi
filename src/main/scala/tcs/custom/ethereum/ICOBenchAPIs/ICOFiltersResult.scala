@@ -1,5 +1,8 @@
 package tcs.custom.ethereum.ICOBenchAPIs
 
+/**
+  * Pojo classes for icos/filters API
+  */
 case class ICOFiltersResult(
                              categories: Array[Category],
                              platforms: Array[Name],

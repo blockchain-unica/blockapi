@@ -4,11 +4,18 @@ import tcs.custom.ethereum.Utils
 
 import scalaj.http.Http
 
+/**
+  * Object that provides methods to EtherScan Token API
+  */
 object EtherScanAPI {
 
   private def apiKey: String = "apiKey"
   private def weiIntoEth: Long = "1000000000000000000".toLong
 
+  /**
+    * @param address the ERC20-Token contract Address
+    * @return total supply of token
+    */
   def getTotalSupplyByAddress(address: String): Double = {
     Option[Double](
       Utils.getMapper.readValue[EtherScanTokenAmountResponse](
@@ -21,6 +28,11 @@ object EtherScanAPI {
     ).getOrElse(0: Double) / this.weiIntoEth
   }
 
+  /**
+    * @param tokenContractAddress the ERC20-Token contract Address
+    * @param userAddress wallet address
+    * @return tokens contained in this wallet
+    */
   def getTokenAccountBalance(tokenContractAddress: String, userAddress: String): Double = {
     Option[Double](
       Utils.getMapper.readValue[EtherScanTokenAmountResponse](

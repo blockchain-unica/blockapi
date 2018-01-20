@@ -1,5 +1,8 @@
 package tcs.custom.ethereum.ICOBenchAPIs
 
+/**
+  * Pojo classes for ico/{id} result
+  */
 case class ICOVerboseResult(
                              id: Int,
                              name: String,

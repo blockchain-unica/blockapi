@@ -9,7 +9,9 @@ import tcs.custom.ethereum.Utils
 import scala.collection.mutable
 import scalaj.http.{Http, HttpRequest}
 
-
+/**
+  * Object that provides methods to ICOBench API
+  */
 object ICOBenchAPI {
   private val privateKey = "private-key"
   private val publicKey = "public-key"
@@ -20,7 +22,10 @@ object ICOBenchAPI {
     "X-ICObench-Key" -> this.publicKey
   )
 
-
+  /**
+    * @param data filters for data
+    * @return A list of ICOS (ICOBenchResult.results)
+    */
   def getAllICOs(data: Map[String, Any] = Map()): ICOBenchResult = {
     val url = String.join("/", this.apiUrl, "icos/all")
     val jsonData = toJSONString(data)
@@ -30,20 +35,32 @@ object ICOBenchAPI {
     result
   }
 
-  def getICOByICOBenchID(icoID: Int, data: Map[String, Any] = Map()): ICOVerboseResult = {
+  /**
+    * @param icoID id of an ico inside ICOBench
+    * @return Detailed result of this ICO
+    */
+  def getICOByICOBenchID(icoID: Int): ICOVerboseResult = {
     val url = String.join("/", this.apiUrl, "ico", icoID.toString)
-    val jsonData = toJSONString(data)
+    val jsonData = toJSONString(Map[String, Any]())
     val httpRequest = send(url, jsonData)
 
     Utils.getMapper.readValue[ICOVerboseResult](httpRequest.asString.body)
   }
 
+  /**
+    * @param name ICOName
+    * @return Detailed result of this ICO
+    */
   def getICOByName(name: String): ICOVerboseResult = {
     val benchResult = this.getAllICOs(Map("search" -> name))
       .results.filter(ico => ico.name.equals(name)).head
     this.getICOByICOBenchID(benchResult.id)
   }
 
+  /**
+    * @param data filters for data
+    * @return All ICOs that have received rating for either ICO profile or by experts
+    */
   def getAllICORatings(data: Map[String, Any] = Map()): ICOBenchResult = {
     val url = String.join("/", this.apiUrl, "icos/ratings")
     val jsonData = toJSONString(data)
@@ -52,6 +69,9 @@ object ICOBenchAPI {
     Utils.getMapper.readValue[ICOBenchResult](httpRequest.asString.body)
   }
 
+  /**
+    * @return up to 8 ICOs that are currently "Hot and Trending" on ICObench
+    */
   def getTrending: Array[ICOShortResult] = {
     val url = String.join("/", this.apiUrl, "icos", "trending")
     val httpRequest = send(url, "{}")
@@ -59,6 +79,9 @@ object ICOBenchAPI {
     Utils.getMapper.readValue[ICOBenchResult](httpRequest.asString.body).results
   }
 
+  /**
+    * @return all available filters in ICOBench
+    */
   def getFilters: ICOFiltersResult = {
     val url = String.join("/", this.apiUrl, "icos", "filters")
     val httpRequest = send(url, "{}")
@@ -66,6 +89,9 @@ object ICOBenchAPI {
     Utils.getMapper.readValue[ICOFiltersResult](httpRequest.asString.body)
   }
 
+  /**
+    * @return short and interesting statistics about ICObench
+    */
   def getStats: ICOStatsResult = {
     val url = String.join("/", this.apiUrl, "other", "stats")
     val httpRequest = send(url, "{}")
@@ -73,6 +99,10 @@ object ICOBenchAPI {
     Utils.getMapper.readValue[ICOStatsResult](httpRequest.asString.body)
   }
 
+  /**
+    * @param name ICOName
+    * @return information about Exchanges that trade this token
+    */
   def getExchanges(name: String): Array[Exchanges] = {
     this.getICOByName(name).exchanges
   }
