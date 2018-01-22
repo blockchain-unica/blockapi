@@ -1,4 +1,4 @@
-package tcs.examples.ethereum.levensthein
+package tcs.examples.ethereum.mongo.levensthein
 
 import org.web3j.protocol.http.HttpService
 import tcs.blockchain.BlockchainLib

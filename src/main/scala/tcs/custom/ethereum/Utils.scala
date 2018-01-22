@@ -8,6 +8,9 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 
 object Utils {
+  /**
+    * @return Mapper used to create pojo classes
+    */
   def getMapper: ObjectMapper with ScalaObjectMapper = {
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
@@ -17,6 +20,9 @@ object Utils {
       .asInstanceOf[ObjectMapper with ScalaObjectMapper]
   }
 
+  /**
+    * Used to fix certificate problems
+    */
   val trustAllCerts: Array[TrustManager] = Array[TrustManager](
     new X509TrustManager() {
       def getAcceptedIssuers: Array[X509Certificate] = null

@@ -1,5 +1,8 @@
-package tcs.custom.ethereum.ICOBenchAPIs
+package tcs.custom.ethereum.ICOAPIs.ICOBenchAPIs
 
+/**
+  * Pojo classes for other/stats API
+  */
 case class ICOStatsResult(
                            countriesByIcos: Array[CountryStat],
                            countriesByIcosPerMillion: Array[CountryStat],

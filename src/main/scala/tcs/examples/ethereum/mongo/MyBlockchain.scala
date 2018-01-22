@@ -1,31 +1,26 @@
-package tcs.examples.ethereum
+package tcs.examples.ethereum.mongo.levensthein
 
-import java.text.SimpleDateFormat
 import java.util.Date
 
-import org.web3j.protocol.http.HttpService
 import tcs.blockchain.BlockchainLib
-import tcs.custom.ethereum.PriceHistorical
-import tcs.mongo.Collection
 import tcs.db.DatabaseSettings
+import tcs.mongo.Collection
 
-object TxWithRates {
+object MyBlockchain {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(70000).setEnd(150000)
+      .setStart(70000).setEnd(120000)
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
-    val txWithRates = new Collection("txWithRates", mongo)
-    val format = new SimpleDateFormat("yyyy-MM-dd")
-    val priceHistorical = PriceHistorical.getPriceHistorical()
+    val myBlockchain = new Collection("myBlockchain", mongo)
 
     blockchain.foreach(block => {
       if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
       }
       val date = new Date(block.timeStamp.longValue()*1000)
-      val dateFormatted = format.format(date)
       block.transactions.foreach(tx => {
+        val internalTransactions = block.internalTransactions.filter(itx => itx.parentTxHash.equals(tx.hash))
         val creates = if(tx.creates == null) "" else tx.creates
         val to = if(tx.to == null) "" else tx.to
         val list = List(
@@ -37,12 +32,12 @@ object TxWithRates {
           ("to", to),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
           ("creates", creates),
-          ("rate", if(block.timeStamp.longValue() < 1438905600) 0 else priceHistorical.price_usd(dateFormatted))
+          ("internalTransactions", internalTransactions)
         )
-        txWithRates.append(list)
+        myBlockchain.append(list)
       })
     })
 
-    txWithRates.close
+    myBlockchain.close
   }
 }
