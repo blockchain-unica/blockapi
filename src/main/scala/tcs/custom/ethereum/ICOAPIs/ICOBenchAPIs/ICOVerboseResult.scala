@@ -17,6 +17,9 @@ case class ICOVerboseResult(
                              about: String,
                              logo: String,
                              country: String,
+                             notification: String,
+                             registration: String,
+                             restrictions: String,
                              milestones: Array[Milestone],
                              teamIntro: String,
                              links: Links,
@@ -45,7 +48,8 @@ case class Links(
                   discord: String,
                   youtube: String,
                   www: String,
-                  whitepaper: String
+                  whitepaper: String,
+                  bounty: String
                 )
 
 case class Finance(
@@ -66,7 +70,7 @@ case class Finance(
 case class TeamMate(
                      name: String,
                      title: String,
-                     links: String,
+                     socials: Social,
                      group: String,
                      photo: String,
                      iss: Float
@@ -98,3 +102,8 @@ case class Exchanges(
                       currency: String,
                       roi: String
                     )
+
+case class Social(
+                   site: String,
+                   url: String
+                 )
