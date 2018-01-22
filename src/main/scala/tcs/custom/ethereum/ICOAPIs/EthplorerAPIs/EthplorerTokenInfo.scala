@@ -1,5 +1,8 @@
 package tcs.custom.ethereum.ICOAPIs.EthplorerAPIs
 
+/**
+  * Pojo class fro Ethplorer
+  */
 case class EthplorerTokenInfo(
                                address: String,
                                name: String,

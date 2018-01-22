@@ -88,7 +88,7 @@ class ICO {
   }
 
   /**
-    * @return
+    * @return ICO's total supply
     */
   def getTotalSupply: Double = {
     if (this.totalSupply == -1) {
@@ -99,6 +99,9 @@ class ICO {
     this.totalSupply
   }
 
+  /**
+    * @return ICO's Market Capitalization
+    */
   def getMarketCap: Double = {
     if (this.marketCap == -1) {
       this.marketCap = TokenWhoIsAPI.getMarketCap(
@@ -108,6 +111,9 @@ class ICO {
     this.marketCap
   }
 
+  /**
+    * @return Blockchain used by this ICO
+    */
   def getBlockchain: String = {
     if (this.usedBlockchain == null) {
       this.usedBlockchain = TokenWhoIsAPI.getUsedBlockchain(
@@ -117,12 +123,19 @@ class ICO {
     this.usedBlockchain
   }
 
+  /**
+    * @param address wallet address
+    * @return token owned by this address
+    */
   def getAddressBalance(address: String): Double = {
     EtherScanAPI.getTokenAccountBalance(
       this.getContractAddress, address
     )
   }
 
+  /**
+    * @return token unit price (USD)
+    */
   def getUSDPrice: Double = {
     if(this.USDPrice == -1) {
       this.USDPrice = TokenWhoIsAPI.getUSDUnitPrice(
@@ -132,6 +145,9 @@ class ICO {
     this.USDPrice
   }
 
+  /**
+    * @return token unit price (ETH)
+    */
   def getETHPrice: Double = {
     if(this.ETHPrice == -1) {
       this.ETHPrice = TokenWhoIsAPI.getETHUnitPrice(
@@ -141,6 +157,9 @@ class ICO {
     this.ETHPrice
   }
 
+  /**
+    * @return token unit price (BTC)
+    */
   def getBTCPrice: Double = {
     if(this.BTCPrice == -1) {
       this.BTCPrice = TokenWhoIsAPI.getBTCUnitPrice(
@@ -150,6 +169,9 @@ class ICO {
     this.BTCPrice
   }
 
+  /**
+    * @return Hype score given by ICORating
+    */
   def getHypeScore: Float = {
     if (this.hypeScore == -1) {
       val score = getScore("Hype")
@@ -164,6 +186,9 @@ class ICO {
     this.hypeScore
   }
 
+  /**
+    * @return Investment Rating given by ICORating
+    */
   def getInvestmentRating: String = {
     if (this.investmentRating == null) {
       this.investmentRating = getScore("Investment")
@@ -171,6 +196,9 @@ class ICO {
     this.investmentRating
   }
 
+  /**
+    * @return Risk score given by ICORating
+    */
   def getRiskScore: Float = {
     if (this.riskScore == -1) {
       val score = getScore("Risk")
@@ -185,12 +213,18 @@ class ICO {
     this.riskScore
   }
 
+  /**
+    * @return Name of the exchanges that trade this token
+    */
   def getExchangesNames: Array[String] = {
     TokenWhoIsAPI.getExchangesNames(
       this.name
     )
   }
 
+  /**
+    * @return Details of the exchanges that trade this token
+    */
   def getExchangesDetails: Array[Exchanges] = {
     ICOBenchAPI.getExchanges(this.name)
   }

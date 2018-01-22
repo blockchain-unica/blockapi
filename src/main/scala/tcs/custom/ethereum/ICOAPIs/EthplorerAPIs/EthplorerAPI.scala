@@ -10,6 +10,10 @@ object EthplorerAPI {
 
   private def baseUrl = "https://api.ethplorer.io/"
 
+  /**
+    * @param tokenAddress
+    * @return token Name
+    */
   def getTokenNameByContractAddress(tokenAddress: String): String = {
     Utils.getMapper.readValue[EthplorerTokenInfo](
       send(
