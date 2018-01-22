@@ -4,7 +4,7 @@ import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.{DatabaseSettings, MySQL}
-import tcs.db.mysql.Table
+import tcs.db.sql.Table
 import tcs.custom.Tag
 import tcs.utils.DateConverter.convertDate
 

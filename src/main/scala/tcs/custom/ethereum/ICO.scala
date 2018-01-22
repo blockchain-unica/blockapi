@@ -40,6 +40,7 @@ class ICO {
     else{
       this.name = nameOrAddress
     }
+    EthplorerAPI.checkIfTokenExists(nameOrAddress)
   }
 
   /**

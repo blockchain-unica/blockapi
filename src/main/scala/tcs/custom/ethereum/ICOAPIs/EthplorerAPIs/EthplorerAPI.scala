@@ -1,7 +1,5 @@
 package tcs.custom.ethereum.ICOAPIs.EthplorerAPIs
 
-import java.util.Currency
-
 import tcs.custom.ethereum.Utils
 
 import scalaj.http.Http
@@ -56,6 +54,14 @@ object EthplorerAPI {
     } catch {
       case e: Exception => 0
     }
+  }
+
+  def checkIfTokenExists(tokenAddress: String): Any = {
+    Utils.getMapper.readValue[EthplorerTokenInfo](
+      send(
+        String.join("", this.baseUrl, "getTokenInfo/", tokenAddress, "?apiKey=", apiKey)
+      )
+    )
   }
 
   private def send(url: String): String = {
