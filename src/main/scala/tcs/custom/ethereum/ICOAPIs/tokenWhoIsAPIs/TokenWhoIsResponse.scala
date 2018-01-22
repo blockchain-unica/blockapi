@@ -1,4 +1,8 @@
-package tcs.custom.ethereum.tokenWhoIsAPIs
+package tcs.custom.ethereum.ICOAPIs.tokenWhoIsAPIs
+
+/**
+  * Pojo classes for TokenWhoIs
+  */
 
 case class TokenWhoIsResponse(
                                events: String,
