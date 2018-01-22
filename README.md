@@ -46,10 +46,14 @@ In order to use the `ICO` class (created to retrieve ICOs data) you must require
     * It is sufficient to sign up and then go [here](https://etherscan.io/myapikey)
 2. [ICOBench](https://icobench.com/)
     * [Sign Up](https://icobench.com/register), then require an API key [here](https://icobench.com/developers) 
+3. [Ethplorer](https://github.com/EverexIO/Ethplorer/wiki/Ethplorer-API)
+    * There is a default, free key: `freekey`. 
+      If you need more data or highload of service, you can to get personal API key. 
 
 After doing these steps, do the following:
 1. Copy `EtherScan` key into `EtherScanAPI.apiKey` attribute
-1. Copy `ICOBench` private key and public key into `ICOBenchAPI.privateKey` and `ICOBenchAPI.publicKey` attributes respectively
+2. Copy `ICOBench` private key and public key into `ICOBenchAPI.privateKey` and `ICOBenchAPI.publicKey` attributes respectively
+3. Copy `Ethplorer` key into `EthplorerAPI.apiKey` attribute
 
 ### Install blockchain analytics API
 1. Execute the blockchain client in order to obtain a local copy of the target blockchain (this process may take several hours)
