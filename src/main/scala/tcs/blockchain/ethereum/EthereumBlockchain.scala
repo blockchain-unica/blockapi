@@ -1,6 +1,7 @@
 package tcs.blockchain.ethereum
 
 import java.math.BigInteger
+import java.net.SocketTimeoutException
 
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.{DefaultBlockParameterName, DefaultBlockParameterNumber}
@@ -58,8 +59,11 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
     * @return the requested Ethereum block
     */
   def getBlock(height: Long): EthereumBlock = {
-    val currBlock = web3j.ethGetBlockByNumber(new DefaultBlockParameterNumber(height), true).sendAsync().get().getBlock
-    getEthereumBlock(currBlock)
+    getEthereumBlock(
+      repeatTimes(
+        web3j.ethGetBlockByNumber(new DefaultBlockParameterNumber(height), true).sendAsync().get().getBlock, 10
+      ).asInstanceOf[EthBlock.Block]
+    )
   }
 
   /**
@@ -68,8 +72,11 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
     * @return the requested Ethereum block
     */
   def getBlock(hash: String): EthereumBlock = {
-    val currBlock = web3j.ethGetBlockByHash(hash, true).sendAsync().get().getBlock
-    getEthereumBlock(currBlock)
+    getEthereumBlock(
+      repeatTimes[SocketTimeoutException](
+        web3j.ethGetBlockByHash(hash, true).sendAsync().get().getBlock, 10
+      ).asInstanceOf[EthBlock.Block]
+    )
   }
 
   /**
@@ -106,11 +113,6 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
 
-  /**
-    * Convert the web3J block into the EthereumBlock, adding its internal transactions
-    * @param currBlock current block
-    * @return new EthereumBlock
-    */
   private def getEthereumBlock(currBlock: EthBlock.Block): EthereumBlock = {
     val resultBlockTraceJSON = getResultBlockTrace(currBlock.getNumberRaw)
     if (resultBlockTraceJSON.code.toString.startsWith("40"))
@@ -139,13 +141,23 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
     EthereumBlock.factory(currBlock, internalTxs)
   }
 
-  /**
-    * Get the block trace given the block height in blockchain
-    * @param blockNumber block height
-    * @return block trace
-    */
   private def getResultBlockTrace(blockNumber: String): HttpResponse[String] = {
-    Http(this.url).postData("{\"method\":\"trace_block\",\"params\":[\"" + blockNumber + "\"],\"id\":1,\"jsonrpc\":\"2.0\"}")
-      .header("Content-Type","application/json").asString
+      repeatTimes[SocketTimeoutException](Http(this.url).postData("{\"method\":\"trace_block\",\"params\":[\"" + blockNumber + "\"],\"id\":1,\"jsonrpc\":\"2.0\"}")
+        .header("Content-Type","application/json").asString, 10).asInstanceOf[HttpResponse[String]]
   }
+
+  private def repeatTimes[T <: Exception](f: Any, times: Integer): Any = {
+    var done = false
+    var res: Any = None
+    while(!done){
+      try{
+        res = f
+        done = true
+      } catch {
+        case e: T =>
+      }
+    }
+    res
+  }
+
 }

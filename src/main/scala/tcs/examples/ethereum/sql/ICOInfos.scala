@@ -13,7 +13,7 @@ import tcs.utils.DateConverter.convertDate
 object ICOInfos {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("https://mainnet.infura.io/OCPoiiZvFpsPKZcOMGaG")
-      .setStart(1000000).setEnd(4000000)
+      .setStart(3904411)
     val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres")
 
     val blockTable = new Table(
@@ -44,6 +44,7 @@ object ICOInfos {
             txFrom CHARACTER VARYING(100),
             txTo CHARACTER VARYING(100),
             txValue NUMERIC(30,2),
+            creates CHARACTER VARYING(100),
             gas NUMERIC(30,2),
             gasPrice NUMERIC(30,2),
             blockHash CHARACTER VARYING(100) REFERENCES block(hash)
@@ -51,16 +52,16 @@ object ICOInfos {
          """,
       sql"""
             INSERT INTO transaction(hash, nonce, transactionIndex,
-            txFrom, txTo, txValue, gas, gasPrice, blockHash)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            txFrom, txTo, txValue, creates, gas, gasPrice, blockHash)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          """,
-      pg, 100
+      pg, 1
     )
 
     val internalTxTable = new Table(
       sql"""
           CREATE TABLE IF NOT EXISTS internal_transaction(
-            id INTEGER NOT NULL PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             parentTxHash CHARACTER VARYING(100) REFERENCES transaction(hash),
             txType CHARACTER VARYING(100),
             itxFrom CHARACTER VARYING(100),
@@ -73,13 +74,13 @@ object ICOInfos {
             itxFrom, itxTo, itxValue)
             VALUES (?, ?, ?, ?, ?)
          """,
-      pg, 100
+      pg, 1
     )
 
     val icoTable = new Table(
       sql"""
          CREATE TABLE IF NOT EXISTS ico(
-          icoId INTEGER NOT NULL PRIMARY KEY,
+          icoId SERIAL PRIMARY KEY,
           tokenName CHARACTER VARYING(25),
           tokenSymbol CHARACTER VARYING(10),
           contractAddress CHARACTER VARYING(100),
@@ -100,22 +101,22 @@ object ICOInfos {
           hypeScore, riskScore, investmentRating)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          """,
-      pg, 100
+      pg, 1
     )
 
     blockchain.foreach(block => {
-      if(block.number % 100 == 0){
+      if (block.number % 100 == 0) {
         println(block.number)
       }
       blockTable.insert(Seq(
         block.hash, block.number, block.parentHash,
-        new Date(block.timeStamp.longValue()*1000), block.author, block.miner
+        new Date(block.timeStamp.longValue() * 1000), block.author, block.miner
       ))
       block.transactions.foreach(tx => {
         txTable.insert(Seq(
           tx.hash, tx.nonce, tx.transactionIndex, tx.from,
-          tx.to, tx.value, tx.gas, tx.gasPrice,
-          tx.blockHash
+          tx.to, tx.value, tx.creates, tx.gas,
+          tx.gasPrice, tx.blockHash
         ))
         if (tx.creates != null) {
           try {
@@ -127,7 +128,9 @@ object ICOInfos {
               ico.getHypeScore, ico.getRiskScore, ico.getInvestmentRating
             ))
           } catch {
-            case e: Exception => {}
+            case e: Exception => {
+              println(String.join(" ", tx.creates, "does not create an ICO."))
+            }
           }
         }
       })
