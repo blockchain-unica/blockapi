@@ -7,13 +7,12 @@ import tcs.blockchain.BlockchainLib
 import tcs.custom.ethereum.ICO
 import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, PostgreSQL}
-import tcs.utils.DateConverter.convertDate
 
 
 object ICOInfos {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("https://mainnet.infura.io/OCPoiiZvFpsPKZcOMGaG")
-      .setStart(3904411)
+    val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
+      .setStart(1790539)
     val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres")
 
     val blockTable = new Table(
