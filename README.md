@@ -25,7 +25,8 @@ Generally speaking the framework needs at least one blockchain client and one DB
     * [Parity](https://parity.io/) (extracts data from Ethereum)
 2. DBMS:
     * [MongoDB](https://www.mongodb.com/what-is-mongodb) (constructs a NoSQL view of the data)
-    * [MySQL](https://www.mysql.com/) (constructs a SQL view of of the data)
+    * [MySQL](https://www.mysql.com/) (constructs a SQL view of the data)
+    * [PostgreSQL](https://www.postgresql.org/) (constructs a SQL view of the data)
 3. Either
     * use an IDE for executing a Scala SBT project (we used [IntelliJ IDEA](https://www.jetbrains.com/idea/)) or
     * use the command line in place of an IDE (Install [SBT](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html))

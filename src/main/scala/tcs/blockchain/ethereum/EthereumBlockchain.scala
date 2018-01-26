@@ -1,6 +1,7 @@
 package tcs.blockchain.ethereum
 
 import java.math.BigInteger
+import java.net.SocketTimeoutException
 
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.{DefaultBlockParameterName, DefaultBlockParameterNumber}
@@ -20,7 +21,7 @@ import tcs.blockchain.Blockchain
   *
   * @param url address where parity is listening
   */
-class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Blockchain{
+class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Blockchain {
 
   private var start: Long = 1l
   private var end: Long = 0l
@@ -31,6 +32,7 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
 
   /**
     * Executes the given task for each block in blockchain
+    *
     * @param f the task
     * @tparam U type returned
     */
@@ -39,41 +41,57 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
     var height = start
     var endBlock = 0l
 
-    if(this.end == 0l){
+    if (this.end == 0l) {
       endBlock = web3j.ethBlockNumber().send().getBlockNumber.longValue()
-    }else{
+    } else {
       endBlock = this.end
     }
 
-    while(height <= endBlock){
+    while (height <= endBlock) {
       val block = getBlock(height)
       f(block)
-      height+=step
+      height += step
     }
   }
 
   /**
     * Returns an Ethereum block given its height in blockchain
+    *
     * @param height block's height
     * @return the requested Ethereum block
     */
   def getBlock(height: Long): EthereumBlock = {
-    val currBlock = web3j.ethGetBlockByNumber(new DefaultBlockParameterNumber(height), true).sendAsync().get().getBlock
-    getEthereumBlock(currBlock)
+    try {
+      val block = web3j.ethGetBlockByNumber(new DefaultBlockParameterNumber(height), true).sendAsync().get().getBlock
+      getEthereumBlock(block)
+    } catch {
+      case e: Exception => {
+        getBlock(height)
+      }
+    }
   }
 
   /**
     * Returns an Ethereum block given its hash
+    *
     * @param hash block's hash
     * @return the requested Ethereum block
     */
   def getBlock(hash: String): EthereumBlock = {
-    val currBlock = web3j.ethGetBlockByHash(hash, true).sendAsync().get().getBlock
-    getEthereumBlock(currBlock)
+    try {
+      getEthereumBlock(
+        web3j.ethGetBlockByHash(hash, true).sendAsync().get().getBlock
+      )
+    } catch {
+      case e: Exception => {
+        getBlock(hash)
+      }
+    }
   }
 
   /**
     * Set the first block in the blockchain to visit
+    *
     * @param start block's height
     * @return This
     */
@@ -84,6 +102,7 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
 
   /**
     * Set the last block in the blockchain to visit
+    *
     * @param end block's height
     * @return This
     */
@@ -94,6 +113,7 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
 
   /**
     * Set the step visiting blockchain
+    *
     * @param step step amount
     * @return This
     */
@@ -106,15 +126,10 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
 
-  /**
-    * Convert the web3J block into the EthereumBlock, adding its internal transactions
-    * @param currBlock current block
-    * @return new EthereumBlock
-    */
   private def getEthereumBlock(currBlock: EthBlock.Block): EthereumBlock = {
     val resultBlockTraceJSON = getResultBlockTrace(currBlock.getNumberRaw)
     if (resultBlockTraceJSON.code.toString.startsWith("40"))
-     return EthereumBlock.factory(currBlock, List())
+      return EthereumBlock.factory(currBlock, List())
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -124,14 +139,14 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
       blockTrace.getTraceType match {
         case "call" =>
           val value = new BigInteger(blockTrace.getAction.getValue.substring(2), 16)
-          if(blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0){
-            internalTxs::=EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
+          if (blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0) {
+            internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
           }
-        case "suicide" => internalTxs::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getAddress, blockTrace.getAction.getRefundAddress, 0)
+        case "suicide" => internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getAddress, blockTrace.getAction.getRefundAddress, 0)
         case "create" =>
           val value = new BigInteger(blockTrace.getAction.getValue.substring(2), 16)
-          if(blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0){
-            internalTxs::=EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
+          if (blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0) {
+            internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
           }
         case _ =>
       }
@@ -139,13 +154,15 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
     EthereumBlock.factory(currBlock, internalTxs)
   }
 
-  /**
-    * Get the block trace given the block height in blockchain
-    * @param blockNumber block height
-    * @return block trace
-    */
   private def getResultBlockTrace(blockNumber: String): HttpResponse[String] = {
-    Http(this.url).postData("{\"method\":\"trace_block\",\"params\":[\"" + blockNumber + "\"],\"id\":1,\"jsonrpc\":\"2.0\"}")
-      .header("Content-Type","application/json").asString
+    try {
+      Http(this.url).postData("{\"method\":\"trace_block\",\"params\":[\"" + blockNumber + "\"],\"id\":1,\"jsonrpc\":\"2.0\"}")
+        .header("Content-Type", "application/json").asString
+    } catch {
+      case e: Exception => {
+        getResultBlockTrace(blockNumber)
+      }
+    }
   }
+
 }

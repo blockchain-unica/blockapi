@@ -40,6 +40,7 @@ class ICO {
     else{
       this.name = nameOrAddress
     }
+    EthplorerAPI.checkIfTokenExists(nameOrAddress)
   }
 
   /**
@@ -57,7 +58,14 @@ class ICO {
     */
   def getSymbol: String = {
     if (this.symbol == null) {
-      this.symbol = ICOBenchAPI.getICOByName(this.getName).finance.token
+      try {
+        val ico = ICOBenchAPI.getICOByName(this.getName)
+        this.symbol = ico.finance.token
+      } catch {
+        case e: Exception => {
+          this.symbol = EthplorerAPI.getTokenSymbolByContractAddress(this.getContractAddress)
+        }
+      }
     }
     this.symbol
   }
@@ -138,9 +146,13 @@ class ICO {
     */
   def getUSDPrice: Double = {
     if(this.USDPrice == -1) {
-      this.USDPrice = TokenWhoIsAPI.getUSDUnitPrice(
+      var price = TokenWhoIsAPI.getUSDUnitPrice(
         this.getName
       )
+      if(price == 0) {
+        price = EthplorerAPI.getTokenPriceByContractAddress(this.getContractAddress, "USD")
+      }
+      this.USDPrice = price
     }
     this.USDPrice
   }
@@ -150,9 +162,13 @@ class ICO {
     */
   def getETHPrice: Double = {
     if(this.ETHPrice == -1) {
-      this.ETHPrice = TokenWhoIsAPI.getETHUnitPrice(
-        this.getName, this.getSymbol.toUpperCase
+      var price = TokenWhoIsAPI.getETHUnitPrice(
+        this.getName, this.getSymbol
       )
+      if(price == 0) {
+        price = EthplorerAPI.getTokenPriceByContractAddress(this.getContractAddress, "ETH")
+      }
+      this.ETHPrice = price
     }
     this.ETHPrice
   }
@@ -162,9 +178,13 @@ class ICO {
     */
   def getBTCPrice: Double = {
     if(this.BTCPrice == -1) {
-      this.BTCPrice = TokenWhoIsAPI.getBTCUnitPrice(
+      var price = TokenWhoIsAPI.getBTCUnitPrice(
         this.getName
       )
+      if(price == 0) {
+        price = EthplorerAPI.getTokenPriceByContractAddress(this.getContractAddress, "BTC")
+      }
+      this.BTCPrice = price
     }
     this.BTCPrice
   }
