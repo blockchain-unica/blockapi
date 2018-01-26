@@ -1,10 +1,10 @@
-package tcs.db.mysql
+package tcs.db.sql
 
 import javax.sql.DataSource
 
 import com.zaxxer.hikari.HikariDataSource
 import scalikejdbc._
-import tcs.db.DatabaseSettings
+import tcs.db.{DatabaseSettings, PostgreSQL}
 
 import scala.collection.mutable.ListBuffer
 
@@ -28,9 +28,7 @@ class Table(
   var buffer = ListBuffer[Seq[Any]]()
 
   // Initialize JDBC driver & connection pool
-  Class.forName("com.mysql.cj.jdbc.Driver")
-
-  val dataSource: DataSource = {
+  var dataSource: DataSource = {
     val ds = new HikariDataSource()
     ds.setJdbcUrl("jdbc:mysql://localhost:3306/" + dbSettings.database + "?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true")
     ds.addDataSourceProperty("autoCommit", "false")
@@ -39,6 +37,25 @@ class Table(
     ds.addDataSourceProperty("password", dbSettings.psw)
     ds
   }
+  if(dbSettings.dbType.equals(PostgreSQL)){
+    Class.forName("org.postgresql.Driver")
+    dataSource = {
+      val ds = new HikariDataSource()
+      val url = String.join(
+        "", "jdbc:postgresql://", dbSettings.host, ":", dbSettings.port, "/", dbSettings.database
+      )
+      ds.setJdbcUrl(url + "?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true")
+      ds.addDataSourceProperty("autoCommit", "false")
+      ds.setMaximumPoolSize(10)
+      ds.addDataSourceProperty("user", dbSettings.user)
+      ds.addDataSourceProperty("password", dbSettings.psw)
+      ds
+    }
+  } else {
+    Class.forName("com.mysql.cj.jdbc.Driver")
+  }
+
+
 
   ConnectionPool.singleton(new DataSourceConnectionPool(dataSource))
 

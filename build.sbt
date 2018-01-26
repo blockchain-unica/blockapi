@@ -30,10 +30,9 @@ libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.5"
 libraryDependencies += "com.codesnippets4all" % "quick-json" % "1.0.4"
 
 libraryDependencies ++= Seq(
-  "org.scalikejdbc" %% "scalikejdbc"       % "3.0.2",
-
+  "org.scalikejdbc" %% "scalikejdbc" % "3.0.2",
   "mysql" % "mysql-connector-java" % "6.0.6",
-
+  "org.postgresql" % "postgresql" % "42.2.0",
   "com.zaxxer" % "HikariCP" % "2.7.1"
 )
 
