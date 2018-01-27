@@ -1,7 +1,6 @@
 package tcs.blockchain.ethereum
 
 import java.math.BigInteger
-import java.net.SocketTimeoutException
 
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.{DefaultBlockParameterName, DefaultBlockParameterNumber}

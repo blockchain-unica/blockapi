@@ -30,6 +30,8 @@ class ICO {
   private var riskScore: Float = -1
   private var investmentRating: String = _
 
+  private var exists: Boolean = false
+
   private var browser: JsoupDocument = _
 
   def this(nameOrAddress: String) {
@@ -40,7 +42,20 @@ class ICO {
     else{
       this.name = nameOrAddress
     }
-    EthplorerAPI.checkIfTokenExists(nameOrAddress)
+
+
+    try{
+      EthplorerAPI.checkIfTokenExists(nameOrAddress)
+      this.exists = true
+    } catch {
+      case e: Exception => {
+        println(nameOrAddress + " is not a known ICO")
+      }
+    }
+  }
+
+  def itExists: Boolean = {
+    this.exists
   }
 
   /**
@@ -196,12 +211,14 @@ class ICO {
     if (this.hypeScore == -1) {
       val score = getScore("Hype")
       var scoreString = score.asInstanceOf[String]
-      scoreString = scoreString.substring(0, scoreString.indexOf("/"))
-      val scoreFloat = Option[Float](scoreString.toFloat)
-      if (scoreFloat.isEmpty) {
-        score
+      if(scoreString.nonEmpty){
+        scoreString = scoreString.substring(0, scoreString.indexOf("/"))
+        val scoreFloat = Option[Float](scoreString.toFloat)
+        if (scoreFloat.isEmpty) {
+          score
+        }
+        this.hypeScore = scoreFloat.get
       }
-      this.hypeScore = scoreFloat.get
     }
     this.hypeScore
   }
@@ -223,12 +240,15 @@ class ICO {
     if (this.riskScore == -1) {
       val score = getScore("Risk")
       var scoreString = score.asInstanceOf[String]
-      scoreString = scoreString.substring(0, scoreString.indexOf("/"))
-      val scoreFloat = Option[Float](scoreString.toFloat)
-      if (scoreFloat.isEmpty) {
-        score
+      if(scoreString.nonEmpty){
+        scoreString = scoreString.substring(0, scoreString.indexOf("/"))
+        val scoreFloat = Option[Float](scoreString.toFloat)
+        if (scoreFloat.isEmpty) {
+          score
+        }
+        this.riskScore = scoreFloat.get
       }
-      this.riskScore = scoreFloat.get
+
     }
     this.riskScore
   }

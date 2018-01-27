@@ -12,7 +12,7 @@ import tcs.db.{DatabaseSettings, PostgreSQL}
 object ICOInfos {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(1790539)
+      .setStart(3557596)
     val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres")
 
     val blockTable = new Table(
@@ -83,19 +83,19 @@ object ICOInfos {
           tokenName CHARACTER VARYING(25),
           tokenSymbol CHARACTER VARYING(10),
           contractAddress CHARACTER VARYING(100),
-          marketCap NUMERIC(20,2),
-          totalSupply NUMERIC(20,2),
-          blockchain CHARACTER VARYING(15),
-          priceUSD NUMERIC(8,8),
-          priceETH NUMERIC(8,8),
-          priceBTC NUMERIC(8,8),
+          marketCap NUMERIC(20,10),
+          totalSupply NUMERIC(20,10),
+          blockchain CHARACTER VARYING(30),
+          priceUSD NUMERIC,
+          priceETH NUMERIC,
+          priceBTC NUMERIC,
           hypeScore NUMERIC(3,2),
           riskScore NUMERIC(3,2),
           investmentRating CHARACTER VARYING(10),
           txCreatorHash CHARACTER VARYING(100) REFERENCES transaction(hash)
          ) """,
       sql"""
-          INSERT INTO ico(tokenName, tokenSymbol, contractId, marketCap,
+          INSERT INTO ico(tokenName, tokenSymbol, contractAddress, marketCap,
           totalSupply, blockchain, priceUSD, priceETH, priceBTC,
           hypeScore, riskScore, investmentRating)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -118,20 +118,16 @@ object ICOInfos {
           tx.gasPrice, tx.blockHash
         ))
         if (tx.creates != null) {
-          try {
             val ico = new ICO(tx.creates)
-            icoTable.insert(Seq(
-              ico.getName, ico.getSymbol, ico.getContractAddress,
-              ico.getMarketCap, ico.getTotalSupply, ico.getBlockchain,
-              ico.getUSDPrice, ico.getETHPrice, ico.getBTCPrice,
-              ico.getHypeScore, ico.getRiskScore, ico.getInvestmentRating
-            ))
-          } catch {
-            case e: Exception => {
-              println(String.join(" ", tx.creates, "does not create an ICO."))
+            if(ico.itExists){
+              icoTable.insert(Seq(
+                ico.getName, ico.getSymbol, ico.getContractAddress,
+                ico.getMarketCap, ico.getTotalSupply, ico.getBlockchain,
+                ico.getUSDPrice, ico.getETHPrice, ico.getBTCPrice,
+                ico.getHypeScore, ico.getRiskScore, ico.getInvestmentRating
+              ))
             }
           }
-        }
       })
       block.internalTransactions.foreach(itx => {
         internalTxTable.insert(Seq(
