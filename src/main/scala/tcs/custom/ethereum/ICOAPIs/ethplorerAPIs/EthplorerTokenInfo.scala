@@ -1,4 +1,4 @@
-package tcs.custom.ethereum.ICOAPIs.EthplorerAPIs
+package tcs.custom.ethereum.ICOAPIs.ethplorerAPIs
 
 /**
   * Pojo class fro Ethplorer

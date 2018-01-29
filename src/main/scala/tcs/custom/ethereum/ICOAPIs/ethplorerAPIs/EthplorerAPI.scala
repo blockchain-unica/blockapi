@@ -1,4 +1,4 @@
-package tcs.custom.ethereum.ICOAPIs.EthplorerAPIs
+package tcs.custom.ethereum.ICOAPIs.ethplorerAPIs
 
 import tcs.custom.ethereum.Utils
 
@@ -56,7 +56,7 @@ object EthplorerAPI {
     }
   }
 
-  def checkIfTokenExists(tokenAddress: String): Any = {
+  def checkIfTokenExists(tokenAddress: String): EthplorerTokenInfo = {
     Utils.getMapper.readValue[EthplorerTokenInfo](
       send(
         String.join("", this.baseUrl, "getTokenInfo/", tokenAddress, "?apiKey=", apiKey)
