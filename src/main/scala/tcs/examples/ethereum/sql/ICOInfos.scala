@@ -12,7 +12,7 @@ import tcs.db.{DatabaseSettings, PostgreSQL}
 object ICOInfos {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(3500000)
+      .setStart(3501335)
     val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres")
 
     val blockTable = new Table(

@@ -46,13 +46,13 @@ object EthplorerAPI {
       )
     ).price
     try{
-      if(price("currency").equals(currency)){
-        price("rate").asInstanceOf[String].toDouble
+      if(price.asInstanceOf[Map[String, Any]]("currency").equals(currency)){
+        price.asInstanceOf[Map[String, Any]]("rate").asInstanceOf[String].toDouble
       } else {
         0
       }
     } catch {
-      case e: Exception => 0
+      case _: Exception => 0
     }
   }
 

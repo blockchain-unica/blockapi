@@ -8,7 +8,7 @@ case class EthplorerTokenInfo(
                                name: String,
                                symbol: String,
                                totalSupply: String,
-                               price: Map[String, Any],
+                               price: Any,
                                owner: String,
                                countOps: Int,
                                transfersCount: Double,

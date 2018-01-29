@@ -17,6 +17,7 @@ object Utils {
       .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
       .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
       .disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
+      .disable(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE)
       .asInstanceOf[ObjectMapper with ScalaObjectMapper]
   }
 
