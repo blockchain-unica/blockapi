@@ -5,10 +5,10 @@ import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 
 import scalaj.http.Http
-
 import tcs.custom.ethereum.ICOAPIs.ethplorerAPIs.EthplorerAPI
 import tcs.custom.ethereum.ICOAPIs.ICOBenchAPIs.{Exchanges, ICOBenchAPI}
 import tcs.custom.ethereum.ICOAPIs.ICORatingAPIs.ICORatingAPI
+import tcs.custom.ethereum.ICOAPIs.coinMarketCapAPIs.CoinMarketCapAPI
 import tcs.custom.ethereum.ICOAPIs.etherScanAPIs.EtherScanAPI
 import tcs.custom.ethereum.ICOAPIs.tokenWhoIsAPIs.TokenWhoIsAPI
 
@@ -38,7 +38,7 @@ class ICO {
     }
 
     val pseudoToken = EthplorerAPI.checkIfTokenExists(nameOrAddress)
-    if(pseudoToken.name == null && pseudoToken.address == null){
+    if (pseudoToken.name == null && pseudoToken.address == null) {
       this.exists = false
       println(nameOrAddress + " is not a token contract")
     } else {
@@ -106,6 +106,11 @@ class ICO {
       this.totalSupply = EtherScanAPI.getTotalSupplyByAddress(
         this.getContractAddress
       )
+      if (this.totalSupply == 0) {
+        this.totalSupply = TokenWhoIsAPI.getUSDSupply(
+          this.getName, this.getSymbol
+        )
+      }
     }
     this.totalSupply
   }
@@ -118,6 +123,20 @@ class ICO {
       this.marketCap = TokenWhoIsAPI.getMarketCap(
         this.getName
       )
+      if (this.marketCap == 0) {
+        this.marketCap = CoinMarketCapAPI.getTokenMarketCap(
+          this.getName, this.getSymbol
+        )
+      }
+      if (this.marketCap == 0) {
+        try{
+          this.marketCap = ICOBenchAPI.getICOByName(
+            this.getName
+          ).finance.raised
+        } catch {
+          case _ : Exception => this.marketCap = 0
+        }
+      }
     }
     this.marketCap
   }

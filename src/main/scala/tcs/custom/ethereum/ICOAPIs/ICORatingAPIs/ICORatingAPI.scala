@@ -58,6 +58,18 @@ object ICORatingAPI {
     0
   }
 
+  private def multipleRequest(scoreType: String, tokenName: String): String = {
+    var found: Boolean = false
+    var response: String = ""
+    Utils.prepareNames(tokenName).iterator.takeWhile(_ => !found).foreach(name => {
+      response = getScore(scoreType, name)
+      if(response.nonEmpty){
+        found = true
+      }
+    })
+    response
+  }
+
   private def getScore(scoreType: String, tokenName: String): String = {
     try {
       val sc = SSLContext.getInstance("SSL")

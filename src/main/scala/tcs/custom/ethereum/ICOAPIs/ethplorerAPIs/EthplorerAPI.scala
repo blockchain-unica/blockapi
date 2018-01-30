@@ -1,5 +1,7 @@
 package tcs.custom.ethereum.ICOAPIs.ethplorerAPIs
 
+import java.net.SocketTimeoutException
+
 import tcs.custom.ethereum.Utils
 
 import scalaj.http.Http
@@ -65,6 +67,12 @@ object EthplorerAPI {
   }
 
   private def send(url: String): String = {
-    Http(url).asString.body
+    try{
+      Http(url).asString.body
+    } catch {
+      case _ : SocketTimeoutException => {
+        send(url)
+      }
+    }
   }
 }

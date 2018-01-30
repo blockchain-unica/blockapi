@@ -25,7 +25,7 @@ object EtherScanAPI {
           )
         ).asString.body
       ).result.toDouble
-    ).getOrElse(0: Double) / this.weiIntoEth
+    ).getOrElse(0: Double)
   }
 
   /**
@@ -43,6 +43,6 @@ object EtherScanAPI {
           )
         ).asString.body
       ).result.toDouble
-    ).getOrElse(0: Double) / this.weiIntoEth
+    ).getOrElse(0: Double)
   }
 }

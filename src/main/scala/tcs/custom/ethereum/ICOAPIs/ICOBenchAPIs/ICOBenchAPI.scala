@@ -52,9 +52,15 @@ object ICOBenchAPI {
     * @return Detailed result of this ICO
     */
   def getICOByName(name: String): ICOVerboseResult = {
-    val benchResult = this.getAllICOs(Map("search" -> name)).results
-      .filter(ico => ico.name.toLowerCase.contains(name.toLowerCase)).head
-    this.getICOByICOBenchID(benchResult.id)
+    var benchResult: Array[ICOShortResult] = Array()
+
+    Utils.prepareNames(name).iterator.takeWhile(_ => benchResult.nonEmpty).foreach(
+      result => {
+        benchResult = this.getAllICOs(Map("search" -> name)).results
+          .filter(ico => ico.name.toLowerCase.contains(name.toLowerCase))
+      }
+    )
+    this.getICOByICOBenchID(benchResult.head.id)
   }
 
   def getICOBySymbol(symbol: String): ICOVerboseResult = {
