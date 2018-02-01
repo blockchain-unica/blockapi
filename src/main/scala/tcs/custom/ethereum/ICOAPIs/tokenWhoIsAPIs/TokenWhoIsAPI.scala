@@ -118,11 +118,10 @@ object TokenWhoIsAPI {
                 "/", "http://tokenwhois.com/api/projects", name
               )
             ).asString.body
-            if(response.nonEmpty){
-              found = true
-            }
+            Utils.getMapper.readValue[TokenWhoIsResponse](response)
+            found = true
           } catch {
-            case _: Exception => {}
+            case _: Exception =>
           }
         }
       )

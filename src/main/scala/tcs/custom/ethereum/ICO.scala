@@ -167,12 +167,17 @@ class ICO {
     * @return token unit price (USD)
     */
   def getUSDPrice: Double = {
-    if (this.USDPrice == -1) {
+    if (this.USDPrice.compareTo(-1) == 0) {
       var price = TokenWhoIsAPI.getUSDUnitPrice(
         this.getName
       )
-      if (price == 0) {
+      if (price.compareTo(0) == 0) {
         price = EthplorerAPI.getTokenPriceByContractAddress(this.getContractAddress, "USD")
+      }
+      if (price.compareTo(0) == 0) {
+        price = CoinMarketCapAPI.getTokenPriceUSD(
+          this.getName, this.getSymbol
+        )
       }
       this.USDPrice = price
     }
@@ -205,6 +210,11 @@ class ICO {
       )
       if (price == 0) {
         price = EthplorerAPI.getTokenPriceByContractAddress(this.getContractAddress, "BTC")
+      }
+      if (price == 0) {
+        price = CoinMarketCapAPI.getTokenPriceBTC(
+          this.getName, this.getSymbol
+        )
       }
       this.BTCPrice = price
     }

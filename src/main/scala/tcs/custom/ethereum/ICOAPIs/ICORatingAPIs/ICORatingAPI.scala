@@ -19,7 +19,7 @@ object ICORatingAPI {
     * @return token hype score
     */
   def getHypeScore(tokenName: String): Float = {
-    val score = getScore("Hype", tokenName)
+    val score = multipleRequest("Hype", tokenName)
     var scoreString = score.asInstanceOf[String]
     if(scoreString.nonEmpty){
       scoreString = scoreString.substring(0, scoreString.indexOf("/"))
@@ -37,7 +37,7 @@ object ICORatingAPI {
     * @return token investment rating
     */
   def getInvestmentRating(tokenName: String): String = {
-    getScore("Investment", tokenName)
+    multipleRequest("Investment", tokenName)
   }
 
   /**
@@ -45,7 +45,7 @@ object ICORatingAPI {
     * @return token risk score
     */
   def getRiskScore(tokenName: String): Float = {
-    val score = getScore("Risk", tokenName)
+    val score = multipleRequest("Risk", tokenName)
     var scoreString = score.asInstanceOf[String]
     if(scoreString.nonEmpty){
       scoreString = scoreString.substring(0, scoreString.indexOf("/"))
@@ -75,7 +75,7 @@ object ICORatingAPI {
       val sc = SSLContext.getInstance("SSL")
       sc.init(null, Utils.trustAllCerts, new SecureRandom)
       HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
-      initializeBrowser(String.join("/", "https://icorating.com/ico", tokenName.replace(" ", "-").toLowerCase))
+      initializeBrowser(String.join("/", "https://icorating.com/ico", tokenName))
       val scoreParts = this.browser >> elementList("div .white-block-area div div")
       val scoreDoc = scoreParts.filter(element => {
         (element >> allText(".title")).contains(scoreType)
