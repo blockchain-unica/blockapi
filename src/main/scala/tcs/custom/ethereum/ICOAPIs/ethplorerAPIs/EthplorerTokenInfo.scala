@@ -1,4 +1,4 @@
-package tcs.custom.ethereum.ICOAPIs.EthplorerAPIs
+package tcs.custom.ethereum.ICOAPIs.ethplorerAPIs
 
 /**
   * Pojo class fro Ethplorer
@@ -8,7 +8,7 @@ case class EthplorerTokenInfo(
                                name: String,
                                symbol: String,
                                totalSupply: String,
-                               price: Map[String, Any],
+                               price: Any,
                                owner: String,
                                countOps: Int,
                                transfersCount: Double,

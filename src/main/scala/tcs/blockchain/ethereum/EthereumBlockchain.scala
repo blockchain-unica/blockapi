@@ -1,18 +1,18 @@
 package tcs.blockchain.ethereum
 
 import java.math.BigInteger
-import java.net.SocketTimeoutException
 
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.{DefaultBlockParameterName, DefaultBlockParameterNumber}
 import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.core.methods.response.EthBlock
-
-import scalaj.http.{Http, HttpResponse}
-import tcs.pojos.TraceBlockHttpResponse
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+
+import scalaj.http.{Http, HttpResponse}
+
+import tcs.pojos.TraceBlockHttpResponse
 import tcs.blockchain.Blockchain
 
 
@@ -65,7 +65,7 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
       val block = web3j.ethGetBlockByNumber(new DefaultBlockParameterNumber(height), true).sendAsync().get().getBlock
       getEthereumBlock(block)
     } catch {
-      case e: Exception => {
+      case _: Exception => {
         getBlock(height)
       }
     }
@@ -83,7 +83,7 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
         web3j.ethGetBlockByHash(hash, true).sendAsync().get().getBlock
       )
     } catch {
-      case e: Exception => {
+      case _: Exception => {
         getBlock(hash)
       }
     }
@@ -159,7 +159,7 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
       Http(this.url).postData("{\"method\":\"trace_block\",\"params\":[\"" + blockNumber + "\"],\"id\":1,\"jsonrpc\":\"2.0\"}")
         .header("Content-Type", "application/json").asString
     } catch {
-      case e: Exception => {
+      case _: Exception => {
         getResultBlockTrace(blockNumber)
       }
     }

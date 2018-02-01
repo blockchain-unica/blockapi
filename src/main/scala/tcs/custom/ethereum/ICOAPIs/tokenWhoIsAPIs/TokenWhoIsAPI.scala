@@ -13,12 +13,12 @@ object TokenWhoIsAPI {
     * @return Blockchain used by this token
     */
   def getUsedBlockchain(tokenName: String): String = {
-    try{
+    try {
       Utils.getMapper.readValue[TokenWhoIsResponse](
         this.sendRequest(tokenName)
       ).blockchain
     } catch {
-      case e: Exception => "Blockchain not Found"
+      case _: Exception => "Blockchain not Found"
     }
   }
 
@@ -27,12 +27,12 @@ object TokenWhoIsAPI {
     * @return Market Cap of this token
     */
   def getMarketCap(tokenName: String): Double = {
-    try{
+    try {
       Utils.getMapper.readValue[TokenWhoIsResponse](
         this.sendRequest(tokenName)
       ).marketcap
     } catch {
-      case e: Exception => 0
+      case _: Exception => 0
     }
   }
 
@@ -41,12 +41,12 @@ object TokenWhoIsAPI {
     * @return Token unit price (USD)
     */
   def getUSDUnitPrice(tokenName: String): Double = {
-    try{
+    try {
       Utils.getMapper.readValue[TokenWhoIsResponse](
         this.sendRequest(tokenName)
       ).usdPrice
     } catch {
-      case e: Exception => 0
+      case _: Exception => 0
     }
   }
 
@@ -61,7 +61,7 @@ object TokenWhoIsAPI {
         this.sendRequest(tokenName)
       ).market(tokenSymbol).ETH.PRICE
     } catch {
-      case e: Exception => 0
+      case _: Exception => 0
     }
   }
 
@@ -70,12 +70,12 @@ object TokenWhoIsAPI {
     * @return Token unit price (BTC)
     */
   def getBTCUnitPrice(tokenName: String): Double = {
-    try{
+    try {
       Utils.getMapper.readValue[TokenWhoIsResponse](
         this.sendRequest(tokenName)
       ).btcPrice
     } catch {
-      case e: Exception => 0
+      case _: Exception => 0
     }
   }
 
@@ -84,29 +84,47 @@ object TokenWhoIsAPI {
     * @return name of Exchanges that trade this token
     */
   def getExchangesNames(tokenName: String): Array[String] = {
-    try{
+    try {
       Utils.getMapper.readValue[TokenWhoIsResponse](
         this.sendRequest(tokenName)
       ).exchanges
     } catch {
-      case e: Exception => Array()
+      case _: Exception => Array()
+    }
+  }
+
+  def getUSDSupply(tokenName: String, tokenSymbol: String): Double = {
+    try {
+      Utils.getMapper.readValue[TokenWhoIsResponse](
+        this.sendRequest(tokenName)
+      ).market(tokenSymbol).USD.SUPPLY
+    } catch {
+      case _: Exception => 0
     }
   }
 
   private def sendRequest(tokenName: String): String = {
-    try {
-      val sc = SSLContext.getInstance("SSL")
-      sc.init(null, Utils.trustAllCerts, new SecureRandom)
-      HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
-      Http(
-        String.join(
-          "/", "http://tokenwhois.com/api/projects", tokenName
-        )
-      ).asString.body
-    } catch {
-      case e: Exception =>
-        System.out.println(e)
-        ""
-    }
+    var found: Boolean = false
+    var response: String = ""
+    val sc = SSLContext.getInstance("SSL")
+    sc.init(null, Utils.trustAllCerts, new SecureRandom)
+    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
+    Utils.prepareNames(tokenName).iterator.takeWhile(_ => !found)
+      .foreach(
+        name => {
+          try {
+            response = Http(
+              String.join(
+                "/", "http://tokenwhois.com/api/projects", name
+              )
+            ).asString.body
+            Utils.getMapper.readValue[TokenWhoIsResponse](response)
+            found = true
+          } catch {
+            case _: Exception =>
+          }
+        }
+      )
+    response
   }
 }

@@ -1,4 +1,6 @@
-package tcs.custom.ethereum.ICOAPIs.EthplorerAPIs
+package tcs.custom.ethereum.ICOAPIs.ethplorerAPIs
+
+import java.net.SocketTimeoutException
 
 import tcs.custom.ethereum.Utils
 
@@ -46,17 +48,17 @@ object EthplorerAPI {
       )
     ).price
     try{
-      if(price("currency").equals(currency)){
-        price("rate").asInstanceOf[String].toDouble
+      if(price.asInstanceOf[Map[String, Any]]("currency").equals(currency)){
+        price.asInstanceOf[Map[String, Any]]("rate").asInstanceOf[String].toDouble
       } else {
         0
       }
     } catch {
-      case e: Exception => 0
+      case _: Exception => 0
     }
   }
 
-  def checkIfTokenExists(tokenAddress: String): Any = {
+  def checkIfTokenExists(tokenAddress: String): EthplorerTokenInfo = {
     Utils.getMapper.readValue[EthplorerTokenInfo](
       send(
         String.join("", this.baseUrl, "getTokenInfo/", tokenAddress, "?apiKey=", apiKey)
@@ -65,6 +67,12 @@ object EthplorerAPI {
   }
 
   private def send(url: String): String = {
-    Http(url).asString.body
+    try{
+      Http(url).asString.body
+    } catch {
+      case _ : SocketTimeoutException => {
+        send(url)
+      }
+    }
   }
 }

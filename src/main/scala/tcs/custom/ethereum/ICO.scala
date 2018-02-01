@@ -1,17 +1,14 @@
 package tcs.custom.ethereum
 
+import java.security.SecureRandom
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
-import java.security.SecureRandom
-
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser
-import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
-import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
-import net.ruippeixotog.scalascraper.dsl.DSL._
-import tcs.custom.ethereum.ICOAPIs.EthplorerAPIs.EthplorerAPI
 
 import scalaj.http.Http
+import tcs.custom.ethereum.ICOAPIs.ethplorerAPIs.EthplorerAPI
 import tcs.custom.ethereum.ICOAPIs.ICOBenchAPIs.{Exchanges, ICOBenchAPI}
+import tcs.custom.ethereum.ICOAPIs.ICORatingAPIs.ICORatingAPI
+import tcs.custom.ethereum.ICOAPIs.coinMarketCapAPIs.CoinMarketCapAPI
 import tcs.custom.ethereum.ICOAPIs.etherScanAPIs.EtherScanAPI
 import tcs.custom.ethereum.ICOAPIs.tokenWhoIsAPIs.TokenWhoIsAPI
 
@@ -29,25 +26,31 @@ class ICO {
   private var hypeScore: Float = -1
   private var riskScore: Float = -1
   private var investmentRating: String = _
-
-  private var browser: JsoupDocument = _
+  private var exists: Boolean = false
 
   def this(nameOrAddress: String) {
     this
-    if(nameOrAddress.startsWith("0x") && nameOrAddress.lengthCompare(10) > 0){
+    if (nameOrAddress.startsWith("0x") && nameOrAddress.lengthCompare(10) > 0) {
       this.contractAddress = nameOrAddress
     }
-    else{
+    else {
       this.name = nameOrAddress
     }
-    EthplorerAPI.checkIfTokenExists(nameOrAddress)
+
+    val pseudoToken = EthplorerAPI.checkIfTokenExists(nameOrAddress)
+    if (pseudoToken.name == null && pseudoToken.address == null) {
+      this.exists = false
+      println(nameOrAddress + " is not a token contract")
+    } else {
+      this.exists = true
+    }
   }
 
   /**
     * @return ICO's name
     */
   def getName: String = {
-    if(this.name == null){
+    if (this.name == null) {
       this.name = EthplorerAPI.getTokenNameByContractAddress(this.getContractAddress)
     }
     this.name
@@ -103,6 +106,11 @@ class ICO {
       this.totalSupply = EtherScanAPI.getTotalSupplyByAddress(
         this.getContractAddress
       )
+      if (this.totalSupply == 0) {
+        this.totalSupply = TokenWhoIsAPI.getUSDSupply(
+          this.getName, this.getSymbol
+        )
+      }
     }
     this.totalSupply
   }
@@ -115,6 +123,20 @@ class ICO {
       this.marketCap = TokenWhoIsAPI.getMarketCap(
         this.getName
       )
+      if (this.marketCap == 0) {
+        this.marketCap = CoinMarketCapAPI.getTokenMarketCap(
+          this.getName, this.getSymbol
+        )
+      }
+      if (this.marketCap == 0) {
+        try{
+          this.marketCap = ICOBenchAPI.getICOByName(
+            this.getName
+          ).finance.raised
+        } catch {
+          case _ : Exception => this.marketCap = 0
+        }
+      }
     }
     this.marketCap
   }
@@ -145,12 +167,17 @@ class ICO {
     * @return token unit price (USD)
     */
   def getUSDPrice: Double = {
-    if(this.USDPrice == -1) {
+    if (this.USDPrice.compareTo(-1) == 0) {
       var price = TokenWhoIsAPI.getUSDUnitPrice(
         this.getName
       )
-      if(price == 0) {
+      if (price.compareTo(0) == 0) {
         price = EthplorerAPI.getTokenPriceByContractAddress(this.getContractAddress, "USD")
+      }
+      if (price.compareTo(0) == 0) {
+        price = CoinMarketCapAPI.getTokenPriceUSD(
+          this.getName, this.getSymbol
+        )
       }
       this.USDPrice = price
     }
@@ -161,11 +188,11 @@ class ICO {
     * @return token unit price (ETH)
     */
   def getETHPrice: Double = {
-    if(this.ETHPrice == -1) {
+    if (this.ETHPrice == -1) {
       var price = TokenWhoIsAPI.getETHUnitPrice(
         this.getName, this.getSymbol
       )
-      if(price == 0) {
+      if (price == 0) {
         price = EthplorerAPI.getTokenPriceByContractAddress(this.getContractAddress, "ETH")
       }
       this.ETHPrice = price
@@ -177,12 +204,17 @@ class ICO {
     * @return token unit price (BTC)
     */
   def getBTCPrice: Double = {
-    if(this.BTCPrice == -1) {
+    if (this.BTCPrice == -1) {
       var price = TokenWhoIsAPI.getBTCUnitPrice(
         this.getName
       )
-      if(price == 0) {
+      if (price == 0) {
         price = EthplorerAPI.getTokenPriceByContractAddress(this.getContractAddress, "BTC")
+      }
+      if (price == 0) {
+        price = CoinMarketCapAPI.getTokenPriceBTC(
+          this.getName, this.getSymbol
+        )
       }
       this.BTCPrice = price
     }
@@ -194,14 +226,7 @@ class ICO {
     */
   def getHypeScore: Float = {
     if (this.hypeScore == -1) {
-      val score = getScore("Hype")
-      var scoreString = score.asInstanceOf[String]
-      scoreString = scoreString.substring(0, scoreString.indexOf("/"))
-      val scoreFloat = Option[Float](scoreString.toFloat)
-      if (scoreFloat.isEmpty) {
-        score
-      }
-      this.hypeScore = scoreFloat.get
+      this.hypeScore = ICORatingAPI.getHypeScore(this.getName)
     }
     this.hypeScore
   }
@@ -211,7 +236,7 @@ class ICO {
     */
   def getInvestmentRating: String = {
     if (this.investmentRating == null) {
-      this.investmentRating = getScore("Investment")
+      this.investmentRating = ICORatingAPI.getInvestmentRating(this.getName)
     }
     this.investmentRating
   }
@@ -221,14 +246,7 @@ class ICO {
     */
   def getRiskScore: Float = {
     if (this.riskScore == -1) {
-      val score = getScore("Risk")
-      var scoreString = score.asInstanceOf[String]
-      scoreString = scoreString.substring(0, scoreString.indexOf("/"))
-      val scoreFloat = Option[Float](scoreString.toFloat)
-      if (scoreFloat.isEmpty) {
-        score
-      }
-      this.riskScore = scoreFloat.get
+      this.riskScore = ICORatingAPI.getRiskScore(this.getName)
     }
     this.riskScore
   }
@@ -249,35 +267,10 @@ class ICO {
     ICOBenchAPI.getExchanges(this.name)
   }
 
-  private def getScore(scoreType: String): String = {
-    try {
-      val sc = SSLContext.getInstance("SSL")
-      sc.init(null, Utils.trustAllCerts, new SecureRandom)
-      HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory)
-      initializeBrowser(String.join("/", "https://icorating.com/ico", this.name.replace(" ", "-").toLowerCase))
-      val scoreParts = this.browser >> elementList("div .white-block-area div div")
-      val scoreDoc = scoreParts.filter(element => {
-        (element >> allText(".title")).contains(scoreType)
-      }).head
-      var score = scoreDoc >> allText(".score")
-      if (score.isEmpty) {
-        score = scoreDoc >> allText(".name")
-      }
-      score
-    } catch {
-      case e: Exception =>
-        System.out.println(e)
-        ""
-    }
-  }
-
-  private def initializeBrowser(page: String): Unit = {
-    if (!(this.browser == null)) {
-      if (!this.browser.underlying.baseUri.equals(page)) {
-        this.browser = new JsoupBrowser().get(page)
-      }
-    } else {
-      this.browser = new JsoupBrowser().get(page)
-    }
+  /**
+    * @return
+    */
+  def itExists: Boolean = {
+    this.exists
   }
 }
