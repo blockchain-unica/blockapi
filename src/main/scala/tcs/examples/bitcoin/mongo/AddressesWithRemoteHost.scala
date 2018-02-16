@@ -8,7 +8,7 @@ import tcs.mongo.Collection
 /**
   * Same example of Addresses, but connects to a remote bitcoind instance (co2.unica.it)
   */
-class AddressesWithRemoteHost {
+object AddressesWithRemoteHost {
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("bitcoin", "passwordHere", "8332", "co2.unica.it", MainNet))
