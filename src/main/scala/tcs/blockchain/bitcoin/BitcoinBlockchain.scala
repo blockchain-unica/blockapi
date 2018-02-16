@@ -24,7 +24,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   // Connects to Bitcoin Core
   val clientFactory =
     new BitcoindClientFactory(
-      new URL("http://localhost:" + settings.rpcPort + "/"),
+      new URL("http://" + settings.rpcHost + ":" + settings.rpcPort + "/"),
       settings.rpcUser,
       settings.rpcPassword);
 
@@ -38,12 +38,13 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
   Context.getOrCreate(networkParameters)
 
-  val addr = new PeerAddress(networkParameters, InetAddress.getLocalHost)
+  val addr = if (settings.rpcHost == "localhost") InetAddress.getLocalHost else InetAddress.getByName(settings.rpcHost)
+  val peerAddr = new PeerAddress(networkParameters, addr)
 
   // Connects to Peer group
   val peerGroup = new PeerGroup(networkParameters)
   peerGroup.start()
-  peerGroup.addAddress(addr)
+  peerGroup.addAddress(peerAddr)
   peerGroup.waitForPeers(1).get
   peerGroup.setUseLocalhostPeerWhenPossible(true)
 
@@ -61,10 +62,10 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     var height = starBlock
     var endHeight = 0l
 
-    if(endBlock == 0) {
+    if (endBlock == 0) {
       val bestBlockHash = client.getbestblockhash()
       val bestBlock = client.getblock(bestBlockHash)
-      endHeight =  bestBlock.getHeight
+      endHeight = bestBlock.getHeight
     } else {
       endHeight = endBlock
     }
@@ -113,7 +114,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * Calls the factories to build transactions with input values,
     * passing the UTXO map.
     *
-    * @param height height of the block to retrieve
+    * @param height  height of the block to retrieve
     * @param UTXOmap The Unspent Transaction Output map
     * @return BitcoinBlock representation of the block
     */

@@ -33,7 +33,22 @@ class BitcoinSettings(
            rpcPassword: String,
            rpcPort: String,
            network: Network,
-           retrieveInputValues: Boolean = false) = this(rpcUser, rpcPassword, rpcPort, "localhost", network, retrieveInputValues)
+           retrieveInputValues: Boolean) = this(rpcUser, rpcPassword, rpcPort, "localhost", network, retrieveInputValues)
+
+  /**
+    * Framework settings for the Bitcoin blockchain.
+    * Sets the Bitcoin Core host to localhost
+    *
+    * @param rpcUser             Bitcoin Core user.
+    * @param rpcPassword         Bitcoin Core password.
+    * @param rpcPort             Bitcoin Core port.
+    * @param network             Either Bitcoin Main network or Bitcoin Test network.
+    */
+
+  def this(rpcUser: String,
+           rpcPassword: String,
+           rpcPort: String,
+           network: Network) = this(rpcUser, rpcPassword, rpcPort, "localhost", network)
 
 }
 
