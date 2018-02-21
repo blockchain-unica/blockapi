@@ -1,12 +1,13 @@
 package tcs.blockchain.bitcoin
 
-import java.net.{InetAddress, URL}
+import java.net.URL
 
 import com._37coins.bcJsonRpc.{BitcoindClientFactory, BitcoindInterface}
 import com.googlecode.jsonrpc4j.HttpException
-import org.bitcoinj.core.{Context, PeerAddress, PeerGroup, Sha256Hash}
+import org.bitcoinj.core._
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 import tcs.blockchain.Blockchain
+import tcs.utils.ConvertUtils
 
 import scala.collection.mutable
 
@@ -24,7 +25,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   // Connects to Bitcoin Core
   val clientFactory =
     new BitcoindClientFactory(
-      new URL("http://" + settings.rpcHost + ":" + settings.rpcPort + "/"),
+      new URL("http://" + settings.rpcHost + ":" + settings.rpcPort + "/" + settings.rpcPath),
       settings.rpcUser,
       settings.rpcPassword);
 
@@ -37,18 +38,6 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   }
 
   Context.getOrCreate(networkParameters)
-
-  val addr = if (settings.rpcHost == "localhost") InetAddress.getLocalHost else InetAddress.getByName(settings.rpcHost)
-  val peerAddr = new PeerAddress(networkParameters, addr)
-
-  // Connects to Peer group
-  val peerGroup = new PeerGroup(networkParameters)
-  peerGroup.start()
-  peerGroup.addAddress(peerAddr)
-  peerGroup.waitForPeers(1).get
-  peerGroup.setUseLocalhostPeerWhenPossible(true)
-
-  val peer = peerGroup.getDownloadPeer
 
   // Unspent Transaction Output Map
   var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long]
@@ -90,10 +79,11 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @return BitcoinBlock representation of the block
     */
   def getBlock(hash: String): BitcoinBlock = {
-    val future = peer.getBlock(Sha256Hash.wrap(hash))
-    val coreBlock = client.getblock(hash)
-    val height = coreBlock.getHeight
-    BitcoinBlock.factory(future.get, height, UTXOmap)
+    val hex = client.getblock(hash, 0)
+    val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
+    val jBlock = bitcoinSerializer.makeBlock(ConvertUtils.hexToBytes(hex))
+
+    BitcoinBlock.factory(jBlock, client.getblock(hash).getHeight, UTXOmap)
   }
 
 
@@ -105,8 +95,12 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     */
   def getBlock(height: Long): BitcoinBlock = {
     val blockHash = client.getblockhash(height)
-    val future = peer.getBlock(Sha256Hash.wrap(blockHash))
-    BitcoinBlock.factory(future.get, height)
+
+    val hex = client.getblock(blockHash, 0)
+    val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
+    val jBlock = bitcoinSerializer.makeBlock(ConvertUtils.hexToBytes(hex))
+
+    BitcoinBlock.factory(jBlock, height)
   }
 
 
@@ -120,8 +114,12 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     */
   private def getBlock(height: Long, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): BitcoinBlock = {
     val blockHash = client.getblockhash(height)
-    val future = peer.getBlock(Sha256Hash.wrap(blockHash))
-    BitcoinBlock.factory(future.get, height, UTXOmap)
+
+    val hex = client.getblock(blockHash, 0)
+    val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
+    val jBlock = bitcoinSerializer.makeBlock(ConvertUtils.hexToBytes(hex))
+
+    BitcoinBlock.factory(jBlock, height, UTXOmap)
   }
 
 
