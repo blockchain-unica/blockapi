@@ -1,5 +1,7 @@
 package tcs.utils;
 
+import org.bouncycastle.crypto.digests.RIPEMD160Digest;
+
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
 
@@ -66,4 +68,13 @@ public class ConvertUtils{
         }
         return result;
     }
+
+    public static byte[] getRIPEMD160Digest(byte[] bytes) {
+        RIPEMD160Digest digest = new RIPEMD160Digest();
+        digest.update(bytes, 0, bytes.length);
+        byte[] ripmemdHash = new byte[20];
+        digest.doFinal(ripmemdHash, 0);
+        return ripmemdHash;
+    }
+
 }

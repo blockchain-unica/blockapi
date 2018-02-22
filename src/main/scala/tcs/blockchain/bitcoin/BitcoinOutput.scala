@@ -1,6 +1,6 @@
 package tcs.blockchain.bitcoin
 
-import org.bitcoinj.core.{Address, ECKey, Sha256Hash, TransactionOutput}
+import org.bitcoinj.core.{Address, Sha256Hash, TransactionOutput}
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 import org.bitcoinj.script.Script
 
@@ -80,15 +80,7 @@ class BitcoinOutput(
 
     try {
 
-      if (transOut.getScriptPubKey.getScriptType eq Script.ScriptType.P2PKH)
-        Some(transOut.getAddressFromP2PKHScript(param))
-
-      else if (transOut.getScriptPubKey.getScriptType eq Script.ScriptType.PUB_KEY) {
-        val key = ECKey.fromPublicOnly(transOut.getScriptPubKey.getPubKey)
-        Some(key.toAddress(param))
-      }
-
-      else None
+      Some(transOut.getScriptPubKey.getToAddress(param))
 
     } catch {
       case _: Throwable => None

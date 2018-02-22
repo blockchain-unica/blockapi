@@ -1,11 +1,9 @@
 package tcs.blockchain.bitcoin
 
-import javax.script.ScriptException
-
-import org.bitcoinj.core._
+import org.bitcoinj.core.{ECKey, _}
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
-import org.bitcoinj.core.ECKey
 import org.bitcoinj.script.ScriptChunk
+import tcs.utils.ConvertUtils
 
 import scala.collection.mutable
 
@@ -53,13 +51,30 @@ class BitcoinInput(
     }
 
     try {
-      val chuncks = inScript.getChunks
-      val keyBytes = chuncks.get(1).data
-      val key = ECKey.fromPublicOnly(keyBytes)
-      Some(key.toAddress(param))
+      Some(getAddressFromP2PKHInput(inScript.getChunks, param))
     } catch {
-      case e: Exception => None
+      case e: Exception => try {
+        Some(getAddressFromP2PSHInput(inScript.getChunks, param))
+      } catch {
+        case e: Exception => None
+      }
     }
+  }
+
+  private def getAddressFromP2PKHInput(chuncks: java.util.List[ScriptChunk], param: NetworkParameters) = {
+
+    if (chuncks.size() != 2)
+      throw new Exception("Non P2PKH input")
+
+    val keyBytes = chuncks.get(1).data
+    val key = ECKey.fromPublicOnly(keyBytes)
+    key.toAddress(param)
+  }
+
+
+  private def getAddressFromP2PSHInput(chuncks: java.util.List[ScriptChunk], param: NetworkParameters) = {
+    val redeemScriptBytes = chuncks.get(chuncks.size() - 1).data
+    Address.fromP2SHHash(param, ConvertUtils.getRIPEMD160Digest(Sha256Hash.hash(redeemScriptBytes)))
   }
 
 
