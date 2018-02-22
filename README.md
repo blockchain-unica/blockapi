@@ -34,7 +34,7 @@ Generally speaking the framework needs at least one blockchain client and one DB
 Before building the project, execute the following commands:
 
 ```bash
-git clone https://github.com/bitcoinj/bitcoinj.git
+git clone https://github.com/bitbart/bitcoinj.git
 cd bitcoinj
 git checkout segwit
 mvn install -DskipTests
