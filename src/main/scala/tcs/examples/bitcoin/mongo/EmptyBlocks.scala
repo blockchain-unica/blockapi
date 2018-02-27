@@ -14,6 +14,10 @@ object EmptyBlocks {
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("bitcoinrpc", "smaer1234", "8332", MainNet))
     val mongo = new DatabaseSettings("blocksDB")
 
+    // Collection for all blocks (used for analysis)
+    val blocks = new Collection("blocks", mongo)
+
+    // Collection for empty blocks
     val emptyBlocks = new Collection("emptyblocks", mongo)
 
     // Iterating each block
@@ -24,8 +28,14 @@ object EmptyBlocks {
           ("date", block.date)
         ))
       }
-      
+      // Adding the block into the collection
+      blocks.append(List( // Same infos
+        ("blockHash", block.hash),
+        ("date", block.date)
+      ))
+
       emptyBlocks.close
+      blocks.close
     })
   }
 }
