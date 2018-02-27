@@ -8,7 +8,7 @@ import tcs.mongo.Collection
 /**
   * Created by Francesco and Giacomo on 27/02/2018.
   */
-object Addresses {
+object EmptyBlocks {
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("bitcoinrpc", "smaer1234", "8332", MainNet))
@@ -16,7 +16,7 @@ object Addresses {
 
     val emptyblocks = new Collection("emptyblocks", mongo)
 
-    // Code here
+    // Code Here
 
     emptyblocks.close
   }
