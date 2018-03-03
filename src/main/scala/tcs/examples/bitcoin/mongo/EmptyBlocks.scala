@@ -11,7 +11,7 @@ import tcs.mongo.Collection
 object EmptyBlocks {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("bitcoinrpc", "smaer1234", "8332", MainNet))
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mongo = new DatabaseSettings("blocksDB")
 
     val blocks = new Collection("blocks", mongo) // Collection for all blocks (used for analysis)
