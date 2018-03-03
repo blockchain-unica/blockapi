@@ -52,14 +52,14 @@ db.blocks_2.aggregate([
         $project:{
             day : 1,
             numberOfBlocks : 1,
-            emptyBlocks : "$emptyBlocks.count",
+            emptyBlocks : "$emptyBlocks.numberOfBlocks",
         } 
     }
 ]);
 
 /* On the resulting JSON we applied the following REs:
 
-1) ^ / \ *. {1,3}? \ * / $
-2) ^ {4} "_ id": ObjectId \ (". {24}" \)
+1) ^/\*.{1,9}?\*/$
+2) ^ {4} "_ id": ObjectId \ (". {24}" \),
 
 In order to format the file and being able to use it on Anychart. */
