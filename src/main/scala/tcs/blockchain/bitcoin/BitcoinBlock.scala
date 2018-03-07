@@ -34,6 +34,11 @@ class BitcoinBlock(
     val stringTransactions: String = "[ " + bitcoinTxs.map(tx => tx.toString() + " ") + "]"
     return hash + " " + date + " " + blockSize + " " + height + " " + stringTransactions
   }
+
+  def getMiningPool: String = {
+    // TODO: Read from first transaction and find pool
+    return "BTC.COM"
+  }
 }
 
 
