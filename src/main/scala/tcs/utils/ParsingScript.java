@@ -41,45 +41,48 @@ public class ParsingScript {
         boolean cond=true;
 
         int start=0,end=0;
-        try{
-            if(script[0]==0){
-                start=2;
-                int num=script[1]& 0xff;
-                end=num+start;
-                sig= Arrays.copyOfRange(script,start,end);
-            }else{
-                start=1;
-                int num=script[0]& 0xff;
-                end=num+start;
-                sig= Arrays.copyOfRange(script,start,end);
+        try {
+            if (script == null) {
+                return null;
+            } else {
+                if (script[0] == 0) {
+                    start = 2;
+                    int num = script[1] & 0xff;
+                    end = num + start;
+                    sig = Arrays.copyOfRange(script, start, end);
+                } else {
+                    start = 1;
+                    int num = script[0] & 0xff;
+                    end = num + start;
+                    sig = Arrays.copyOfRange(script, start, end);
 
-            }
-            while(cond){
-                if(TransactionSignature.isEncodingCanonical(sig)){
-                    int hashType = (sig[sig.length-1] & 0xff) ;
-                    Signatures.add(hashType);
-                    start=end+1;
-                    if(end < script.length){
-                        int num=script[end]& 0xff;
-                        if(num+start < script.length){
-                            end=num+start;
-                            sig=Arrays.copyOfRange(script,start,end);
-                        }else{
-                            cond=false;
-                        }
-                    }else{
-                        cond=false;
-                    }
-                }else{
-                    cond=false;
                 }
+                while (cond) {
+                    if (TransactionSignature.isEncodingCanonical(sig)) {
+                        int hashType = (sig[sig.length - 1] & 0xff);
+                        Signatures.add(hashType);
+                        start = end + 1;
+                        if (end < script.length) {
+                            int num = script[end] & 0xff;
+                            if (num + start < script.length) {
+                                end = num + start;
+                                sig = Arrays.copyOfRange(script, start, end);
+                            } else {
+                                cond = false;
+                            }
+                        } else {
+                            cond = false;
+                        }
+                    } else {
+                        cond = false;
+                    }
 
+                }
+                return Signatures;
             }
-            return Signatures;
-
-        }catch(Exception e){
-            return null;
-        }
+            }catch(Exception e){
+                return null;
+            }
 
     }
     public static void  tester(){

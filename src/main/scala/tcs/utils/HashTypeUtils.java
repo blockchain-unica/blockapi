@@ -3,8 +3,8 @@ import org.bitcoinj.core.Transaction;
 
 
 public class HashTypeUtils {
-    public static Transaction.SigHash getHashType(int hasType){
-        switch(hasType){
+    public static Transaction.SigHash getHashType(int hashType){
+        switch(hashType){
             case 0x01: return Transaction.SigHash.ALL;
             case 0x02: return Transaction.SigHash.NONE;
             case 0x03: return Transaction.SigHash.SINGLE;

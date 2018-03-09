@@ -21,7 +21,7 @@ object  HashType{
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mongo = new DatabaseSettings("myDatabase")
 
-    val myBlockchain = new Collection("HashType", mongo)
+    val hashType = new Collection("HashType", mongo)
     blockchain.foreach(block => {
       block.bitcoinTxs.foreach(tx => {
         var inputIndex: Integer = 0
@@ -32,7 +32,7 @@ object  HashType{
             if (signatures == null) {
             } else {
               signatures.forEach { s => {
-                myBlockchain.append(List(
+                hashType.append(List(
                   ("txHash", tx.hash),
                   ("blockHash", block.hash),
                   ("index", inputIndex) ,
@@ -53,6 +53,6 @@ object  HashType{
     }
     )
 
-    myBlockchain.close
+    hashType.close
   }
 }
