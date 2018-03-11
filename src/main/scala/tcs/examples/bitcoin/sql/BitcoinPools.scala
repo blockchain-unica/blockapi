@@ -11,11 +11,11 @@ import tcs.utils.DateConverter.convertDate
 /**
   * Created by Giancarlo on 07/03/2018.
   */
-object MyBlockchain{
+object BitcoinPools{
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mySQL = new DatabaseSettings("myblockchain", MySQL, "user", "password")
+    val mySQL = new DatabaseSettings("blockchain", MySQL, "giancarlo", "mysql")
 
     val txTable = new Table(sql"""
       create table if not exists btcpools(
@@ -27,8 +27,8 @@ object MyBlockchain{
       mySQL)
 
 
-    blockchain.end(473100).foreach(block => {
-        txTable.insert(Seq(block.hash.toString, convertDate(block.date), block.getMiningPool()))
+    blockchain.start(290000).end(473100).foreach(block => {
+        txTable.insert(Seq(block.hash.toString(), convertDate(block.date), block.getMiningPool()))
     })
 
     txTable.close
