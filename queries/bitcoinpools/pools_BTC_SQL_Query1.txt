@@ -1,5 +1,5 @@
 SELECT Pool.pool AS Pool, COUNT(*) AS Blocks
 
-FROM blockchain.btcpools AS Pool
+FROM myblockchain.btcpools AS Pool
 
 GROUP BY Pool.pool
