@@ -1,8 +1,45 @@
 package tcs.utils;
 import org.bitcoinj.core.Transaction;
+import org.bitcoinj.crypto.TransactionSignature;
+
+import java.util.ArrayList;
 
 
 public class HashTypeUtils {
+
+    public static ArrayList<Integer> compute(byte[] script) {
+
+        ArrayList<Integer> list = new ArrayList<>();
+
+        if (script == null) {
+
+            return list;
+
+        } else {
+
+            for (int x = 0; x < script.length - 2; x++) {
+
+                if (script[x] == 0x30 && script[x + 2] == 0x2) {
+
+                    if ((((script[x + 1]& 0xff ) + 3) + x ) <= script.length) {
+                        byte[] sig = new byte[(script[x + 1]& 0xff ) + 3];
+                        for (int y = 0; y < (script[x + 1] & 0xff ) + 3; y++) {
+                            sig[y] = script[x + y];
+                        }
+                        boolean flag = TransactionSignature.isEncodingCanonical(sig);
+                        if (flag) {
+                            list.add((int) (sig[sig.length - 1] & 0xff ));
+                            x+=(script[x + 1]& 0xff ) + 3;
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+    }
     public static Transaction.SigHash getHashType(int hashType){
         switch(hashType){
             case 0x01: return Transaction.SigHash.ALL;

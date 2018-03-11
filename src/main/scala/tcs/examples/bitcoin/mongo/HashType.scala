@@ -6,7 +6,7 @@ import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
-import tcs.utils.ParsingScript
+import tcs.utils.{HashTypeUtils}
 
 /**
   * Realizzare uno script Scala che processa tutti gli input script della blockchain di Bitcoin, classificandoli in base al modificatore di firma utilizzato. Più precisamente, il programma crea un database che, per ogni input script, indica le seguenti informazioni:
@@ -28,7 +28,7 @@ object  HashType{
         tx.inputs.foreach(in => {
 
           if (in.redeemedOutIndex >= 0) {
-            val signatures = ParsingScript.compute(in.script)
+            val signatures = HashTypeUtils.compute(in.script)
             if (signatures == null) {
             } else {
               signatures.forEach { s => {
