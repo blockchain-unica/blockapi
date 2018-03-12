@@ -56,7 +56,8 @@ class BitcoinBlock(
   private def getPoolByHexCode(hex: String): String = {
     var returned: String = "Unknown";
 
-    // Known pool codes
+    // Known pool codes listed on blockchain.info
+    // See https://github.com/blockchain/Blockchain-Known-Pools/blob/master/pools.json for more
     if(hex.contains("416e74506f6f6c3")) returned = "AntPool"
     if(hex.contains("736c757368")) returned = "SlushPool"
     if(hex.contains("42544343")) returned = "BTCCPool"
@@ -67,6 +68,13 @@ class BitcoinBlock(
     if(hex.contains("67626d696e657273")) returned = "GBMiners"
     if(hex.contains("42697466757279")) returned = "Bitfury"
     if(hex.contains("4269744d696e746572")) returned = "BitMinter"
+    if(hex.contains("4b616e6f")) returned = "KanoPool"
+    if(hex.contains("426974636f696e2d5275737369612e7275")) returned = "BitcoinRussia"
+    if(hex.contains("426974636f696e2d496e646961")) returned = "BitcoinIndia"
+    if(hex.contains("425720506f6f6c")) returned = "BW.COM"
+    if(hex.contains("3538636f696e2e636f6d")) returned = "58coin"
+    if(hex.contains("706f6f6c2e626974636f696e2e636f6d")) returned = "Bitcoin.com"
+    if(hex.contains("436f6e6e656374425443202d20486f6d6520666f72204d696e657273")) returned = "ConnectedBTC"
 
     // F2Pool does not have a unique identifier
     if(hex.contains("777868")) returned = "F2Pool"
