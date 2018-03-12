@@ -54,33 +54,27 @@ class BitcoinBlock(
   }
 
   private def getPoolByHexCode(hex: String): String = {
-    var returned: String = null;
+    var returned: String = "Unknown";
 
     // Known pool codes
-    if(hex.indexOf("416e74506f6f6c3") > -1) returned = "AntMiner"
-    if(hex.indexOf("736c757368") > -1) returned = "SlushPool"
-    if(hex.indexOf("42544343") > -1) returned = "BTCCPool"
-    if(hex.indexOf("4254432e434f4d") > -1) returned = "BTC.COM"
-    if(hex.indexOf("566961425443") > -1) returned = "ViaBTC"
-    if(hex.indexOf("4254432e544f502") > -1) returned = "BTC.TOP"
-    if(hex.indexOf("426974436c7562204e6574776f726b") > -1) returned = "Bitclub Network"
-    if(hex.indexOf("67626d696e657273") > -1) returned = "GBMiners"
-    if(hex.indexOf("42697466757279") > -1) returned = "Bitfury"
-    if(hex.indexOf("4269744d696e746572") > -1) returned = "BitMinter"
+    if(hex.contains("416e74506f6f6c3")) returned = "AntPool"
+    if(hex.contains("736c757368")) returned = "SlushPool"
+    if(hex.contains("42544343")) returned = "BTCCPool"
+    if(hex.contains("4254432e434f4d")) returned = "BTC.COM"
+    if(hex.contains("566961425443")) returned = "ViaBTC"
+    if(hex.contains("4254432e544f502")) returned = "BTC.TOP"
+    if(hex.contains("426974436c7562204e6574776f726b")) returned = "Bitclub Network"
+    if(hex.contains("67626d696e657273")) returned = "GBMiners"
+    if(hex.contains("42697466757279")) returned = "Bitfury"
+    if(hex.contains("4269744d696e746572")) returned = "BitMinter"
 
     // F2Pool does not have a unique identifier
-    if(hex.indexOf("777868") > -1) returned = "F2Pool"
-    if(hex.indexOf("66326261636b7570") > -1) returned = "F2Pool"
-    if(hex.indexOf("68663235") > -1) returned = "F2Pool"
-    if(hex.indexOf("73796a756e303031") > -1) returned = "F2Pool"
-    if(hex.indexOf("716c7339") > -1) returned = "F2Pool"
-    if(hex.indexOf("687578696e6767616f7a68616f") > -1) returned = "F2Pool"
-
-    if(returned == null) {
-      // If we have an unknown pool we try to read all ASCII char
-      val pattern = new Regex("[a-zA-Z]+")
-      returned = (pattern findAllIn  hex).mkString("|")
-    }
+    if(hex.contains("777868")) returned = "F2Pool"
+    if(hex.contains("66326261636b7570")) returned = "F2Pool"
+    if(hex.contains("68663235")) returned = "F2Pool"
+    if(hex.contains("73796a756e303031")) returned = "F2Pool"
+    if(hex.contains("716c7339")) returned = "F2Pool"
+    if(hex.contains("687578696e6767616f7a68616f")) returned = "F2Pool"
 
     return returned
   }
