@@ -1,0 +1,8 @@
+db.HashType.aggregate([
+{ 
+    $group: {
+    _id: "$hashType",
+    count: { $sum: 1}
+    }    
+}
+])
