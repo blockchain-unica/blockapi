@@ -34,7 +34,6 @@ object  HashType{
               signatures.forEach { s => {
                 hashType.append(List(
                   ("txHash", tx.hash),
-                  ("blockHash", block.hash),
                   ("index", inputIndex) ,
                   ("date", block.date),
                   ("hashType", in.getHashType(s))
