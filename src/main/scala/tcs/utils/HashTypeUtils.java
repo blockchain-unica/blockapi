@@ -5,11 +5,11 @@ import org.bitcoinj.crypto.TransactionSignature;
 import java.util.ArrayList;
 
 /**
- * Created by
- *         Chelo Fabrizio
- *         Lafhouli Hicham
- *         Meloni Antonello
- */
+  * Created by
+  * Chelo Fabrizio
+  * Lafhouli Hicham
+  * Meloni Antonello
+  */
 
 
 public class HashTypeUtils {
@@ -47,6 +47,7 @@ public class HashTypeUtils {
         }
 
     }
+    
     public static Transaction.SigHash getHashType(int hashType){
         switch(hashType){
             case 0x01: return Transaction.SigHash.ALL;
