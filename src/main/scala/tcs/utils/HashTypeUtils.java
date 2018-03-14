@@ -4,18 +4,27 @@ import org.bitcoinj.crypto.TransactionSignature;
 
 import java.util.ArrayList;
 
+/**
+ * Created by
+ *         Chelo Fabrizio
+ *         Lafhouli Hicham
+ *         Meloni Antonello
+ */
+
 
 public class HashTypeUtils {
 
-    public static ArrayList<Integer> compute(byte[] script) {
+    public static ArrayList<Integer> parsing(byte[] script) {
 
-        ArrayList<Integer> list = new ArrayList<>();
+
 
         if (script == null) {
 
-            return list;
+            return  null;
 
         } else {
+
+            ArrayList list = new ArrayList<>();
 
             for (int x = 0; x < script.length - 2; x++) {
 

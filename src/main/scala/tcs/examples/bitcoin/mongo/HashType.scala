@@ -9,12 +9,12 @@ import tcs.mongo.Collection
 import tcs.utils.{HashTypeUtils}
 
 /**
-  * Realizzare uno script Scala che processa tutti gli input script della blockchain di Bitcoin, classificandoli in base al modificatore di firma utilizzato. Più precisamente, il programma crea un database che, per ogni input script, indica le seguenti informazioni:
-    hash della transazione contenente l'input script;
-    indice dell'input script;
-    data di pubblicazione della transazione (ereditato dal blocco);
-    stringa che indica quale modificatore di firma è stato utilizzato.
+  * Created by
+  *         Chelo Fabrizio
+  *         Lafhouli Hicham
+  *         Meloni Antonello
   */
+
 object  HashType{
   def main(args: Array[String]): Unit = {
 
@@ -28,23 +28,22 @@ object  HashType{
         tx.inputs.foreach(in => {
 
           if (in.redeemedOutIndex >= 0) {
-            val signatures = HashTypeUtils.compute(in.script)
-            if (signatures == null) {
-            } else {
+            val signatures = HashTypeUtils.parsing(in.script)
+            if (!(signatures == null)) {
+
               signatures.forEach { s => {
                 hashType.append(List(
                   ("txHash", tx.hash),
                   ("index", inputIndex) ,
                   ("date", block.date),
                   ("hashType", in.getHashType(s))
-
                 ))
               }
               }
             }
-
+            inputIndex += 1
           }
-          inputIndex += inputIndex
+
         }
         )
       }
@@ -55,3 +54,5 @@ object  HashType{
     hashType.close
   }
 }
+
+
