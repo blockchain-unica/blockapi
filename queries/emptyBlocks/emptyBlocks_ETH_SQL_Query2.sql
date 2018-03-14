@@ -1,2 +1,2 @@
-# Conto quanti blocchi vuoti sono stati minati ogni giorno
-SELECT id, DATE(timestamp) as timestamp, COUNT(*) as tot FROM `block` GROUP BY DATE(timestamp) ORDER BY timestamp ASC
+# Numero di blocchi minati da ogni singolo miner
+SELECT miner, COUNT(*) as tot FROM `block` GROUP BY miner
