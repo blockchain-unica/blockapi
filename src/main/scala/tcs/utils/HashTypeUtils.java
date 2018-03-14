@@ -16,8 +16,6 @@ public class HashTypeUtils {
 
     public static ArrayList<Integer> parsing(byte[] script) {
 
-
-
         if (script == null) {
 
             return  null;
