@@ -72,6 +72,12 @@ class BitcoinInput(
     val key = ECKey.fromPublicOnly(keyBytes)
     key.toAddress(param)
   }
+ 
+  /**
+    * 
+    * @param Integer representing the hash type value, obtained from the last byte of a signature.
+    * @return SigHash an enum value representing the specific hash type.
+    */
   def getHashType(hash:Integer): Transaction.SigHash={
     HashTypeUtils.getHashType(hash)
   }
