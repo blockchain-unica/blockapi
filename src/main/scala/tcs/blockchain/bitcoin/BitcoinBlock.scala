@@ -39,14 +39,15 @@ class BitcoinBlock(
 
   def getMiningPool(): String = {
     val firstTransaction: BitcoinTransaction = bitcoinTxs.head
-    var pool: String = null
+    var pool: String = "Unknown"
 
     if(firstTransaction.inputs.head.isCoinbase) {
       val programByte: Array[Byte] = firstTransaction.inputs.head.inScript.getProgram()
       if(programByte != null) {
         val hex: String = programByte.map("%02x".format(_)).mkString
-        val program: String = new String(DatatypeConverter.parseHexBinary(hex))
-        pool = getPoolByHexCode(program)
+        if(hex != "") {
+          pool = getPoolByHexCode(hex)
+        }
       }
     }
 
