@@ -6,15 +6,24 @@ import java.util.ArrayList;
 
 /**
  * Created by
- *         Chelo Fabrizio
- *         Lafhouli Hicham
- *         Meloni Antonello
+ * Chelo Fabrizio
+ * Lafhouli Hicham
+ * Meloni Antonello
+ *
+ * This class provides a static method to get all the hash type values inside a script with multiple signatures,
+ * and also provide a static method to identify the specific hash type.
  */
 
 
 public class HashTypeUtils {
 
-    public static ArrayList<Integer> parsing(byte[] script) {
+    /**
+     *
+     * @param script : the script containing all the signatures, represented as a sequence of bytes
+     * @return : an ArrayList of numbers representing the hash types values for the signaures
+     */
+
+    public static ArrayList<Integer> parse(byte[] script) {
 
         if (script == null) {
 
@@ -47,6 +56,13 @@ public class HashTypeUtils {
         }
 
     }
+
+    /**
+     *
+     * @param hashType : an integer representing the hash type value, obtained from the last byte of a signature
+     * @return: an enum value representing the specific hash type
+     */
+
     public static Transaction.SigHash getHashType(int hashType){
         switch(hashType){
             case 0x01: return Transaction.SigHash.ALL;
