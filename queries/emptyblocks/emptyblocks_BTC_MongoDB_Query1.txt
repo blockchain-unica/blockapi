@@ -1,0 +1,65 @@
+/* Retrieving the number of empty blocks mined everyday. */
+db.emptyblocks.group({
+
+    /* Reduce by key  */
+    $keyf: function(doc) {
+        return { "day" : doc.date.getFullYear() + "/" + (doc.date.getMonth()+1) + "/" + doc.date.getDate() }; // Using date as key
+    },
+
+    initial: { numberOfBlocks:0 }, // Init value
+
+    reduce: function(obj, prev) { prev.numberOfBlocks++; } // Reduce function, just adding one to the counter
+
+})
+
+/* For comparison, we retrieve the number of total blocks mined everyday. */
+db.blocks.group({
+
+    /* Reduce by key  */
+    $keyf: function(doc) {
+        return { "day" : doc.date.getFullYear() + "/" + (doc.date.getMonth()+1) + "/" + doc.date.getDate() }; // Using date as key
+    },
+
+    initial: { numberOfBlocks:0 }, // Init value
+
+    reduce: function(obj, prev) { prev.numberOfBlocks++; } // Reduce function, just adding one to the counter
+
+})
+
+/* Then, we made a third query that merges the two JSON files obtained in output from the previous queries, after importing then in MongoDB via the mongoimport command */
+
+/* Aggregating the results for each day 
+	Day:  aaaa/mm/gg
+	TotalBlocks: xxx	
+	EmptyBlocks: xxx
+*/
+
+db.blocks_2.aggregate([
+
+    // Join with emptyblocks_2 collection
+    {
+        $lookup:{
+            from: "emptyblocks_2", // other collection name
+            localField: "day", // field 1
+            foreignField: "day", // field 2
+            as: "emptyBlocks" // alias
+        }
+    },
+    { $unwind:"$emptyBlocks" }, // $unwind used for getting data in object or for one record only
+
+    // Fetch
+    {   
+        $project:{
+            day : 1,
+            numberOfBlocks : 1,
+            emptyBlocks : "$emptyBlocks.numberOfBlocks",
+        } 
+    }
+]);
+
+/* On the resulting JSON we applied the following REs:
+
+1) ^/\*.{1,9}?\*/$
+2) ^ {4} "_ id": ObjectId \ (". {24}" \),
+
+In order to format the file and being able to use it on Anychart. */
