@@ -23,7 +23,7 @@ object HashType {
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mongo = new DatabaseSettings("myDatabase")
-    val hashType = new Collection("HashType1", mongo)
+    val hashType = new Collection("HashType", mongo)
 
     blockchain.foreach(block => {
 
