@@ -13,12 +13,9 @@ import tcs.utils.{HashTypeUtils}
   * Chelo Fabrizio
   * Lafhouli Hicham
   * Meloni Antonello
-<<<<<<< HEAD
   *
   * This class perform the calculation of the hash type of every signature associated with all inputs
   * of a transaction inside a block in the blockchain
-=======
->>>>>>> fd567310de429b739598b976d2b9d130b2df12d8
   */
 
 object HashType {
@@ -38,15 +35,11 @@ object HashType {
 
 
           if (in.redeemedOutIndex >= 0) {
-<<<<<<< HEAD
+
 
             val signatures = HashTypeUtils.parse(in.script)
 
-=======
-            
-            val signatures = HashTypeUtils.parsing(in.script)
-            
->>>>>>> fd567310de429b739598b976d2b9d130b2df12d8
+
             if (!(signatures == null)) {
 
               signatures.forEach { s => {
@@ -73,7 +66,3 @@ object HashType {
     hashType.close
   }
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> fd567310de429b739598b976d2b9d130b2df12d8

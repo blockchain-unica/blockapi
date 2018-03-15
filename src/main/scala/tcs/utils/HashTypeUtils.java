@@ -5,7 +5,6 @@ import org.bitcoinj.crypto.TransactionSignature;
 import java.util.ArrayList;
 
 /**
-<<<<<<< HEAD
  * Created by
  * Chelo Fabrizio
  * Lafhouli Hicham
@@ -14,13 +13,7 @@ import java.util.ArrayList;
  * This class provides a static method to get all the hash type values inside a script with multiple signatures,
  * and also provide a static method to identify the specific hash type.
  */
-=======
-  * Created by
-  * Chelo Fabrizio
-  * Lafhouli Hicham
-  * Meloni Antonello
-  */
->>>>>>> fd567310de429b739598b976d2b9d130b2df12d8
+
 
 
 public class HashTypeUtils {
@@ -64,7 +57,7 @@ public class HashTypeUtils {
         }
 
     }
-<<<<<<< HEAD
+
 
     /**
      *
@@ -72,9 +65,7 @@ public class HashTypeUtils {
      * @return: an enum value representing the specific hash type
      */
 
-=======
-    
->>>>>>> fd567310de429b739598b976d2b9d130b2df12d8
+
     public static Transaction.SigHash getHashType(int hashType){
         switch(hashType){
             case 0x01: return Transaction.SigHash.ALL;
