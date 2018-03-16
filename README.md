@@ -78,8 +78,8 @@ After doing these steps, do the following:
 Our framework will build the selected database. Then you can query it for performing your analysis.
 For each available Scala script, we provide some default [queries along with the resulting csv files](https://github.com/bitbart/blockchain-analytics-api/tree/master/queries).
 
-### Acknowledgements
-The authors thank the following students of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions:
-    * [Daniele Stefano Ferru](https://github.com/ferruvich) (master student) - Extension to support the Ethereum blockchain, analysis of ICOs;
-    * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), Enrico Podda (master students) - Analysis of empty blocks on Ethereum;
-    * [Giacomo Corrias](https://github.com/Jeeiii), [Francesco Pisu](https://github.com/francescopisu) (master students) - Analysis of empty blocks on Bitcoin;
+### Acknowledgments
+The authors thank the following students of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions: 
+   * [Daniele Stefano Ferru](https://github.com/ferruvich) (master student) - Extension to support the Ethereum blockchain, analysis of ICOs
+   * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), Enrico Podda (master students) - Analysis of empty blocks on Ethereum
+   * [Giacomo Corrias](https://github.com/Jeeiii), [Francesco Pisu](https://github.com/francescopisu) (master students) - Analysis of empty blocks on Bitcoin
