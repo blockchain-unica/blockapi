@@ -1,19 +1,23 @@
 package tcs.blockchain.ethereum
 
 import java.math.BigInteger
+import java.util.concurrent.CompletableFuture
 
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.{DefaultBlockParameterName, DefaultBlockParameterNumber}
 import org.web3j.protocol.http.HttpService
-import org.web3j.protocol.core.methods.response.EthBlock
+import org.web3j.protocol.core.methods.response.{EthBlock, EthGetTransactionReceipt, TransactionReceipt}
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import org.web3j.protocol.core.methods.response.EthBlock.{TransactionObject, TransactionResult}
 
 import scalaj.http.{Http, HttpResponse}
-
 import tcs.pojos.TraceBlockHttpResponse
 import tcs.blockchain.Blockchain
+
+import scala.collection.mutable
+import scala.collection.JavaConverters._
 
 
 /**
@@ -21,14 +25,14 @@ import tcs.blockchain.Blockchain
   *
   * @param url address where parity is listening
   */
-class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Blockchain {
+class EthereumBlockchain(val url: String) extends Traversable[EthereumBlock] with Blockchain {
 
   private var start: Long = 1l
   private var end: Long = 0l
   private var step: Long = 1l
 
   //Creating Web3J object connected with Parity
-  private val web3j = Web3j.build(new HttpService(url))
+  val web3j = Web3j.build(new HttpService(url))
 
   /**
     * Executes the given task for each block in blockchain
@@ -128,8 +132,19 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
 
   private def getEthereumBlock(currBlock: EthBlock.Block): EthereumBlock = {
     val resultBlockTraceJSON = getResultBlockTrace(currBlock.getNumberRaw)
+    val transactionReceipts =
+      currBlock.getTransactions.asScala
+        .map(_.asInstanceOf[TransactionObject])
+        .map((tx) => {
+            val txHash: String = tx.get.getHash
+            val futureReceipt = this.web3j.ethGetTransactionReceipt(txHash)
+            (txHash, futureReceipt)
+          }
+        )
+        .toMap
+
     if (resultBlockTraceJSON.code.toString.startsWith("40"))
-      return EthereumBlock.factory(currBlock, List())
+      return EthereumBlock.factory(currBlock, List(), transactionReceipts)
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -151,7 +166,7 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
         case _ =>
       }
     })
-    EthereumBlock.factory(currBlock, internalTxs)
+    EthereumBlock.factory(currBlock, internalTxs, transactionReceipts)
   }
 
   private def getResultBlockTrace(blockNumber: String): HttpResponse[String] = {
@@ -162,6 +177,19 @@ class EthereumBlockchain(url: String) extends Traversable[EthereumBlock] with Bl
       case _: Exception => {
         getResultBlockTrace(blockNumber)
       }
+    }
+  }
+
+
+
+  def getTransactionReceipt(transactionHash : String): Unit ={
+
+    val web3j = Web3j.build(new HttpService(url))
+
+    var receipt : EthGetTransactionReceipt = web3j.ethGetTransactionReceipt(transactionHash).sendAsync().get();
+    if(receipt.getTransactionReceipt.isPresent){
+      var r : TransactionReceipt = receipt.getTransactionReceipt.get()
+      r.getContractAddress
     }
   }
 
