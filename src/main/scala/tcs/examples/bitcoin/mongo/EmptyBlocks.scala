@@ -20,14 +20,14 @@ object EmptyBlocks {
     blockchain.foreach(block => {
       // checking if the block it's "empty" (i.e. only the coinbase tx)
       if (block.bitcoinTxs.lengthCompare(1) == 0)
-      // adding the empty block into the collection emptyblocks
+      // adding the empty block and setting the 'isEmpty' boolean to true
         blocks.append(List(
           ("blockHash", block.hash),
           ("date", block.date),
           ("isEmpty", true)
         ))
       else
-      // Adding the block into the collection blocks
+      // Adding the block and setting the 'isEmpty' boolean to false
         blocks.append(List(
           ("blockHash", block.hash),
           ("date", block.date),
