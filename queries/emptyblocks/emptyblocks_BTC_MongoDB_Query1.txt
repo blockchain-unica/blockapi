@@ -1,5 +1,5 @@
 /* Retrieving the number of empty blocks mined everyday. */
-db.emptyblocks.group({
+db.blocks.group({
 
     /* Reduce by key  */
     $keyf: function(doc) {
@@ -7,7 +7,7 @@ db.emptyblocks.group({
     },
 
     initial: { numberOfBlocks:0 }, // Init value
-
+    cond: { isEmpty: true }, // select only emptyblocks
     reduce: function(obj, prev) { prev.numberOfBlocks++; } // Reduce function, just adding one to the counter
 
 })
@@ -21,7 +21,6 @@ db.blocks.group({
     },
 
     initial: { numberOfBlocks:0 }, // Init value
-
     reduce: function(obj, prev) { prev.numberOfBlocks++; } // Reduce function, just adding one to the counter
 
 })
@@ -60,6 +59,6 @@ db.blocks_2.aggregate([
 /* On the resulting JSON we applied the following REs:
 
 1) ^/\*.{1,9}?\*/$
-2) ^ {4} "_ id": ObjectId \ (". {24}" \),
+2) ^ {4}"_id" : ObjectId\(".{24}"\),
 
 In order to format the file and being able to use it on Anychart. */
