@@ -60,6 +60,7 @@ class BitcoinBlock(
     // Known pool codes listed on blockchain.info
     // See https://github.com/blockchain/Blockchain-Known-Pools/blob/master/pools.json for more
     if(hex.contains("416e74506f6f6c3")) returned = "AntPool"
+    if(hex.contains("42697446757279")) returned = "BitFury"
     if(hex.contains("736c757368")) returned = "SlushPool"
     if(hex.contains("42544343")) returned = "BTCCPool"
     if(hex.contains("4254432e434f4d")) returned = "BTC.COM"

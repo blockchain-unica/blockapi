@@ -27,8 +27,9 @@ object BitcoinPools{
       mySQL)
 
 
-    blockchain.start(400000).end(500000).foreach(block => {
+    blockchain.start(200000).end(300000).foreach(block => {
         txTable.insert(Seq(block.hash.toString(), convertDate(block.date), block.getMiningPool()))
+        println("Done working on block @ height " + block.height)
     })
 
     txTable.close
