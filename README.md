@@ -80,6 +80,7 @@ For each available Scala script, we provide some default [queries along with the
 
 ### Acknowledgments
 The authors thank the following students of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions: 
-   * [Daniele Stefano Ferru](https://github.com/ferruvich) - Extension to support the Ethereum blockchain, analysis of ICOs
-   * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), Enrico Podda - Analysis of empty blocks on Ethereum
+   * [Daniele Stefano Ferru](https://github.com/ferruvich) - First extension to support the Ethereum blockchain, analysis of ICOs
+   * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei) - Improvements on Ethereum
+   * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Analysis of empty blocks on Ethereum
    * [Giacomo Corrias](https://github.com/Jeeiii), [Francesco Pisu](https://github.com/francescopisu) - Analysis of empty blocks on Bitcoin
