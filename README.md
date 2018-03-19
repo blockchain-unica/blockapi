@@ -84,4 +84,4 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei) - Improvements on Ethereum
    * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Empty blocks on Ethereum
    * [Giacomo Corrias](https://github.com/Jeeiii), [Francesco Pisu](https://github.com/francescopisu) - Empty blocks on Bitcoin
-   * [Giancarlo Lelli](https://github.com/GiancarloLelli) - Bitcoin pools
+   * [Giancarlo Lelli](https://www.linkedin.com/in/giancarlolelli/) - Bitcoin pools
