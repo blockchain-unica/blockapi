@@ -61,7 +61,7 @@ After doing these steps, do the following:
 2. Enable the client RPC calls.
     * In the Bitcoin Core case
         ```bash
-        bitcoind -datadir=path/to/blockchain -server -rpcuser=user -rpcpassword=password 
+        bitcoind -datadir=path/to/blockchain -server -rpcuser=user -rpcpassword=password -rpcserialversion=0
         ```
 3. Run a localhost instance of the DBMS on the default port.
 4. Clone this repository.

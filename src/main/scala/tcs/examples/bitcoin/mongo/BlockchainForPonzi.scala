@@ -15,9 +15,9 @@ object BlockchainForPonzi {
 
     val myBlockchain = new Collection("transaction", mongo)
 
-    blockchain.foreach(block => {
+    blockchain.start(481820).foreach(block => {
 
-      if (block.height % 10000 == 0) println("Block: " + block.height)
+      if (block.height % 1 == 0) println("Block: " + block.height)
 
       block.bitcoinTxs.foreach(tx => {
         myBlockchain.append(Document(
