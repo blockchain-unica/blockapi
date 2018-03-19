@@ -57,8 +57,8 @@ case class EthereumTransaction(
       val request = requestOpt.get
       val response = request.send()
       val receiptOpt = response.getTransactionReceipt
-      if (receiptOpt.isPresent) {
-        return Some(receiptOpt.get().getContractAddress)
+      if (receiptOpt.isPresent && receiptOpt.get.getContractAddress != null) {
+        return Some(receiptOpt.get.getContractAddress)
       }
     }
     None
