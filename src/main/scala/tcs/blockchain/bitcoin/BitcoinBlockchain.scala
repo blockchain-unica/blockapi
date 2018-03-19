@@ -68,6 +68,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
       println("Done")
     } catch {
       case e: HttpException => println("Error occurred:\n" + e.getMessage)
+        e.printStackTrace
     }
   }
 
