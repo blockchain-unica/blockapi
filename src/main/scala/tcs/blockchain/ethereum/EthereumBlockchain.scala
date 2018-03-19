@@ -1,7 +1,6 @@
 package tcs.blockchain.ethereum
 
 import java.math.BigInteger
-import java.util.concurrent.CompletableFuture
 
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.{DefaultBlockParameterName, DefaultBlockParameterNumber}
@@ -10,13 +9,13 @@ import org.web3j.protocol.core.methods.response.{EthBlock, EthGetTransactionRece
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
-import org.web3j.protocol.core.methods.response.EthBlock.{TransactionObject, TransactionResult}
+import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
 
 import scalaj.http.{Http, HttpResponse}
 import tcs.pojos.TraceBlockHttpResponse
 import tcs.blockchain.Blockchain
 
-import scala.collection.mutable
+import org.web3j.protocol.core.Request
 import scala.collection.JavaConverters._
 
 
@@ -68,9 +67,10 @@ class EthereumBlockchain(val url: String) extends Traversable[EthereumBlock] wit
     try {
       val block = web3j.ethGetBlockByNumber(new DefaultBlockParameterNumber(height), true).sendAsync().get().getBlock
       getEthereumBlock(block)
-    } catch {
-      case _: Exception => {
-        getBlock(height)
+    } catch{
+      case e : Exception => {
+        e.printStackTrace
+        throw e
       }
     }
   }
@@ -132,41 +132,51 @@ class EthereumBlockchain(val url: String) extends Traversable[EthereumBlock] wit
 
   private def getEthereumBlock(currBlock: EthBlock.Block): EthereumBlock = {
     val resultBlockTraceJSON = getResultBlockTrace(currBlock.getNumberRaw)
-    val transactionReceipts =
+    val transactionReceipts : Map[String, Request[_,EthGetTransactionReceipt]] =
       currBlock.getTransactions.asScala
         .map(_.asInstanceOf[TransactionObject])
         .map((tx) => {
             val txHash: String = tx.get.getHash
-            val futureReceipt = this.web3j.ethGetTransactionReceipt(txHash)
+            val futureReceipt : Request[_, EthGetTransactionReceipt] = this.web3j.ethGetTransactionReceipt(txHash)
             (txHash, futureReceipt)
           }
         )
         .toMap
 
-    if (resultBlockTraceJSON.code.toString.startsWith("40"))
-      return EthereumBlock.factory(currBlock, List(), transactionReceipts)
-    val mapper = new ObjectMapper() with ScalaObjectMapper
-    mapper.registerModule(DefaultScalaModule)
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    val resultBlockTrace = mapper.readValue[TraceBlockHttpResponse](resultBlockTraceJSON.body.replaceAll("type", "traceType"))
-    var internalTxs: List[EthereumInternalTransaction] = List()
-    resultBlockTrace.result.foreach((blockTrace) => {
-      blockTrace.getTraceType match {
-        case "call" =>
-          val value = new BigInteger(blockTrace.getAction.getValue.substring(2), 16)
-          if (blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0) {
-            internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
+    if (resultBlockTraceJSON.isSuccess) {
+      val mapper = new ObjectMapper() with ScalaObjectMapper
+      mapper.registerModule(DefaultScalaModule)
+      mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+      val resultBlockTrace = mapper.readValue[TraceBlockHttpResponse](resultBlockTraceJSON.body)
+      var internalTxs: List[EthereumInternalTransaction] = List()
+
+      if(resultBlockTrace.result != null) {
+        resultBlockTrace.result.foreach((blockTrace) => {
+          blockTrace.getTraceType match {
+            case "call" =>
+              val value = new BigInteger(blockTrace.getAction.getValue.substring(2), 16)
+              if (blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0) {
+                internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
+              }
+            case "suicide" => internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getAddress, blockTrace.getAction.getRefundAddress, 0)
+            case "create" =>
+              val value = new BigInteger(blockTrace.getAction.getValue.substring(2), 16)
+              if (blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0) {
+                internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
+              }
+            case _ =>
           }
-        case "suicide" => internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getAddress, blockTrace.getAction.getRefundAddress, 0)
-        case "create" =>
-          val value = new BigInteger(blockTrace.getAction.getValue.substring(2), 16)
-          if (blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0) {
-            internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
-          }
-        case _ =>
+        })
       }
-    })
-    EthereumBlock.factory(currBlock, internalTxs, transactionReceipts)
+
+      EthereumBlock.factory(currBlock, internalTxs, transactionReceipts)
+
+    }
+
+    else{
+      return EthereumBlock.factory(currBlock, List(), transactionReceipts)
+    }
+
   }
 
   private def getResultBlockTrace(blockNumber: String): HttpResponse[String] = {
