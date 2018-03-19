@@ -3,7 +3,7 @@ package tcs.blockchain.bitcoin
 import org.bitcoinj.core.{ECKey, _}
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 import org.bitcoinj.script.ScriptChunk
-import tcs.utils.ConvertUtils
+import tcs.utils.{ConvertUtils, HashTypeUtils}
 
 import scala.collection.mutable
 
@@ -24,7 +24,9 @@ class BitcoinInput(
                     val isCoinbase: Boolean,
                     val inScript: BitcoinScript,
                     val sequenceNo: Long,
-                    val outPoint: TransactionOutPoint) {
+                    val outPoint: TransactionOutPoint,
+                    val script: Array[Byte]
+                   ) {
 
 
   /**
@@ -69,6 +71,15 @@ class BitcoinInput(
     val keyBytes = chuncks.get(1).data
     val key = ECKey.fromPublicOnly(keyBytes)
     key.toAddress(param)
+  }
+ 
+  /**
+    * 
+    * @param Integer representing the hash type value, obtained from the last byte of a signature.
+    * @return SigHash an enum value representing the specific hash type.
+    */
+  def getHashType(hash:Integer): Transaction.SigHash={
+    HashTypeUtils.getHashType(hash)
   }
 
 
@@ -119,7 +130,8 @@ object BitcoinInput {
         case e: Exception => new BitcoinScript(Array())
       },
       input.getSequenceNumber,
-      input.getOutpoint
+      input.getOutpoint,
+      input.getScriptBytes
     )
   }
 
@@ -163,7 +175,8 @@ object BitcoinInput {
         case e: Exception => new BitcoinScript(Array())
       },
       input.getSequenceNumber,
-      input.getOutpoint
+      input.getOutpoint,
+      input.getScriptBytes
     )
   }
 
