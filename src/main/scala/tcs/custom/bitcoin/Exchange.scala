@@ -31,6 +31,7 @@ object Exchange {
         var url = new URL("http://api.coindesk.com/v1/bpi/historical/close.json?start=" + sDate + "&end=" + sDate)
         var connection = url.openConnection().asInstanceOf[HttpURLConnection]
         connection.setRequestMethod("GET")
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0")
         val br = new BufferedReader(new InputStreamReader(connection.getInputStream))
 
         val str = Stream.continually(br.readLine()).takeWhile(_ != null).mkString("\n")
