@@ -1,5 +1,5 @@
 /* Retrieving the number of empty blocks mined everyday. */
-db.emptyblocks.group({
+db.blocks.group({
 
     /* Reduce by key  */
     $keyf: function(doc) {
@@ -7,7 +7,7 @@ db.emptyblocks.group({
     },
 
     initial: { numberOfBlocks:0 }, // Init value
-
+    cond: { isEmpty: true }, // Only emptyblocks
     reduce: function(obj, prev) { prev.numberOfBlocks++; } // Reduce function, just adding one to the counter
 
 })
@@ -21,11 +21,12 @@ db.blocks.group({
     },
 
     initial: { numberOfBlocks:0 }, // Init value
-
+    // no cond needed
     reduce: function(obj, prev) { prev.numberOfBlocks++; } // Reduce function, just adding one to the counter
 
 })
 
+/* For generating the interactive chart */
 /* Then, we made a third query that merges the two JSON files obtained in output from the previous queries, after importing then in MongoDB via the mongoimport command */
 
 /* Aggregating the results for each day 
@@ -54,12 +55,13 @@ db.blocks_2.aggregate([
             numberOfBlocks : 1,
             emptyBlocks : "$emptyBlocks.numberOfBlocks",
         } 
-    }
+    },
+    { $sort: { day: 1 } }
 ]);
 
 /* On the resulting JSON we applied the following REs:
 
 1) ^/\*.{1,9}?\*/$
-2) ^ {4} "_ id": ObjectId \ (". {24}" \),
+2) ^ {4}"_id" : ObjectId\(".{24}"\),
 
 In order to format the file and being able to use it on Anychart. */
