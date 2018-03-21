@@ -145,10 +145,6 @@ class EthereumBlockchain(val url: String) extends Traversable[EthereumBlock] wit
 
     if (resultBlockTraceJSON.isSuccess) {
 
-
-
-      println(resultBlockTraceJSON.body)
-
       val mapper = new ObjectMapper() with ScalaObjectMapper
       mapper.registerModule(DefaultScalaModule)
       mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
