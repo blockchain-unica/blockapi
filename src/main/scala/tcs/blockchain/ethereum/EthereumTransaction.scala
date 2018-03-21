@@ -1,6 +1,13 @@
 package tcs.blockchain.ethereum
 
+import java.util.concurrent.CompletableFuture
+
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
+import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, TransactionReceipt}
+import org.web3j.protocol.http.HttpService
+import shapeless.ops.nat.GT.>
 import tcs.blockchain.Transaction
 
 /**
@@ -41,8 +48,22 @@ case class EthereumTransaction(
                           raw: String,
                           r: String,
                           s: String,
-                          v: Int
-                         ) extends Transaction
+                          v: Int,
+                          requestOpt: Option[Request[_, EthGetTransactionReceipt]]
+                         ) extends Transaction {
+
+  def getContractAddress(): Option[String] = {
+    if (requestOpt.isDefined) {
+      val request = requestOpt.get
+      val response = request.send()
+      val receiptOpt = response.getTransactionReceipt
+      if (receiptOpt.isPresent && receiptOpt.get.getContractAddress != null) {
+        return Some(receiptOpt.get.getContractAddress)
+      }
+    }
+    None
+  }
+}
 
 /**
   * Factories for [[tcs.blockchain.ethereum.EthereumTransaction]] instances
@@ -56,9 +77,10 @@ object EthereumTransaction{
     * @param tx Web3J representation of this transaction
     * @return new EthereumTransaction
     */
-  def factory(tx: TransactionObject): EthereumTransaction = {
+  def factory(tx: TransactionObject, receipt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction = {
+
     new EthereumTransaction(tx.getHash, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
                                    tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-                                   tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV)
+                                   tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV, receipt)
   }
 }

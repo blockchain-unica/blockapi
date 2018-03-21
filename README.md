@@ -1,5 +1,5 @@
 # Blockchain analytics API
-A Scala framework for the development of general-purpose analytics on blockchains, by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu), [Stefano Lande](http://tcs.unica.it/members/stefano-lande), and [Daniele Stefano Ferru](https://github.com/ferruvich).
+A Scala framework for the development of general-purpose analytics on blockchains, created by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu), [Stefano Lande](http://tcs.unica.it/members/stefano-lande).
 
 Our framework allows to combine data *within* the blockchain 
 with data from the *outside* (e.g. exchange rates and tags). 
@@ -61,7 +61,7 @@ After doing these steps, do the following:
 2. Enable the client RPC calls.
     * In the Bitcoin Core case
         ```bash
-        bitcoind -datadir=path/to/blockchain -server -rpcuser=user -rpcpassword=password 
+        bitcoind -datadir=path/to/blockchain -server -rpcuser=user -rpcpassword=password -rpcserialversion=0
         ```
 3. Run a localhost instance of the DBMS on the default port.
 4. Clone this repository.
@@ -77,3 +77,11 @@ After doing these steps, do the following:
 
 Our framework will build the selected database. Then you can query it for performing your analysis.
 For each available Scala script, we provide some default [queries along with the resulting csv files](https://github.com/bitbart/blockchain-analytics-api/tree/master/queries).
+
+### Acknowledgments
+The authors thank the following students of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions: 
+   * [Daniele Stefano Ferru](https://github.com/ferruvich) - First extension to support the Ethereum blockchain, analysis of ICOs
+   * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei) - Improvements on Ethereum
+   * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Empty blocks on Ethereum
+   * [Giacomo Corrias](https://github.com/Jeeiii), [Francesco Pisu](https://github.com/francescopisu) - Empty blocks on Bitcoin
+   * [Giancarlo Lelli](https://www.linkedin.com/in/giancarlolelli/) - Bitcoin pools

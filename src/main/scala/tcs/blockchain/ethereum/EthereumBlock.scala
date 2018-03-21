@@ -1,7 +1,10 @@
 package tcs.blockchain.ethereum
 
-import org.web3j.protocol.core.methods.response.EthBlock.{Block, TransactionObject}
+import java.util.concurrent.CompletableFuture
 
+import org.web3j.protocol.core.Request
+import org.web3j.protocol.core.methods.response.EthBlock.{Block, TransactionObject}
+import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, TransactionReceipt}
 import tcs.blockchain.{Block => TCSBLock}
 
 import scala.collection.JavaConverters._
@@ -80,12 +83,14 @@ object EthereumBlock{
     * @param internalTransactions block's internal transactions
     * @return new EtherumBlock
     */
-  def factory(block: Block, internalTransactions: List[EthereumInternalTransaction]): EthereumBlock = {
+  def factory(block: Block, internalTransactions: List[EthereumInternalTransaction], transactionReceipts: Map[String, Request[_, EthGetTransactionReceipt]]): EthereumBlock = {
     val transactions: List[EthereumTransaction] =
-      block.getTransactions.asScala.toList.map((tx) => EthereumTransaction.factory(tx.asInstanceOf[TransactionObject]))
+      block.getTransactions.asScala.toList
+        .map(_.asInstanceOf[TransactionObject])
+        .map((tx) => EthereumTransaction.factory(tx, transactionReceipts.get(tx.get().getHash) ))
     var sealFields = block.getSealFields
     if(sealFields == null){
-      sealFields = List().asJava
+      sealFields = List[String]().asJava
     }
     new EthereumBlock(block.getNumber, block.getHash, block.getParentHash, block.getNonce, block.getSha3Uncles,
                       block.getLogsBloom, block.getTransactionsRoot, block.getStateRoot, block.getReceiptsRoot,
