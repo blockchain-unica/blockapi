@@ -80,23 +80,56 @@ class BitcoinInput(
     * //@param
     * @return List[SigHash]  an list of enum value representing the specific hash type.
     */
+    def getSignatureHashType(): List[SignatureHash.SignatureHash] ={
 
-	
-	///
-	//TODO
-    // getSignatureHashType()
-    //
+       if(inScript==null){
+
+         null
+       }
+
+       else{
 
 
-  
+         val hashTypelist=new ListBuffer[SignatureHash.SignatureHash]()
+
+
+
+         val signatures:List[Array[Byte]]=parse()
+
+
+
+         signatures.foreach(sig=>{
+
+           val lastByteSignature:Int = sig.last & 0xff
+
+
+           val hashType= lastByteSignature match {
+
+             case  0x01  => hashTypelist+=SignatureHash.ALL
+             case  0x02  => hashTypelist+=SignatureHash.NONE
+             case  0x03  => hashTypelist+=SignatureHash.SINGLE
+             case  0x80  => hashTypelist+=SignatureHash.ANYONECANPAY
+             case  0x81  => hashTypelist+=SignatureHash.ANYONECANPAY_ALL
+             case  0x82  => hashTypelist+=SignatureHash.ANYONECANPAY_NONE
+             case  0x83  => hashTypelist+=SignatureHash.ANYONECANPAY_ALL
+             case   _    =>     hashTypelist+=SignatureHash.UNSET  // the default, catch-all
+
+           }
+         })
+
+         hashTypelist.toList
+       }
+     }
+
+
     private def parse():List[Array[Byte]]={
    val signature=new ListBuffer[Array[Byte]]()
-    
+
 	inScript.getChunks.forEach(chunk => {
-							if(TransactionSignature.isEncodingCanonical(chunk.data)) 
+							if(TransactionSignature.isEncodingCanonical(chunk.data))
 								signature+=chunk.data
-						})	
-    signature.toList	
+						})
+    signature.toList
 
   }
 
