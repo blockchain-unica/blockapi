@@ -49,6 +49,9 @@ case class EthereumTransaction(
                           r: String,
                           s: String,
                           v: Int,
+                          verifiedContract: String,
+                          contractName: String,
+                          verificationDay: String,
                           requestOpt: Option[Request[_, EthGetTransactionReceipt]]
                          ) extends Transaction {
 
@@ -79,8 +82,20 @@ object EthereumTransaction{
     */
   def factory(tx: TransactionObject, receipt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction = {
 
+
+    val (verifiedContract, contractName, verificationDay) = getVerifiedContracts
+
     new EthereumTransaction(tx.getHash, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
                                    tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-                                   tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV, receipt)
+                                   tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+                                   "placeholder_verified", "placeholder_contractname", "placeholder_verificationday",
+                                   receipt)
   }
+
+  private def getVerifiedContracts = {
+
+
+
+  }
+
 }

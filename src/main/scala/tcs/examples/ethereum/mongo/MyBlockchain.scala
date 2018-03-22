@@ -1,4 +1,4 @@
-package tcs.examples.ethereum.mongo
+package tcs.examples.ethereum.mongo.levensthein
 
 import java.util.Date
 
