@@ -1,5 +1,6 @@
 package tcs.blockchain.ethereum
 
+import java.net.URLEncoder
 import java.util.concurrent.CompletableFuture
 
 import org.web3j.protocol.Web3j
@@ -9,6 +10,7 @@ import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, Trans
 import org.web3j.protocol.http.HttpService
 import shapeless.ops.nat.GT.>
 import tcs.blockchain.Transaction
+import tcs.utils.HttpRequester
 
 /**
   * Defines an Ethereum Transaction
@@ -82,20 +84,71 @@ object EthereumTransaction{
     */
   def factory(tx: TransactionObject, receipt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction = {
 
+    val creates = tx.getCreates()
+    var verifiedContract, contractName, verificationDay = ""
 
-    val (verifiedContract, contractName, verificationDay) = getVerifiedContracts
+    if (creates != null) {
+      val (isVerified, name, verDay) = getVerifiedContract(creates)
+      verifiedContract = isVerified
+      contractName = name
+      verificationDay = verDay
+    }
+
 
     new EthereumTransaction(tx.getHash, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
                                    tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
                                    tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
-                                   "placeholder_verified", "placeholder_contractname", "placeholder_verificationday",
+                                   verifiedContract, contractName, verificationDay,
                                    receipt)
   }
 
-  private def getVerifiedContracts = {
+  /**
+    * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified. If so, it
+    * finds its name on the platform and its date of verification.
+    *
+    * This way of retrieving this data IS NOT OPTIMAL, but until etherscan.io adds a way to query the verified contracts
+    * over their public API, this is the only way.
+    *
+    * @author Laerte
+    * @param contractAddress hex address of contract to check for verification
+    * @return new Tuple3. In case of success, its fields will be populated with the aforementioned data. Otherwise,
+    *         it returns 3 empty strings.
+    */
+  private def getVerifiedContract(contractAddress: String): (String, String, String) = {
+
+    try {
+      val content = HttpRequester.get("http://etherscan.io/address/" + contractAddress + "#code")
+      //println(content)
+      var isVerified = ""
+      var name = ""
+      var date = ""
+
+      if (content.contains("<b>Contract Source Code Verified</b>")){
+        isVerified = "true"
+        val strForName = "<td>Contract Name:\n</td>\n<td>"
+        name = content.substring(content.indexOf(strForName)+strForName.length)
+        name = name.substring(0, name.indexOf("<"))
+
+        val datePage = HttpRequester.get("https://etherscan.io/contractsVerified?cn=" + URLEncoder.encode(name, "UTF-8"))
+
+        date = datePage.substring(datePage.indexOf(contractAddress) + contractAddress.length)
+        date = date.substring(date.indexOf("Ether</td><td>") + "Ether</td><td>".length)
+        date = date.substring(date.indexOf("<td>") + 4)
+        date = date.substring(0, date.indexOf("<"))
+      }
+
+      println("Found contract: " + name + " whose verification day was: " + date)
+      return (isVerified, name, date)
+
+    } catch {
+      case ioe: java.io.IOException => {ioe.printStackTrace(); return ("", "", "")}
+      case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return ("", "", "")}
+      case e: Exception => {e.printStackTrace(); return ("", "", "")}
+    }
 
 
 
   }
+
 
 }
