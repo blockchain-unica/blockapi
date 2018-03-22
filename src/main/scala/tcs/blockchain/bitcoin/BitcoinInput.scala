@@ -1,9 +1,12 @@
 package tcs.blockchain.bitcoin
 
+import scala.collection.mutable.ListBuffer
 import org.bitcoinj.core.{ECKey, _}
+import org.bitcoinj.crypto.TransactionSignature
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 import org.bitcoinj.script.ScriptChunk
 import tcs.utils.ConvertUtils
+import tcs.blockchain.bitcoin.SignatureHash
 
 import scala.collection.mutable
 
@@ -24,7 +27,8 @@ class BitcoinInput(
                     val isCoinbase: Boolean,
                     val inScript: BitcoinScript,
                     val sequenceNo: Long,
-                    val outPoint: TransactionOutPoint) {
+                    val outPoint: TransactionOutPoint
+                   ) {
 
 
   /**
@@ -70,6 +74,32 @@ class BitcoinInput(
     val key = ECKey.fromPublicOnly(keyBytes)
     key.toAddress(param)
   }
+
+  /**
+    *
+    * //@param
+    * @return List[SigHash]  an list of enum value representing the specific hash type.
+    */
+
+	
+	///
+	//TODO
+    // getSignatureHashType()
+    //
+
+
+  
+    private def parse():List[Array[Byte]]={
+   val signature=new ListBuffer[Array[Byte]]()
+    
+	inScript.getChunks.forEach(chunk => {
+							if(TransactionSignature.isEncodingCanonical(chunk.data)) 
+								signature+=chunk.data
+						})	
+    signature.toList	
+
+  }
+
 
 
   private def getAddressFromP2PSHInput(chuncks: java.util.List[ScriptChunk], param: NetworkParameters) = {
