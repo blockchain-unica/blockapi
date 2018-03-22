@@ -137,7 +137,6 @@ object EthereumTransaction{
         date = date.substring(0, date.indexOf("<"))
       }
 
-      println("Found contract: " + name + " whose verification day was: " + date)
       return (isVerified, name, date)
 
     } catch {
