@@ -110,6 +110,7 @@ object EthereumTransaction{
     * over their public API, this is the only way.
     *
     * @author Laerte
+    * @author Luca
     * @param contractAddress hex address of contract to check for verification
     * @return new Tuple3. In case of success, its fields will be populated with the aforementioned data. Otherwise,
     *         it returns 3 empty strings.
