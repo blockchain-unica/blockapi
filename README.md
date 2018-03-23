@@ -83,5 +83,5 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Daniele Stefano Ferru](https://github.com/ferruvich) - First extension to support the Ethereum blockchain, analysis of ICOs
    * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei) - Improvements on Ethereum
    * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Empty blocks on Ethereum
-   * [Giacomo Corrias](https://github.com/Jeeiii), [Francesco Pisu](https://github.com/francescopisu) - Empty blocks on Bitcoin
+   * [Giacomo Corrias](https://www.linkedin.com/in/giacomo-corrias-a730b7160/), [Francesco Pisu](https://www.linkedin.com/in/francesco-pisu-b07a3b13a/) - Empty blocks on Bitcoin
    * [Giancarlo Lelli](https://www.linkedin.com/in/giancarlolelli/) - Bitcoin pools
