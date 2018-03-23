@@ -134,12 +134,9 @@ object EthereumTransaction{
         name = content.substring(content.indexOf(strForName)+strForName.length)
         name = name.substring(0, name.indexOf("<"))
 
-
         val datePage = HttpRequester.get("https://etherscan.io/contractsVerified?cn=" + URLEncoder.encode(name, "UTF-8"))
 
-
         val indexOfContract = datePage.indexOf(contractAddress)
-
 
         if (indexOfContract == -1){
 
@@ -147,7 +144,7 @@ object EthereumTransaction{
 
           numPages = numPages.substring(0, numPages.indexOf("<"))
 
-          val n = numPages.toFloat
+          val n = numPages.toInt
 
           var currPage = ""
           var currIndexOfContract = -1
@@ -155,7 +152,7 @@ object EthereumTransaction{
 
           while  (i<=n && currIndexOfContract == -1){ //This for keeps looking for the contract in pages further than
                                                       // the first one
-            currPage = HttpRequester.get("https://etherscan.io/contractsVerified"+ i + "?cn=" + URLEncoder.encode(name, "UTF-8"))
+            currPage = HttpRequester.get("https://etherscan.io/contractsVerified/"+ i + "?cn=" + URLEncoder.encode(name, "UTF-8"))
 
             currIndexOfContract = currPage.indexOf(contractAddress)
 
