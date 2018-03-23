@@ -28,9 +28,8 @@ import tcs.utils.HttpRequester
 object VCWithPermissions {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(5000000).setEnd(5001000)
+      .setStart(4900000).setEnd(5000000)
     val mongo = new DatabaseSettings("myDatabase")
-    val weiIntoEth = BigInt("1000000000000000000")
     val verifiedContracts = new Collection("VerifiedContracts", mongo)
 
     blockchain.foreach(block => {
@@ -42,7 +41,11 @@ object VCWithPermissions {
       block.transactions.foreach(tx => {
         if (tx.creates != null && tx.verifiedContract == "true"){
           val format = new java.text.SimpleDateFormat("MM/dd/yyyy")
+
+
           val dateVerified = format.parse(tx.verificationDay)
+
+
           val sourceCode = getSourceCode(tx.creates)
           val list = List(
             ("contractAddress", tx.creates),

@@ -109,6 +109,12 @@ object EthereumTransaction{
     * This way of retrieving this data IS NOT OPTIMAL, but until etherscan.io adds a way to query the verified contracts
     * over their public API, this is the only way.
     *
+    * NOTE: We only check the first page of contracts returned by the GET query at
+    * "https://etherscan.io/contractsVerified?cn=" for the date, and this is where the method can mostly fail, because
+    * the search can only be performed with the contract name as the query value. For very common names, such as
+    * "Wallet", the contract found could be in pages further than the first one. In that case, we skip on looking for
+    * the date and return 01/01/1970 (UNIX Epoch).
+    *
     * @author Laerte
     * @author Luca
     * @param contractAddress hex address of contract to check for verification
@@ -130,12 +136,22 @@ object EthereumTransaction{
         name = content.substring(content.indexOf(strForName)+strForName.length)
         name = name.substring(0, name.indexOf("<"))
 
+
         val datePage = HttpRequester.get("https://etherscan.io/contractsVerified?cn=" + URLEncoder.encode(name, "UTF-8"))
 
-        date = datePage.substring(datePage.indexOf(contractAddress) + contractAddress.length)
-        date = date.substring(date.indexOf("Ether</td><td>") + "Ether</td><td>".length)
-        date = date.substring(date.indexOf("<td>") + 4)
-        date = date.substring(0, date.indexOf("<"))
+
+        val indexOfContract = datePage.indexOf(contractAddress)
+
+        if (indexOfContract == -1)
+          date = "01/01/1970" //If date is not found, we return the Epoch.
+        else{
+          date = datePage.substring(datePage.indexOf(contractAddress) + contractAddress.length)
+
+          date = date.substring(date.indexOf("Ether</td><td>") + "Ether</td><td>".length)
+          date = date.substring(date.indexOf("<td>") + 4)
+          date = date.substring(0, date.indexOf("<"))
+        }
+
       }
 
       return (isVerified, name, date)
