@@ -109,11 +109,9 @@ object EthereumTransaction{
     * This way of retrieving this data IS NOT OPTIMAL, but until etherscan.io adds a way to query the verified contracts
     * over their public API, this is the only way.
     *
-    * NOTE: We only check the first page of contracts returned by the GET query at
-    * "https://etherscan.io/contractsVerified?cn=" for the date, and this is where the method can mostly fail, because
-    * the search can only be performed with the contract name as the query value. For very common names, such as
-    * "Wallet", the contract found could be in pages further than the first one. In that case, we skip on looking for
-    * the date and return 01/01/1970 (UNIX Epoch).
+    * NOTE: We tried to improve the robustness by iteratively looking for the contract date in subsequent pages (if not
+    * found in the first one), because there is no way to control the query at
+    * "https://etherscan.io/contractsVerified?cn=" to make a strict search.
     *
     * @author Laerte
     * @author Luca
@@ -128,7 +126,7 @@ object EthereumTransaction{
       //println(content)
       var isVerified = ""
       var name = ""
-      var date = ""
+      var date = "01/01/1970"
 
       if (content.contains("<b>Contract Source Code Verified</b>")){
         isVerified = "true"
@@ -142,11 +140,41 @@ object EthereumTransaction{
 
         val indexOfContract = datePage.indexOf(contractAddress)
 
-        if (indexOfContract == -1)
-          date = "01/01/1970" //If date is not found, we return the Epoch.
-        else{
-          date = datePage.substring(datePage.indexOf(contractAddress) + contractAddress.length)
 
+        if (indexOfContract == -1){
+
+          var numPages = datePage.substring(datePage.indexOf("</b> of <b>") + "</b> of <b>".length)
+
+          numPages = numPages.substring(0, numPages.indexOf("<"))
+
+          val n = numPages.toFloat
+
+          var currPage = ""
+          var currIndexOfContract = -1
+          var i = 2
+
+          while  (i<=n && currIndexOfContract == -1){ //This for keeps looking for the contract in pages further than
+                                                      // the first one
+            currPage = HttpRequester.get("https://etherscan.io/contractsVerified"+ i + "?cn=" + URLEncoder.encode(name, "UTF-8"))
+
+            currIndexOfContract = currPage.indexOf(contractAddress)
+
+            if (currIndexOfContract != -1){
+              println("Contract found at page: " + i)
+
+              date = currPage.substring(datePage.indexOf(contractAddress) + contractAddress.length)
+              date = date.substring(date.indexOf("Ether</td><td>") + "Ether</td><td>".length)
+              date = date.substring(date.indexOf("<td>") + 4)
+              date = date.substring(0, date.indexOf("<"))
+            }
+
+            i+=1
+
+          }
+        }
+        else{
+
+          date = datePage.substring(datePage.indexOf(contractAddress) + contractAddress.length)
           date = date.substring(date.indexOf("Ether</td><td>") + "Ether</td><td>".length)
           date = date.substring(date.indexOf("<td>") + 4)
           date = date.substring(0, date.indexOf("<"))
@@ -161,9 +189,6 @@ object EthereumTransaction{
       case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return ("", "", "")}
       case e: Exception => {e.printStackTrace(); return ("", "", "")}
     }
-
-
-
   }
 
 
