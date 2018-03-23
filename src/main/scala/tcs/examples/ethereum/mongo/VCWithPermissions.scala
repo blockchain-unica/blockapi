@@ -106,8 +106,7 @@ object VCWithPermissions {
     */
   private def findPermissions(sourceCode : String): Boolean = {
 
-    if (sourceCode.contains("modifier onlyOwner()")) return true else return false
-
+    return sourceCode.contains("modifier onlyOwner()")
   }
 
 
