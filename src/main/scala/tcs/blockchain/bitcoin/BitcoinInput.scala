@@ -126,7 +126,7 @@ class BitcoinInput(
    val signature=new ListBuffer[Array[Byte]]()
 
 	inScript.getChunks.forEach(chunk => {
-							if(TransactionSignature.isEncodingCanonical(chunk.data))
+							if(chunk.data != null && TransactionSignature.isEncodingCanonical(chunk.data))
 								signature+=chunk.data
 						})
     signature.toList
