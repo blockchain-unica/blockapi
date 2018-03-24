@@ -5,7 +5,7 @@ import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
-import tcs.utils.HashTypeUtils
+
 
 /**
   * Created by
