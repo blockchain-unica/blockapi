@@ -24,40 +24,32 @@ object SignatureHashTypes {
     val mongo = new DatabaseSettings("myDatabase")
     val signatureHashTypes = new Collection("signatureHashTypes", mongo)
 
-      blockchain.foreach(block => {
+      blockchain.end(100000).foreach(block => {
+
+        if(block.height % 1000 == 0){
+          println(block.height)
+        }
+
 
         block.bitcoinTxs.foreach(tx => {
-
           var inputIndex: Integer = 0
 
           tx.inputs.foreach(in => {
-
-
             if (in.redeemedOutIndex >= 0) {
+              in.getSignatureHashType().foreach(s => {
+                signatureHashTypes.append(List(
+                  ("txHash", tx.hash),
+                  ("index", inputIndex),
+                  ("date", block.date),
+                  ("hashType", s)
+                ))
 
-              if (!(in.getSignatureHashType() == null)) {
-
-                in.getSignatureHashType().foreach(s => {
-                  signatureHashTypes.append(List(
-                    ("txHash", tx.hash),
-                    ("index", inputIndex),
-                    ("date", block.date),
-                    ("hashType", s)
-                  ))
-
-                })
-              }
-
+              })
               inputIndex += 1
             }
-
           })
-
-        }
-        )
-      }
-      )
-
+        })
+      })
 
       signatureHashTypes.close
     }

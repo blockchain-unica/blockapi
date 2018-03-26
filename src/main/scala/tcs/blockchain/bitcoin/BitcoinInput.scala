@@ -88,14 +88,13 @@ class BitcoinInput(
   def getSignatureHashType(): List[SignatureHash.SignatureHash] ={
 
     if(inScript==null){
-
-      null
+      List[SignatureHash.SignatureHash]()
     }
 
     else{
 
       val hashTypelist=new ListBuffer[SignatureHash.SignatureHash]()
-      val signatures:List[Array[Byte]]=parse()
+      val signatures:List[Array[Byte]]=getSignatures()
 
 
       signatures.foreach(sig=>{
@@ -111,7 +110,7 @@ class BitcoinInput(
           case  0x81  => hashTypelist+=SignatureHash.ANYONECANPAY_ALL
           case  0x82  => hashTypelist+=SignatureHash.ANYONECANPAY_NONE
           case  0x83  => hashTypelist+=SignatureHash.ANYONECANPAY_ALL
-          case   _    =>     hashTypelist+=SignatureHash.UNSET
+          case   _    => hashTypelist+=SignatureHash.UNSET
 
         }
       })
@@ -120,7 +119,7 @@ class BitcoinInput(
     }
   }
 
-  private def parse():List[Array[Byte]]={
+  private def getSignatures():List[Array[Byte]]={
     val signature=new ListBuffer[Array[Byte]]()
 
     inScript.getChunks.forEach(chunk => {
