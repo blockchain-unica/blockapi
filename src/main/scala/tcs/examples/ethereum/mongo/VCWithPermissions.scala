@@ -28,7 +28,7 @@ import tcs.utils.HttpRequester
 object VCWithPermissions {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(4990000).setEnd(5000000)
+      .setStart(4950000).setEnd(5100000)
     val mongo = new DatabaseSettings("myDatabase")
     val verifiedContracts = new Collection("VerifiedContracts", mongo)
 
