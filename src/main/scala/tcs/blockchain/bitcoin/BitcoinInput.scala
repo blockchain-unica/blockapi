@@ -1,9 +1,12 @@
 package tcs.blockchain.bitcoin
 
+import scala.collection.mutable.ListBuffer
 import org.bitcoinj.core.{ECKey, _}
+import org.bitcoinj.crypto.TransactionSignature
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 import org.bitcoinj.script.ScriptChunk
 import tcs.utils.ConvertUtils
+import tcs.blockchain.bitcoin.SignatureHash
 
 import scala.collection.mutable
 
@@ -24,7 +27,8 @@ class BitcoinInput(
                     val isCoinbase: Boolean,
                     val inScript: BitcoinScript,
                     val sequenceNo: Long,
-                    val outPoint: TransactionOutPoint) {
+                    val outPoint: TransactionOutPoint
+                  ) {
 
 
   /**
@@ -71,12 +75,61 @@ class BitcoinInput(
     key.toAddress(param)
   }
 
-
   private def getAddressFromP2PSHInput(chuncks: java.util.List[ScriptChunk], param: NetworkParameters) = {
     val redeemScriptBytes = chuncks.get(chuncks.size() - 1).data
     Address.fromP2SHHash(param, ConvertUtils.getRIPEMD160Digest(Sha256Hash.hash(redeemScriptBytes)))
   }
 
+  /**
+    *
+    * //@param
+    * @return List[SignatureHash] an list of enum value representing the specific hash type.
+    */
+  def getSignatureHashType(): List[SignatureHash.SignatureHash] ={
+
+    if(inScript==null){
+
+      null
+    }
+
+    else{
+
+      val hashTypelist=new ListBuffer[SignatureHash.SignatureHash]()
+      val signatures:List[Array[Byte]]=parse()
+
+
+      signatures.foreach(sig=>{
+
+        val lastByteSignature:Int = sig.last & 0xff
+
+        val hashType= lastByteSignature match {
+
+          case  0x01  => hashTypelist+=SignatureHash.ALL
+          case  0x02  => hashTypelist+=SignatureHash.NONE
+          case  0x03  => hashTypelist+=SignatureHash.SINGLE
+          case  0x80  => hashTypelist+=SignatureHash.ANYONECANPAY
+          case  0x81  => hashTypelist+=SignatureHash.ANYONECANPAY_ALL
+          case  0x82  => hashTypelist+=SignatureHash.ANYONECANPAY_NONE
+          case  0x83  => hashTypelist+=SignatureHash.ANYONECANPAY_ALL
+          case   _    =>     hashTypelist+=SignatureHash.UNSET
+
+        }
+      })
+
+      hashTypelist.toList
+    }
+  }
+
+  private def parse():List[Array[Byte]]={
+    val signature=new ListBuffer[Array[Byte]]()
+
+    inScript.getChunks.forEach(chunk => {
+      if(chunk.data != null && TransactionSignature.isEncodingCanonical(chunk.data))
+        signature+=chunk.data
+    })
+    signature.toList
+
+  }
 
   /**
     * Returns the Bitcoin script
