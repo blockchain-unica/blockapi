@@ -21,6 +21,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
   private var starBlock = 1l
   private var endBlock = 0l
+  private var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long] // Unspent Transaction Output Map
 
   // Connects to Bitcoin Core
   val clientFactory =
@@ -38,9 +39,6 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   }
 
   Context.getOrCreate(networkParameters)
-
-  // Unspent Transaction Output Map
-  var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long]
 
 
   /**
@@ -149,4 +147,12 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   }
 
 
+  /**
+    * Return the UTXOmap
+    *
+    * @return The UTXOmap
+    */
+  def getUTXOmap : mutable.HashMap[(Sha256Hash, Long), Long] = {
+    return UTXOmap
+  }
 }
