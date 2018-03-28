@@ -87,3 +87,4 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Giancarlo Lelli](https://www.linkedin.com/in/giancarlolelli/) - Bitcoin pools
    * [Fabrizio Chelo](https://it.linkedin.com/in/fabrizio-chelo-37005735), [Hicham Lafhouli](https://github.com/H1cham), [Antonello Meloni](https://github.com/infovillasimius) - Signature hash types
    * [Giovanni Laerte Frongia](https://github.com/sirbardo), [Luca Pitzalis](https://github.com/pizza1994) - Verified contracts from Etherscan.io
+   * [Filippo Andrea Fanni](https://github.com/f-fanni), [Martina Senis](), [Alessandro Tola]() - Ethereum pools 
