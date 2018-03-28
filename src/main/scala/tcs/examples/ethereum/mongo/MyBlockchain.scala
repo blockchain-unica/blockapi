@@ -21,7 +21,7 @@ object MyBlockchain {
       val date = new Date(block.timeStamp.longValue()*1000)
       block.transactions.foreach(tx => {
         val internalTransactions = block.internalTransactions.filter(itx => itx.parentTxHash.equals(tx.hash))
-        val creates = if(tx.creates == null) "" else tx.creates
+        val creates = if(tx.addressCreated == null) "" else tx.addressCreated
         val to = if(tx.to == null) "" else tx.to
         val list = List(
           ("txHash", tx.hash),

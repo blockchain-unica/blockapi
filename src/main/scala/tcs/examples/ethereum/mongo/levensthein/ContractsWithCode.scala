@@ -18,10 +18,10 @@ object ContractsWithCode {
         println("Current block ->" + block.number)
       }
       block.transactions.foreach(tx => {
-        if (tx.creates != null) {
+        if (tx.addressCreated != null) {
           val list = List(
-            ("contractAddress", tx.creates),
-            ("contractCode", blockchain.getContractCode(tx.creates))
+            ("contractAddress", tx.addressCreated),
+            ("contractCode", blockchain.getContractCode(tx.addressCreated))
           )
           contractsWithCode.append(list)
         }

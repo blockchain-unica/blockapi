@@ -25,7 +25,7 @@ object TxWithFees {
       val date = new Date(block.timeStamp.longValue()*1000)
       val dateFormatted = format.format(date)
       block.transactions.foreach(tx => {
-        val creates = if(tx.creates == null) "" else tx.creates
+        val creates = if(tx.addressCreated == null) "" else tx.addressCreated
         val to = if(tx.to == null) "" else tx.to
         val list = List(
           ("blockHash", block.hash),

@@ -1,14 +1,11 @@
 package tcs.blockchain.ethereum
 
 import java.net.URLEncoder
-import java.util.concurrent.CompletableFuture
+import java.util.Date
 
-import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
 import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, TransactionReceipt}
-import org.web3j.protocol.http.HttpService
-import shapeless.ops.nat.GT.>
 import tcs.blockchain.Transaction
 import tcs.utils.HttpRequester
 
@@ -26,7 +23,7 @@ import tcs.utils.HttpRequester
   * @param gasPrice transaction's gas price
   * @param gas transaction's gas
   * @param input input of the transaction
-  * @param creates true if this transaction creates a contract
+  * @param addressCreated Address of the created contract (if this transaction creates a contract)
   * @param publicKey transaction's public key
   * @param raw transaction's raw data
   * @param r r part
@@ -34,27 +31,27 @@ import tcs.utils.HttpRequester
   * @param v v part
   */
 case class EthereumTransaction(
-                          hash: String,
-                          nonce: BigInt,
-                          blockHash: String,
-                          blockNumber: BigInt,
-                          transactionIndex: BigInt,
-                          from: String,
-                          to: String,
-                          value: BigInt,
-                          gasPrice: BigInt,
-                          gas: BigInt,
-                          input: String,
-                          creates: String,
-                          publicKey: String,
-                          raw: String,
-                          r: String,
-                          s: String,
-                          v: Int,
-                          verifiedContract: String,
-                          contractName: String,
-                          verificationDay: String,
-                          requestOpt: Option[Request[_, EthGetTransactionReceipt]]
+                                hash: String,
+                                nonce: BigInt,
+                                blockHash: String,
+                                blockNumber: BigInt,
+                                transactionIndex: BigInt,
+                                from: String,
+                                to: String,
+                                value: BigInt,
+                                gasPrice: BigInt,
+                                gas: BigInt,
+                                input: String,
+                                addressCreated: String,
+                                publicKey: String,
+                                raw: String,
+                                r: String,
+                                s: String,
+                                v: Int,
+                                verifiedContract: Boolean,
+                                contractName: String,
+                                verificationDay: Date,
+                                requestOpt: Option[Request[_, EthGetTransactionReceipt]]
                          ) extends Transaction {
 
   def getContractAddress(): Option[String] = {
@@ -84,16 +81,18 @@ object EthereumTransaction{
     */
   def factory(tx: TransactionObject, receipt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction = {
 
-    val creates = tx.getCreates()
-    var verifiedContract, contractName, verificationDay = ""
+    var verifiedContract = false
+    var contractName = ""
+    val format = new java.text.SimpleDateFormat("MM/dd/yyyy")
+    var verificationDay = format.parse("01/01/1970")
 
-    if (creates != null) {
-      val (isVerified, name, verDay) = getVerifiedContract(creates)
+    // Retrieve the address of the created contract, if the transaction creates a contract.
+    if (tx.getCreates() != null) {
+      val (isVerified, name, verDay) = getVerifiedContract(tx.getCreates())
       verifiedContract = isVerified
       contractName = name
       verificationDay = verDay
     }
-
 
     new EthereumTransaction(tx.getHash, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
                                    tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
@@ -119,73 +118,79 @@ object EthereumTransaction{
     * @return new Tuple3. In case of success, its fields will be populated with the aforementioned data. Otherwise,
     *         it returns 3 empty strings.
     */
-  private def getVerifiedContract(contractAddress: String): (String, String, String) = {
+  private def getVerifiedContract(contractAddress: String): (Boolean, String, Date) = {
+
+    var isVerified = false
+    var name = ""
+    val format = new java.text.SimpleDateFormat("MM/dd/yyyy")
+    var date = format.parse("01/01/1970")
 
     try {
       val content = HttpRequester.get("http://etherscan.io/address/" + contractAddress + "#code")
       //println(content)
-      var isVerified = ""
-      var name = ""
-      var date = "01/01/1970"
 
       if (content.contains("<b>Contract Source Code Verified</b>")){
-        isVerified = "true"
+        isVerified = true
+
+        // Fetches the contract name
         val strForName = "<td>Contract Name:\n</td>\n<td>"
         name = content.substring(content.indexOf(strForName)+strForName.length)
         name = name.substring(0, name.indexOf("<"))
 
+        // Fetches the date in which the contract has been verified
         val datePage = HttpRequester.get("https://etherscan.io/contractsVerified?cn=" + URLEncoder.encode(name, "UTF-8"))
-
         val indexOfContract = datePage.indexOf(contractAddress)
 
+        // The date is not written in the current page; inspects next pages
         if (indexOfContract == -1){
 
+          // Retrives the total number of pages
           var numPages = datePage.substring(datePage.indexOf("</b> of <b>") + "</b> of <b>".length)
-
           numPages = numPages.substring(0, numPages.indexOf("<"))
-
           val n = numPages.toInt
 
           var currPage = ""
           var currIndexOfContract = -1
           var i = 2
 
-          while  (i<=n && currIndexOfContract == -1){ //This for keeps looking for the contract in pages further than
-                                                      // the first one
+          // This for keeps looking for the contract in pages further than the first one
+          while  (i<=n && currIndexOfContract == -1){
             currPage = HttpRequester.get("https://etherscan.io/contractsVerified/"+ i + "?cn=" + URLEncoder.encode(name, "UTF-8"))
-
             currIndexOfContract = currPage.indexOf(contractAddress)
 
+            // Contract found at page i
             if (currIndexOfContract != -1){
-              println("Contract found at page: " + i)
-
-              date = currPage.substring(datePage.indexOf(contractAddress) + contractAddress.length)
-              date = date.substring(date.indexOf("Ether</td><td>") + "Ether</td><td>".length)
-              date = date.substring(date.indexOf("<td>") + 4)
-              date = date.substring(0, date.indexOf("<"))
+              date = getDateFromHtml(currPage, contractAddress, format)
             }
 
             i+=1
 
           }
         }
+
+        // Date found
         else{
-
-          date = datePage.substring(datePage.indexOf(contractAddress) + contractAddress.length)
-          date = date.substring(date.indexOf("Ether</td><td>") + "Ether</td><td>".length)
-          date = date.substring(date.indexOf("<td>") + 4)
-          date = date.substring(0, date.indexOf("<"))
+          date = getDateFromHtml(datePage, contractAddress, format)
         }
-
       }
 
       return (isVerified, name, date)
 
     } catch {
-      case ioe: java.io.IOException => {ioe.printStackTrace(); return ("", "", "")}
-      case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return ("", "", "")}
-      case e: Exception => {e.printStackTrace(); return ("", "", "")}
+      case ioe: java.io.IOException => {ioe.printStackTrace(); return (false, name, date)}
+      case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return (false, name, date)}
+      case e: Exception => {e.printStackTrace(); return (false, name, date)}
     }
+  }
+
+
+  private def getDateFromHtml(page : String, contractAddress: String, format : java.text.SimpleDateFormat) : Date = {
+
+    var stringDate = page.substring(page.indexOf(contractAddress) + contractAddress.length)
+    stringDate = stringDate.substring(stringDate.indexOf("Ether</td><td>") + "Ether</td><td>".length)
+    stringDate = stringDate.substring(stringDate.indexOf("<td>") + 4)
+    stringDate = stringDate.substring(0, stringDate.indexOf("<"))
+    return format.parse(stringDate)
   }
 
 

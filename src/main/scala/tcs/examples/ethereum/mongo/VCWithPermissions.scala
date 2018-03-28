@@ -1,7 +1,7 @@
 package tcs.examples.ethereum.mongo
 
-import java.net.URLEncoder
 import java.util.Date
+
 
 import tcs.blockchain.BlockchainLib
 import tcs.db.DatabaseSettings
@@ -28,30 +28,27 @@ import tcs.utils.HttpRequester
 object VCWithPermissions {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(4950000).setEnd(5100000)
+      .setStart(1196010).setEnd(1196020)
     val mongo = new DatabaseSettings("myDatabase")
     val verifiedContracts = new Collection("VerifiedContracts", mongo)
 
     blockchain.foreach(block => {
-      if(block.number % 1000 == 0){
+//      if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
-      }
-      val date = new Date(block.timeStamp.longValue()*1000)
+//      }
 
       block.transactions.foreach(tx => {
-        if (tx.creates != null && tx.verifiedContract == "true"){
-          val format = new java.text.SimpleDateFormat("MM/dd/yyyy")
 
+        println("Block: " + block.number + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated + " Verified: " + tx.verifiedContract)
 
-          val dateVerified = format.parse(tx.verificationDay)
+        if (tx.addressCreated != null && tx.verifiedContract){
+          val sourceCode = getSourceCode(tx.addressCreated)
 
-
-          val sourceCode = getSourceCode(tx.creates)
           val list = List(
-            ("contractAddress", tx.creates),
+            ("contractAddress", tx.addressCreated),
             ("contractName", tx.contractName),
-            ("date", date),
-            ("dateVerified", dateVerified),
+            ("date", new Date(block.timeStamp.longValue()*1000)),
+            ("dateVerified", tx.verificationDay),
             ("sourceCode", sourceCode),
             ("usesPermissions", findPermissions(sourceCode))
           )
@@ -108,7 +105,4 @@ object VCWithPermissions {
 
     return sourceCode.contains("modifier onlyOwner()")
   }
-
-
-
 }

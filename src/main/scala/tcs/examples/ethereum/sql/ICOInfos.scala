@@ -114,11 +114,11 @@ object ICOInfos {
       block.transactions.foreach(tx => {
         txTable.insert(Seq(
           tx.hash, tx.nonce, tx.transactionIndex, tx.from,
-          tx.to, tx.value, tx.creates, tx.gas,
+          tx.to, tx.value, tx.addressCreated, tx.gas,
           tx.gasPrice, tx.blockHash
         ))
-        if (tx.creates != null) {
-            val ico = new ICO(tx.creates)
+        if (tx.addressCreated != null) {
+            val ico = new ICO(tx.addressCreated)
             if(ico.itExists){
               icoTable.insert(Seq(
                 ico.getName, ico.getSymbol, ico.getContractAddress,
