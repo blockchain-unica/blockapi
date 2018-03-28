@@ -9,7 +9,7 @@ import scalikejdbc._
 
 object EthereumPools {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("https://mainnet.infura.io/lGhdnAJw7n56K0xXGP3i:8545").setStart(5000000)
+    val blockchain = BlockchainLib.getEthereumBlockchain("https://mainnet.infura.io/lGhdnAJw7n56K0xXGP3i:8545")
     val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres", "password")
     val blockTable = new Table(
       sql"""
