@@ -17,7 +17,7 @@ object TxWithRates {
     val format = new SimpleDateFormat("yyyy-MM-dd")
     val priceHistorical = PriceHistorical.getPriceHistorical()
 
-    blockchain.setStart(70000).setEnd(150000).foreach(block => {
+    blockchain.start(70000).end(150000).foreach(block => {
       if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
       }

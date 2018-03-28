@@ -31,7 +31,7 @@ object VCWithPermissions {
     val mongo = new DatabaseSettings("myDatabase")
     val verifiedContracts = new Collection("VerifiedContracts", mongo)
 
-    blockchain.setStart(1196010).setEnd(1196020).foreach(block => {
+    blockchain.start(1196010).end(1196020).foreach(block => {
 //      if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
 //      }

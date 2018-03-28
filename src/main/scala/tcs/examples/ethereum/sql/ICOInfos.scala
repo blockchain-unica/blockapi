@@ -102,7 +102,7 @@ object ICOInfos {
       pg, 1
     )
 
-    blockchain.setStart(3224233).foreach(block => {
+    blockchain.start(3224233).foreach(block => {
       if (block.number % 100 == 0) {
         println(block.number)
       }

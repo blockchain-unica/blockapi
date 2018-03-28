@@ -99,7 +99,7 @@ class EthereumBlockchain(val url: String) extends Traversable[EthereumBlock] wit
     * @param start block's height
     * @return This
     */
-  def setStart(start: Long): EthereumBlockchain = {
+  def start(start: Long): EthereumBlockchain = {
     this.start = start
     this
   }
@@ -110,7 +110,7 @@ class EthereumBlockchain(val url: String) extends Traversable[EthereumBlock] wit
     * @param end block's height
     * @return This
     */
-  def setEnd(end: Long): EthereumBlockchain = {
+  def end(end: Long): EthereumBlockchain = {
     this.end = end
     this
   }

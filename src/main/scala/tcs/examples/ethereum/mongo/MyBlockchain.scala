@@ -13,7 +13,7 @@ object MyBlockchain {
     val weiIntoEth = BigInt("1000000000000000000")
     val myBlockchain = new Collection("myBlockchain", mongo)
 
-    blockchain.setStart(4900000).setEnd(4900100).foreach(block => {
+    blockchain.start(4900000).end(4900100).foreach(block => {
       if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
       }

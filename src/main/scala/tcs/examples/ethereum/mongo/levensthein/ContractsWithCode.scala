@@ -12,7 +12,7 @@ object ContractsWithCode {
     val mongo = new DatabaseSettings("myDatabase")
     val contractsWithCode = new Collection("contractsWithCode", mongo)
 
-    blockchain.setStart(1000000).setEnd(1200000).foreach(block => {
+    blockchain.start(1000000).end(1200000).foreach(block => {
       if (block.number % 100 == 0) {
         println("Current block ->" + block.number)
       }
