@@ -11,14 +11,13 @@ import tcs.mongo.Collection
 object TxWithRates {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(70000).setEnd(150000)
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
     val txWithRates = new Collection("txWithRates", mongo)
     val format = new SimpleDateFormat("yyyy-MM-dd")
     val priceHistorical = PriceHistorical.getPriceHistorical()
 
-    blockchain.foreach(block => {
+    blockchain.setStart(70000).setEnd(150000).foreach(block => {
       if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
       }

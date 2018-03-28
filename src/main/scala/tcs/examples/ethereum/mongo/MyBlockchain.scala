@@ -9,12 +9,11 @@ import tcs.mongo.Collection
 object MyBlockchain {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(4900000).setEnd(4900100)
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
     val myBlockchain = new Collection("myBlockchain", mongo)
 
-    blockchain.foreach(block => {
+    blockchain.setStart(4900000).setEnd(4900100).foreach(block => {
       if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
       }

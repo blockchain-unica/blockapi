@@ -28,11 +28,10 @@ import tcs.utils.HttpRequester
 object VCWithPermissions {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(1196010).setEnd(1196020)
     val mongo = new DatabaseSettings("myDatabase")
     val verifiedContracts = new Collection("VerifiedContracts", mongo)
 
-    blockchain.foreach(block => {
+    blockchain.setStart(1196010).setEnd(1196020).foreach(block => {
 //      if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
 //      }

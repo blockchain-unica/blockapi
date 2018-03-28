@@ -12,7 +12,6 @@ import tcs.db.{DatabaseSettings, PostgreSQL}
 object ICOInfos {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain("http://52.38.68.64:8545")
-      .setStart(3224233)
     val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres")
 
     val blockTable = new Table(
@@ -103,7 +102,7 @@ object ICOInfos {
       pg, 1
     )
 
-    blockchain.foreach(block => {
+    blockchain.setStart(3224233).foreach(block => {
       if (block.number % 100 == 0) {
         println(block.number)
       }
