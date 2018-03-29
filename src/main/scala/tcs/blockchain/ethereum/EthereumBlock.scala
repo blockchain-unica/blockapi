@@ -1,13 +1,11 @@
 package tcs.blockchain.ethereum
 
-import java.util.concurrent.CompletableFuture
-
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthBlock.{Block, TransactionObject}
 import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, TransactionReceipt}
 import tcs.blockchain.{Block => TCSBLock}
-
 import scala.collection.JavaConverters._
+
 /**
   * Defines a block of the Etherum blockchain
   *

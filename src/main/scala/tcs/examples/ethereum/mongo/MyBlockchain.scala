@@ -31,9 +31,6 @@ object MyBlockchain {
           ("to", to),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
           ("creates", creates),
-          ("verifiedContract", tx.verifiedContract),
-          ("contractName", tx.contractName),
-          ("verificationDay", tx.verificationDay),
           ("internalTransactions", internalTransactions)
         )
         myBlockchain.append(list)

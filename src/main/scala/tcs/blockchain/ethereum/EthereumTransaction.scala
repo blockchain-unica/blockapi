@@ -8,6 +8,8 @@ import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
 import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, TransactionReceipt}
 import tcs.blockchain.Transaction
 import tcs.utils.HttpRequester
+import tcs.utils.Etherscan.getSourceCodeFromEtherscan
+
 
 /**
   * Defines an Ethereum Transaction
@@ -48,9 +50,7 @@ case class EthereumTransaction(
                                 r: String,
                                 s: String,
                                 v: Int,
-                                verifiedContract: Boolean,
-                                contractName: String,
-                                verificationDay: Date,
+                                contract : EthereumContract,
                                 requestOpt: Option[Request[_, EthGetTransactionReceipt]]
                          ) extends Transaction {
 
@@ -64,6 +64,10 @@ case class EthereumTransaction(
       }
     }
     None
+  }
+
+  def createsContract : Boolean = {
+    return contract != null
   }
 }
 
@@ -81,29 +85,21 @@ object EthereumTransaction{
     */
   def factory(tx: TransactionObject, receipt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction = {
 
-    var verifiedContract = false
-    var contractName = ""
-    val format = new java.text.SimpleDateFormat("MM/dd/yyyy")
-    var verificationDay = format.parse("01/01/1970")
-
-    // Retrieve the address of the created contract, if the transaction creates a contract.
+    // If the transaction creates a contract, initialize it.
+    var contract : EthereumContract = null
     if (tx.getCreates() != null) {
-      val (isVerified, name, verDay) = getVerifiedContract(tx.getCreates())
-      verifiedContract = isVerified
-      contractName = name
-      verificationDay = verDay
+      contract = getVerifiedContract(tx)
     }
 
     new EthereumTransaction(tx.getHash, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
                                    tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
                                    tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
-                                   verifiedContract, contractName, verificationDay,
-                                   receipt)
+                                   contract, receipt)
   }
 
   /**
-    * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified. If so, it
-    * finds its name on the platform and its date of verification.
+    * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified.
+    * If so, it finds its name on the platform and its date of verification, then creates an EthereumContract.
     *
     * This way of retrieving this data IS NOT OPTIMAL, but until etherscan.io adds a way to query the verified contracts
     * over their public API, this is the only way.
@@ -114,11 +110,13 @@ object EthereumTransaction{
     *
     * @author Laerte
     * @author Luca
-    * @param contractAddress hex address of contract to check for verification
-    * @return new Tuple3. In case of success, its fields will be populated with the aforementioned data. Otherwise,
-    *         it returns 3 empty strings.
+    * @param tx Web3J representation of the transaction containing data about the contract
+    * @return An Ethereum contract. In case of success, its fields will be populated with the aforementioned data.
+    *         Otherwise it returns a null value.
     */
-  private def getVerifiedContract(contractAddress: String): (Boolean, String, Date) = {
+  private def getVerifiedContract(tx: TransactionObject): EthereumContract = {
+
+    var contract : EthereumContract = null
 
     var isVerified = false
     var name = ""
@@ -126,7 +124,7 @@ object EthereumTransaction{
     var date = format.parse("01/01/1970")
 
     try {
-      val content = HttpRequester.get("http://etherscan.io/address/" + contractAddress + "#code")
+      val content = HttpRequester.get("http://etherscan.io/address/" + tx.getCreates + "#code")
       //println(content)
 
       if (content.contains("<b>Contract Source Code Verified</b>")){
@@ -139,7 +137,7 @@ object EthereumTransaction{
 
         // Fetches the date in which the contract has been verified
         val datePage = HttpRequester.get("https://etherscan.io/contractsVerified?cn=" + URLEncoder.encode(name, "UTF-8"))
-        val indexOfContract = datePage.indexOf(contractAddress)
+        val indexOfContract = datePage.indexOf(tx.getCreates)
 
         // The date is not written in the current page; inspects next pages
         if (indexOfContract == -1){
@@ -156,11 +154,11 @@ object EthereumTransaction{
           // This for keeps looking for the contract in pages further than the first one
           while  (i<=n && currIndexOfContract == -1){
             currPage = HttpRequester.get("https://etherscan.io/contractsVerified/"+ i + "?cn=" + URLEncoder.encode(name, "UTF-8"))
-            currIndexOfContract = currPage.indexOf(contractAddress)
+            currIndexOfContract = currPage.indexOf(tx.getCreates)
 
             // Contract found at page i
             if (currIndexOfContract != -1){
-              date = getDateFromHtml(currPage, contractAddress, format)
+              date = getDateFromHtml(currPage, tx.getCreates, format)
             }
 
             i+=1
@@ -170,16 +168,16 @@ object EthereumTransaction{
 
         // Date found
         else{
-          date = getDateFromHtml(datePage, contractAddress, format)
+          date = getDateFromHtml(datePage, tx.getCreates, format)
         }
       }
 
-      return (isVerified, name, date)
+      return new EthereumContract(name, tx.getCreates, tx.getHash, isVerified, date, getSourceCodeFromEtherscan(tx.getCreates))
 
     } catch {
-      case ioe: java.io.IOException => {ioe.printStackTrace(); return (false, name, date)}
-      case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return (false, name, date)}
-      case e: Exception => {e.printStackTrace(); return (false, name, date)}
+      case ioe: java.io.IOException => {ioe.printStackTrace(); return contract}
+      case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return contract}
+      case e: Exception => {e.printStackTrace(); return contract}
     }
   }
 
@@ -192,6 +190,4 @@ object EthereumTransaction{
     stringDate = stringDate.substring(0, stringDate.indexOf("<"))
     return format.parse(stringDate)
   }
-
-
 }
