@@ -4,13 +4,14 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import tcs.blockchain.BlockchainLib
+import tcs.blockchain.ethereum.EthereumSettings
 import tcs.custom.ethereum.PriceHistorical
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
 object TxWithRates {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
     val txWithRates = new Collection("txWithRates", mongo)

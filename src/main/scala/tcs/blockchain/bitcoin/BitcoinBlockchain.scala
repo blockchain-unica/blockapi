@@ -15,7 +15,7 @@ import scala.collection.mutable
 /**
   * Defines a Bitcoin blockchain given the Bitcoin Core settings.
   *
-  * @param settings Bitcoin Core settings (e.g. network, user, password, etc.)
+  * @param settings Bitcoin settings (e.g. Bitcoin core network, user, password, etc.)
   */
 class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBlock] with Blockchain {
 

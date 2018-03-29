@@ -2,13 +2,13 @@ package tcs.examples.ethereum.mongo.levensthein
 
 import org.web3j.protocol.http.HttpService
 import tcs.blockchain.BlockchainLib
-import tcs.blockchain.ethereum.EthereumBlockchain
+import tcs.blockchain.ethereum.{EthereumBlockchain, EthereumSettings}
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
 object ContractsWithCode {
   def main(args: Array[String]): Unit = {
-    val blockchain: EthereumBlockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
+    val blockchain: EthereumBlockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
     val mongo = new DatabaseSettings("myDatabase")
     val contractsWithCode = new Collection("contractsWithCode", mongo)
 

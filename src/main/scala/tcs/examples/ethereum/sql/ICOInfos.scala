@@ -4,6 +4,7 @@ import java.util.Date
 
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib
+import tcs.blockchain.ethereum.EthereumSettings
 import tcs.custom.ethereum.ICO
 import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, PostgreSQL}
@@ -11,7 +12,7 @@ import tcs.db.{DatabaseSettings, PostgreSQL}
 
 object ICOInfos {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("http://52.38.68.64:8545")
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://52.38.68.64:8545"))
     val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres")
 
     val blockTable = new Table(

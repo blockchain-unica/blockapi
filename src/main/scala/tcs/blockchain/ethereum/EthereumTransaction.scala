@@ -66,7 +66,7 @@ case class EthereumTransaction(
     None
   }
 
-  def createsContract : Boolean = {
+  def hasContract : Boolean = {
     return contract != null
   }
 }
@@ -83,11 +83,11 @@ object EthereumTransaction{
     * @param tx Web3J representation of this transaction
     * @return new EthereumTransaction
     */
-  def factory(tx: TransactionObject, receipt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction = {
+  def factory(tx: TransactionObject, receipt: Option[Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean): EthereumTransaction = {
 
     // If the transaction creates a contract, initialize it.
     var contract : EthereumContract = null
-    if (tx.getCreates() != null) {
+    if (retrieveVerifiedContracts && tx.getCreates() != null) {
       contract = getVerifiedContract(tx)
     }
 

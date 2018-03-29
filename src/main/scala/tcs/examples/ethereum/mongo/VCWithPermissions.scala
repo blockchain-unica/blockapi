@@ -6,6 +6,8 @@ import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 import java.util.Date
 
+import tcs.blockchain.ethereum.EthereumSettings
+
 /**
   *
   * This script is an example of usage of the tool. If a local Parity node's JSON RPC Server is listening on port 8545,
@@ -24,20 +26,20 @@ import java.util.Date
   */
 object VCWithPermissions {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545", true))
     val mongo = new DatabaseSettings("myDatabase")
     val verifiedContracts = new Collection("VerifiedContracts", mongo)
 
     blockchain.start(1196010).end(1196020).foreach(block => {
 //      if(block.number % 1000 == 0){
-//        println("Current block ->" + block.number)
+        println("Current block ->" + block.number)
 //      }
 
       block.transactions.foreach(tx => {
 
-//        println("Block: " + block.number + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated + " isNull: " + tx.contract==null)
+        println("Block: " + block.number + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated)
 
-        if (tx.createsContract){
+        if (tx.hasContract){
 
           val list = List(
             ("contractAddress", tx.contract.address),

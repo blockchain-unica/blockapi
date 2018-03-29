@@ -3,12 +3,13 @@ package tcs.examples.ethereum.mongo.levensthein
 import java.util.Date
 
 import tcs.blockchain.BlockchainLib
+import tcs.blockchain.ethereum.EthereumSettings
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
 object MyBlockchain {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
     val myBlockchain = new Collection("myBlockchain", mongo)

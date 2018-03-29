@@ -20,18 +20,18 @@ import scala.collection.JavaConverters._
 
 
 /**
-  * Defines an Ethereum blockchain given the parity web address
+  * Defines an Ethereum blockchain
   *
-  * @param url address where parity is listening
+  * @param settings Ethereum settings (e.g. url)
   */
-class EthereumBlockchain(val url: String) extends Traversable[EthereumBlock] with Blockchain {
+class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[EthereumBlock] with Blockchain {
 
   private var start: Long = 1l
   private var end: Long = 0l
   private var step: Long = 1l
 
   //Creating Web3J object connected with Parity
-  val web3j = Web3j.build(new HttpService(url))
+  val web3j = Web3j.build(new HttpService(settings.url))
 
   /**
     * Executes the given task for each block in blockchain
@@ -170,19 +170,19 @@ class EthereumBlockchain(val url: String) extends Traversable[EthereumBlock] wit
         })
       }
 
-      EthereumBlock.factory(currBlock, internalTxs, transactionReceipts)
+      EthereumBlock.factory(currBlock, internalTxs, transactionReceipts, settings.retrieveVerifiedContracts)
 
     }
 
     else{
-      return EthereumBlock.factory(currBlock, List(), transactionReceipts)
+      return EthereumBlock.factory(currBlock, List(), transactionReceipts, settings.retrieveVerifiedContracts)
     }
 
   }
 
   private def getResultBlockTrace(blockNumber: String): HttpResponse[String] = {
     try {
-      Http(this.url).postData("{\"method\":\"trace_block\",\"params\":[\"" + blockNumber + "\"],\"id\":1,\"jsonrpc\":\"2.0\"}")
+      Http(settings.url).postData("{\"method\":\"trace_block\",\"params\":[\"" + blockNumber + "\"],\"id\":1,\"jsonrpc\":\"2.0\"}")
         .header("Content-Type", "application/json").asString
     } catch {
       case e: Exception => {
@@ -196,7 +196,7 @@ class EthereumBlockchain(val url: String) extends Traversable[EthereumBlock] wit
 
   def getTransactionReceipt(transactionHash : String): Unit ={
 
-    val web3j = Web3j.build(new HttpService(url))
+    val web3j = Web3j.build(new HttpService(settings.url))
 
     var receipt : EthGetTransactionReceipt = web3j.ethGetTransactionReceipt(transactionHash).sendAsync().get();
     if(receipt.getTransactionReceipt.isPresent){
