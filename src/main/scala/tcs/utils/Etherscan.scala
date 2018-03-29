@@ -21,7 +21,7 @@ package object Etherscan {
       var sourceCode = content.substring(content.indexOf(strForContract)+strForContract.length)
 
 
-      println("Getting source code for: " + address)
+      //println("Getting source code for: " + address)
       sourceCode = sourceCode.substring(sourceCode.indexOf("<pre") + 4)
       sourceCode = sourceCode.substring(sourceCode.indexOf(">") + 1, sourceCode.indexOf("</pre><br><script"))
 

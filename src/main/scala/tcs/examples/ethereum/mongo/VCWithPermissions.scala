@@ -30,12 +30,12 @@ object VCWithPermissions {
 
     blockchain.start(1196010).end(1196020).foreach(block => {
 //      if(block.number % 1000 == 0){
-        println("Current block ->" + block.number)
+//        println("Current block ->" + block.number)
 //      }
 
       block.transactions.foreach(tx => {
 
-        println("Block: " + block.number + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated + " isNull: " + tx.contract==null)
+//        println("Block: " + block.number + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated + " isNull: " + tx.contract==null)
 
         if (tx.createsContract){
 
