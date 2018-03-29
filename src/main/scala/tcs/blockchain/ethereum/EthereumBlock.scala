@@ -111,7 +111,7 @@ object EthereumBlock{
     val transactions: List[EthereumTransaction] =
       block.getTransactions.asScala.toList
         .map(_.asInstanceOf[TransactionObject])
-        .map((tx) => EthereumTransaction.factory(tx, transactionReceipts.get(tx.get().getHash), retrieveVerifiedContracts))
+        .map((tx) => EthereumTransaction.factory(tx, block.getTimestamp, transactionReceipts.get(tx.get().getHash), retrieveVerifiedContracts))
     var sealFields = block.getSealFields
     if(sealFields == null){
       sealFields = List[String]().asJava

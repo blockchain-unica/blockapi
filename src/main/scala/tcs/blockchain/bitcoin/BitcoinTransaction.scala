@@ -1,7 +1,8 @@
 package tcs.blockchain.bitcoin
 
-import org.bitcoinj.core.{Sha256Hash, Transaction}
+import java.util.Date
 
+import org.bitcoinj.core.{Sha256Hash, Transaction}
 import tcs.blockchain.{Transaction => TCSTransaction}
 
 import scala.collection.JavaConverters._
@@ -17,6 +18,7 @@ import scala.collection.mutable
   */
 class BitcoinTransaction(
                           val hash: Sha256Hash,
+                          val date: Date,
                           val txSize: Int,
                           val inputs: List[BitcoinInput],
                           val outputs: List[BitcoinOutput],
@@ -80,14 +82,15 @@ object BitcoinTransaction {
     * Values of each appended BitcoinInput will be set to 0.
     *
     * @param tx BitcoinJ representation of the transaction
+    * @param txDate Date in which the containing block has been published
     * @return A new BitcoinTransaction
     */
-  def factory(tx: Transaction): BitcoinTransaction = {
+  def factory(tx : Transaction, txDate : Date): BitcoinTransaction = {
     val inputs: List[BitcoinInput] = tx.getInputs.asScala.map(i => BitcoinInput.factory(i)).toList
     val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o)).toList
 
     // TODO: Test getMessageSize
-    return new BitcoinTransaction(tx.getHash, tx.getMessageSize, inputs, outputs, tx.getLockTime)
+    return new BitcoinTransaction(tx.getHash, txDate, tx.getMessageSize, inputs, outputs, tx.getLockTime)
   }
 
   /**
@@ -97,15 +100,16 @@ object BitcoinTransaction {
     * by exploiting the UTXO map provided.
     *
     * @param tx BitcoinJ representation of the transaction
+    * @param txDate Date in which the containing block has been published
     * @param UTXOmap Unspent transaction outputs map
     * @param blockHeight Height of the enclosing block
     * @return A new BitcoinTransaction
     */
-  def factory(tx: Transaction, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long], blockHeight: Long): BitcoinTransaction = {
+  def factory(tx: Transaction, txDate : Date, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long], blockHeight: Long): BitcoinTransaction = {
     val inputs: List[BitcoinInput] = tx.getInputs.asScala.map(i => BitcoinInput.factory(i, UTXOmap, blockHeight, tx.getOutputs.asScala.toList)).toList
     val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o, tx.getHash, UTXOmap)).toList
 
     // TODO: Test getMessageSize
-    return new BitcoinTransaction(tx.getHash, tx.getMessageSize, inputs, outputs, tx.getLockTime)
+    return new BitcoinTransaction(tx.getHash, txDate, tx.getMessageSize, inputs, outputs, tx.getLockTime)
   }
 }

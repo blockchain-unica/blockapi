@@ -15,6 +15,7 @@ import tcs.utils.Etherscan.getSourceCodeFromEtherscan
   * Defines an Ethereum Transaction
   *
   * @param hash transaction's hash
+  * @param date date in which the transaction has been published (extracted from the containing block)
   * @param nonce transaction's nonce
   * @param blockHash hash of the block containing this transaction
   * @param blockNumber number of the block containing this transaction
@@ -34,6 +35,7 @@ import tcs.utils.Etherscan.getSourceCodeFromEtherscan
   */
 case class EthereumTransaction(
                                 hash: String,
+                                date: BigInt,
                                 nonce: BigInt,
                                 blockHash: String,
                                 blockNumber: BigInt,
@@ -83,7 +85,7 @@ object EthereumTransaction{
     * @param tx Web3J representation of this transaction
     * @return new EthereumTransaction
     */
-  def factory(tx: TransactionObject, receipt: Option[Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean): EthereumTransaction = {
+  def factory(tx: TransactionObject, txDate: BigInt, receipt: Option[Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean): EthereumTransaction = {
 
     // If the transaction creates a contract, initialize it.
     var contract : EthereumContract = null
@@ -91,7 +93,7 @@ object EthereumTransaction{
       contract = getVerifiedContract(tx)
     }
 
-    new EthereumTransaction(tx.getHash, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
+    new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
                                    tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
                                    tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
                                    contract, receipt)
