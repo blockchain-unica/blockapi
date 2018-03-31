@@ -35,7 +35,7 @@ object EmptyBlocks {
       }
 
       if (block.transactions.isEmpty) {
-        blockTable.insert(Seq(block.hash, new Date(block.timeStamp.longValue() * 1000), block.miner))
+        blockTable.insert(Seq(block.hash, block.timeStamp, block.miner))
       }
     })
 
