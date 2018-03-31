@@ -16,10 +16,10 @@ object NonStandardTransactions {
 
     val nonStandardTransactions = new Collection("nonStandardTransactions", mongo)
 
-    blockchain.foreach(block => {
+    blockchain.start(320000).end(340000).foreach(block => {
       if (block.height % 10000 == 0) println("Block: " + block.height)
       block.bitcoinTxs.foreach(tx => {
-        if (!tx.isStandard()) {
+        if (!tx.isStandard) {
           nonStandardTransactions.append(List(
             ("h", tx.hash),
             ("d", block.date.getTime),
