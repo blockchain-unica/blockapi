@@ -2,41 +2,38 @@ package tcs.examples.ethereum.sql
 
 import java.util.Date
 
-import scalikejdbc._
 import tcs.blockchain.BlockchainLib
-import tcs.blockchain.ethereum.EthereumSettings
 import tcs.db.sql.Table
-import tcs.db.{DatabaseSettings, MySQL}
+import tcs.db.{DatabaseSettings, PostgreSQL}
+import scalikejdbc._
+import tcs.blockchain.ethereum.EthereumSettings
 
-
-object EmptyBlocks {
+object EthereumPools {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("https://mainnet.infura.io/lGhdnAJw7n56K0xXGP3i:8545"))
-    val pg = new DatabaseSettings("ethereum", MySQL, "root", "toor")
-
+    val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres", "password")
     val blockTable = new Table(
       sql"""
-          CREATE TABLE IF NOT EXISTS block(
+          CREATE TABLE IF NOT EXISTS pools(
             hash CHARACTER VARYING(100) NOT NULL PRIMARY KEY,
             timestamp TIMESTAMP,
-            miner CHARACTER VARYING(100)
+            mining_pool CHARACTER VARYING(50)
           )
          """,
       sql"""
-          INSERT INTO block(hash,timestamp, miner) VALUES (?, ?, ?)
+          INSERT INTO pools(hash,timestamp, mining_pool) VALUES (?, ?, ?)
          """,
-      pg, 1
+      pg, 100
     )
 
-
     blockchain.foreach(block => {
+
       if (block.number % 100 == 0) {
         println(block.number)
       }
 
-      if (block.transactions.isEmpty) {
-        blockTable.insert(Seq(block.hash, block.timeStamp, block.miner))
-      }
+      blockTable.insert(Seq(block.hash, block.timeStamp, block.getMiningPool))
+
     })
 
     blockTable.close

@@ -86,3 +86,5 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Giacomo Corrias](https://www.linkedin.com/in/giacomo-corrias-a730b7160/), [Francesco Pisu](https://www.linkedin.com/in/francesco-pisu-b07a3b13a/) - Empty blocks on Bitcoin
    * [Giancarlo Lelli](https://www.linkedin.com/in/giancarlolelli/) - Bitcoin pools
    * [Fabrizio Chelo](https://it.linkedin.com/in/fabrizio-chelo-37005735), [Hicham Lafhouli](https://github.com/H1cham), [Antonello Meloni](https://github.com/infovillasimius) - Signature hash types
+   * [Giovanni Laerte Frongia](https://github.com/sirbardo), [Luca Pitzalis](https://github.com/pizza1994) - Verified contracts from Etherscan.io
+   * [Filippo Andrea Fanni](https://www.linkedin.com/in/filippo-andrea-fanni/), [Martina Senis](), [Alessandro Tola](https://www.linkedin.com/in/alessandro-tola-54048238/) - Ethereum pools 

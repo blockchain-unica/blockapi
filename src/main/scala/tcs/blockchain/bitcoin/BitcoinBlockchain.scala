@@ -15,12 +15,13 @@ import scala.collection.mutable
 /**
   * Defines a Bitcoin blockchain given the Bitcoin Core settings.
   *
-  * @param settings Bitcoin Core settings (e.g. network, user, password, etc.)
+  * @param settings Bitcoin settings (e.g. Bitcoin core network, user, password, etc.)
   */
 class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBlock] with Blockchain {
 
   private var starBlock = 1l
   private var endBlock = 0l
+  private var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long] // Unspent Transaction Output Map
 
   // Connects to Bitcoin Core
   val clientFactory =
@@ -38,9 +39,6 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   }
 
   Context.getOrCreate(networkParameters)
-
-  // Unspent Transaction Output Map
-  var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long]
 
 
   /**
@@ -149,4 +147,12 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   }
 
 
+  /**
+    * Return the UTXOmap
+    *
+    * @return The UTXOmap
+    */
+  def getUTXOmap : mutable.HashMap[(Sha256Hash, Long), Long] = {
+    return UTXOmap
+  }
 }

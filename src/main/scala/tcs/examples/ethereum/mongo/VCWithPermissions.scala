@@ -1,13 +1,12 @@
 package tcs.examples.ethereum.mongo
 
-import java.net.URLEncoder
-import java.util.Date
 
 import tcs.blockchain.BlockchainLib
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
-import tcs.utils.HttpRequester
+import java.util.Date
 
+import tcs.blockchain.ethereum.EthereumSettings
 
 /**
   *
@@ -27,33 +26,28 @@ import tcs.utils.HttpRequester
   */
 object VCWithPermissions {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("http://localhost:8545")
-      .setStart(4950000).setEnd(5100000)
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545", true))
     val mongo = new DatabaseSettings("myDatabase")
     val verifiedContracts = new Collection("VerifiedContracts", mongo)
 
-    blockchain.foreach(block => {
-      if(block.number % 1000 == 0){
+    blockchain.start(1196010).end(1196020).foreach(block => {
+//      if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
-      }
-      val date = new Date(block.timeStamp.longValue()*1000)
+//      }
 
       block.transactions.foreach(tx => {
-        if (tx.creates != null && tx.verifiedContract == "true"){
-          val format = new java.text.SimpleDateFormat("MM/dd/yyyy")
 
+        println("Block: " + block.number + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated)
 
-          val dateVerified = format.parse(tx.verificationDay)
+        if (tx.hasContract){
 
-
-          val sourceCode = getSourceCode(tx.creates)
           val list = List(
-            ("contractAddress", tx.creates),
-            ("contractName", tx.contractName),
-            ("date", date),
-            ("dateVerified", dateVerified),
-            ("sourceCode", sourceCode),
-            ("usesPermissions", findPermissions(sourceCode))
+            ("contractAddress", tx.contract.address),
+            ("contractName", tx.contract.name),
+            ("date", block.timeStamp),
+            ("dateVerified", tx.contract.verificationDate),
+            ("sourceCode", tx.contract.sourceCode),
+            ("usesPermissions", tx.contract.usesPermissions)
           )
 
           verifiedContracts.append(list)
@@ -64,51 +58,4 @@ object VCWithPermissions {
 
     verifiedContracts.close
   }
-
-
-  /**
-    *
-    * This method of fetching the contract's source code is NOT optimal, but until etherscan.io extends its API to
-    * verified contracts, this is the only way.
-    * If this doesn't work, it could be because etherscan.io changed their html, so this method is really not robust to
-    * changes.
-    *
-    * @param address
-    * @return new String whose content is the contract's source code
-    */
-  private def getSourceCode(address : String): String = {
-
-    try {
-      val content = HttpRequester.get("http://etherscan.io/address/" + address + "#code")
-      //println(content)
-      val strForContract = "Find Similiar Contracts"
-      var sourceCode = content.substring(content.indexOf(strForContract)+strForContract.length)
-
-
-      println("Getting source code for: " + address)
-      sourceCode = sourceCode.substring(sourceCode.indexOf("<pre") + 4)
-      sourceCode = sourceCode.substring(sourceCode.indexOf(">") + 1, sourceCode.indexOf("</pre><br><script"))
-
-      return sourceCode
-    } catch {
-      case ioe: java.io.IOException => {ioe.printStackTrace(); return ""}
-      case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return ""}
-      case e: Exception => {e.printStackTrace(); return ""}
-    }
-  }
-
-  /**
-    * This method can be extended to implement smarter ways to find permissions, right now it just does a basic string
-    * search.
-    *
-    * @param sourceCode
-    * @return true if sourceCode contains permissions, false otherwise
-    */
-  private def findPermissions(sourceCode : String): Boolean = {
-
-    return sourceCode.contains("modifier onlyOwner()")
-  }
-
-
-
 }
