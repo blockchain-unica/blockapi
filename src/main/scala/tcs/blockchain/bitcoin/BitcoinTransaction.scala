@@ -1,8 +1,8 @@
 package tcs.blockchain.bitcoin
 
-import java.util.Date
-
 import org.bitcoinj.core.{Sha256Hash, Transaction}
+import org.bitcoinj.script.Script.ScriptType
+import java.util.Date
 import tcs.blockchain.{Transaction => TCSTransaction}
 
 import scala.collection.JavaConverters._
@@ -68,8 +68,106 @@ class BitcoinTransaction(
 
     return hash + " " + txSize + " " + stringInputs + " " + stringOutputs
   }
+
+  /**
+    * Iterates through the output script list and checks if they are standard or not
+    * @return the related type of the enumeration
+    */
+  def transactionType(): TxType.Value = {
+    outputs.foreach(out => {
+      if(out.transOut.getScriptPubKey.getScriptType == ScriptType.P2SH || out.transOut.getScriptPubKey.getScriptType == ScriptType.P2PKH
+      || out.transOut.getScriptPubKey.getScriptType == ScriptType.PUB_KEY || out.transOut.getScriptPubKey.isSentToMultiSig || out.transOut.getScriptPubKey.isOpReturn)  {
+        return TxType.TX_STANDARD
+      }
+      else return TxType.TX_NONSTANDARD
+    })
+
+    return TxType.TX_NOTYPE
+  }
+  /**
+    * Returns a boolean which states if the transaction is standard or not
+    * @return True if the transaction is standard, false otherwise
+    */
+  def isStandard(): Boolean = {
+      transactionType() match {
+        case TxType.TX_STANDARD => isPushingData()
+        case TxType.TX_NONSTANDARD => false
+        case _ => throw new IllegalArgumentException
+      }
+  }
+
+  /**
+    * Checks the size of a transaction
+    * @return true if the size is less than 100,000 bytes, false otherwise
+    */
+  def checkTransactionSize(): Boolean = {
+    return txSize < 100000
+  }
+
+  /**
+    * Checks the size of each script
+    * @return true if the size is less than 1,650 bytes, false otherwise
+    */
+  def checkScriptSize(): Boolean =  {
+    outputs.foreach(out => {
+      val size = out.outScript.getProgram.length
+      if(size > 1650){
+        return false
+      }
+    })
+    return true
+  }
+
+  /**
+    * Checks the number of signatures required
+    * @return true if the number of signatures is less or equal than 3, false otherwise
+    */
+  def checkNumberOfSignatures(): Boolean =  {
+    outputs.foreach(out => {
+      if(out.transOut.getScriptPubKey.isSentToMultiSig)  {
+        val signatures = out.transOut.getScriptPubKey.getNumberOfSignaturesRequiredToSpend
+        if(signatures > 3)  {
+          return false
+        }
+      }
+    })
+    return true
+  }
+
+  /**
+    * Checks if each input script pushes only data and not opcodes to the evaluation stack
+    * @return true if pushes only data, false otherwise
+    */
+  def isPushingData(): Boolean =  {
+    for(input <- inputs) {
+      val chunks = input.inScript.getChunks.asScala
+      chunks.foreach(chunk => {
+        if (!input.isCoinbase && !chunk.isPushData) {
+          return false
+        }
+      })
+    }
+    return true
+  }
+
+  /**
+    * Checks if all conditions are evaluated true
+    * @return true if all conditions are respected, false otherwise
+    */
+  def checkConditions(): Boolean = {
+    return checkTransactionSize() && checkNumberOfSignatures() && checkScriptSize() && isPushingData()
+  }
 }
 
+/**
+  * Enumeration of all possible transaction types
+  */
+object TxType extends Enumeration {
+  type TxType = Value
+  val TX_NOTYPE,
+  TX_STANDARD,
+  TX_NONSTANDARD = Value
+}
 
 /**
   * Factories for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
