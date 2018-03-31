@@ -88,3 +88,4 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Fabrizio Chelo](https://it.linkedin.com/in/fabrizio-chelo-37005735), [Hicham Lafhouli](https://github.com/H1cham), [Antonello Meloni](https://github.com/infovillasimius) - Signature hash types
    * [Giovanni Laerte Frongia](https://github.com/sirbardo), [Luca Pitzalis](https://github.com/pizza1994) - Verified contracts from Etherscan.io
    * [Filippo Andrea Fanni](https://www.linkedin.com/in/filippo-andrea-fanni/), [Martina Senis](), [Alessandro Tola](https://www.linkedin.com/in/alessandro-tola-54048238/) - Ethereum pools 
+   * [Riccardo Mulas](https://github.com/riccardomulas) - Non-standard transactions
