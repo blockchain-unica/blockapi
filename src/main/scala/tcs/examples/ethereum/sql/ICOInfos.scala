@@ -108,8 +108,7 @@ object ICOInfos {
         println(block.number)
       }
       blockTable.insert(Seq(
-        block.hash, block.number, block.parentHash,
-        new Date(block.timeStamp.longValue() * 1000), block.author, block.miner
+        block.hash, block.number, block.parentHash, block.timeStamp, block.author, block.miner
       ))
       block.transactions.foreach(tx => {
         txTable.insert(Seq(

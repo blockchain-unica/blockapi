@@ -1,9 +1,12 @@
 package tcs.blockchain.ethereum
 
+import java.util.Date
+
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthBlock.{Block, TransactionObject}
 import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, TransactionReceipt}
 import tcs.blockchain.{Block => TCSBLock}
+
 import scala.collection.JavaConverters._
 
 /**
@@ -52,7 +55,7 @@ case class EthereumBlock(
                           size: BigInt,
                           gasLimit: BigInt,
                           gasUsed: BigInt,
-                          timeStamp: BigInt,
+                          timeStamp: Date,
                           transactions: List[EthereumTransaction],
                           internalTransactions: List[EthereumInternalTransaction],
                           uncles: List[String],
@@ -119,7 +122,8 @@ object EthereumBlock{
     new EthereumBlock(block.getNumber, block.getHash, block.getParentHash, block.getNonce, block.getSha3Uncles,
                       block.getLogsBloom, block.getTransactionsRoot, block.getStateRoot, block.getReceiptsRoot,
                       block.getAuthor, block.getMiner, block.getMixHash, block.getDifficulty, block.getTotalDifficulty,
-                      block.getExtraData, block.getSize, block.getGasLimit, block.getGasUsed, block.getTimestamp,
+                      block.getExtraData, block.getSize, block.getGasLimit, block.getGasUsed,
+                      new Date(block.getTimestamp.longValue()),
                       transactions, internalTransactions, block.getUncles.asScala.toList, sealFields.asScala.toList)
   }
 }

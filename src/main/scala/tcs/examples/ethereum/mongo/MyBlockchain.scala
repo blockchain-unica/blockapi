@@ -18,7 +18,6 @@ object MyBlockchain {
       if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
       }
-      val date = new Date(block.timeStamp.longValue()*1000)
       block.transactions.foreach(tx => {
         val internalTransactions = block.internalTransactions.filter(itx => itx.parentTxHash.equals(tx.hash))
         val creates = if(tx.addressCreated == null) "" else tx.addressCreated
@@ -27,7 +26,7 @@ object MyBlockchain {
           ("txHash", tx.hash),
           ("blockHeight", tx.blockNumber.toString()),
           ("txIndex", tx.transactionIndex),
-          ("date", date),
+          ("date", block.timeStamp),
           ("from", tx.from),
           ("to", to),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),

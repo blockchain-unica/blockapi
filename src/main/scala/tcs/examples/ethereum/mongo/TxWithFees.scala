@@ -22,20 +22,19 @@ object TxWithFees {
       if(block.number % 1000 == 0){
         println("Current block ->" + block.number)
       }
-      val date = new Date(block.timeStamp.longValue()*1000)
-      val dateFormatted = format.format(date)
       block.transactions.foreach(tx => {
         val creates = if(tx.addressCreated == null) "" else tx.addressCreated
         val to = if(tx.to == null) "" else tx.to
         val list = List(
           ("blockHash", block.hash),
           ("txHash", tx.hash),
-          ("date", date),
+          ("date", block.timeStamp),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
           ("creates", creates),
           ("gas", tx.gas),
-          ("fee", (tx.gas * tx.gasPrice)/weiIntoEth),
-          ("rate", if(block.timeStamp.longValue() < 1438905600) 0 else priceHistorical.price_usd(dateFormatted))
+          ("fee", (tx.gas * tx.gasPrice)/weiIntoEth)
+          // TODO: Fix this!
+          // ("rate", if(block.timeStamp < 1438905600) 0 else priceHistorical.price_usd(dateFormatted))
         )
         txWithFees.append(list)
       })

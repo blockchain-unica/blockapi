@@ -32,7 +32,7 @@ object EthereumPools {
         println(block.number)
       }
 
-      blockTable.insert(Seq(block.hash, new Date(block.timeStamp.longValue() * 1000), block.getMiningPool))
+      blockTable.insert(Seq(block.hash, block.timeStamp, block.getMiningPool))
 
     })
 

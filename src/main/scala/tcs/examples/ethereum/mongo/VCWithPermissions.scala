@@ -44,7 +44,7 @@ object VCWithPermissions {
           val list = List(
             ("contractAddress", tx.contract.address),
             ("contractName", tx.contract.name),
-            ("date", new Date(block.timeStamp.longValue()*1000)),
+            ("date", block.timeStamp),
             ("dateVerified", tx.contract.verificationDate),
             ("sourceCode", tx.contract.sourceCode),
             ("usesPermissions", tx.contract.usesPermissions)
