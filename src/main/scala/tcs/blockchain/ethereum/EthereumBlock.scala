@@ -4,7 +4,7 @@ import java.util.Date
 
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthBlock.{Block, TransactionObject}
-import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, TransactionReceipt}
+import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt}
 import tcs.blockchain.{Block => TCSBLock}
 
 import scala.collection.JavaConverters._

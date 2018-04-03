@@ -19,8 +19,8 @@ import scala.collection.mutable
   */
 class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBlock] with Blockchain {
 
-  private var starBlock = 1l
-  private var endBlock = 0l
+  private var starBlock : Long = 1l
+  private var endBlock : Long = 0l
   private var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long] // Unspent Transaction Output Map
 
   // Connects to Bitcoin Core
@@ -128,7 +128,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @param height Height of the specified block
     * @return This
     */
-  def start(height: Long): BitcoinBlockchain = {
+  override def start(height: Long): BitcoinBlockchain = {
     starBlock = height
 
     return this
@@ -141,7 +141,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @param height Height of the specified block
     * @return This
     */
-  def end(height: Long): BitcoinBlockchain = {
+  override def end(height: Long): BitcoinBlockchain = {
     endBlock = height
     return this
   }

@@ -26,12 +26,10 @@ import scala.collection.JavaConverters._
   */
 class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[EthereumBlock] with Blockchain {
 
-  private var start: Long = 1l
-  private var end: Long = 0l
-  private var step: Long = 1l
+  private var startBlock: Long = 1l
+  private var endBlock: Long = 0l
 
-  //Creating Web3J object connected with Parity
-  val web3j = Web3j.build(new HttpService(settings.url))
+  val web3j = Web3j.build(new HttpService(settings.url))  //Creating Web3J object connected with Parity
 
   /**
     * Executes the given task for each block in blockchain
@@ -41,19 +39,19 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     */
   override def foreach[U](f: EthereumBlock => U): Unit = {
 
-    var height = start
+    var height = startBlock
     var endBlock = 0l
 
-    if (this.end == 0l) {
+    if (this.endBlock == 0l) {
       endBlock = web3j.ethBlockNumber().send().getBlockNumber.longValue()
     } else {
-      endBlock = this.end
+      endBlock = this.endBlock
     }
 
     while (height <= endBlock) {
       val block = getBlock(height)
       f(block)
-      height += step
+      height += 1
     }
   }
 
@@ -99,8 +97,8 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     * @param start block's height
     * @return This
     */
-  def start(start: Long): EthereumBlockchain = {
-    this.start = start
+  override def start(start: Long): EthereumBlockchain = {
+    this.startBlock = start
     this
   }
 
@@ -110,25 +108,11 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     * @param end block's height
     * @return This
     */
-  def end(end: Long): EthereumBlockchain = {
-    this.end = end
+  override def end(end: Long): EthereumBlockchain = {
+    this.endBlock = end
     this
   }
 
-  /**
-    * Set the step visiting blockchain
-    *
-    * @param step step amount
-    * @return This
-    */
-  def setStep(step: Int): EthereumBlockchain = {
-    this.step = step
-    this
-  }
-
-  def getContractCode(contractAddress: String): String = {
-    this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
-  }
 
   private def getEthereumBlock(currBlock: EthBlock.Block): EthereumBlock = {
     val resultBlockTraceJSON = getResultBlockTrace(currBlock.getNumberRaw)
@@ -193,7 +177,6 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
   }
 
 
-
   def getTransactionReceipt(transactionHash : String): Unit ={
 
     val web3j = Web3j.build(new HttpService(settings.url))
@@ -203,6 +186,12 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
       var r : TransactionReceipt = receipt.getTransactionReceipt.get()
       r.getContractAddress
     }
+  }
+
+
+  // TODO: Move this to utils?
+  def getContractCode(contractAddress: String): String = {
+    this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
 
 }
