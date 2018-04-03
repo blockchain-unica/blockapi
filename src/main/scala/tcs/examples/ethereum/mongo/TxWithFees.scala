@@ -16,7 +16,6 @@ object TxWithFees {
     val weiIntoEth = BigInt("1000000000000000000")
     val txWithFees = new Collection("txWithFees", mongo)
     val format = new SimpleDateFormat("yyyy-MM-dd")
-    val priceHistorical = PriceHistorical.getPriceHistorical()
 
     blockchain.start(70000).end(150000).foreach(block => {
       if(block.height % 1000 == 0){
@@ -32,9 +31,8 @@ object TxWithFees {
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
           ("creates", creates),
           ("gas", tx.gas),
-          ("fee", (tx.gas * tx.gasPrice)/weiIntoEth)
-          // TODO: Fix this!
-          // ("rate", if(block.timeStamp < 1438905600) 0 else priceHistorical.price_usd(dateFormatted))
+          ("fee", (tx.gas * tx.gasPrice)/weiIntoEth),
+          ("rate", PriceHistorical.getRate(block.date))
         )
         txWithFees.append(list)
       })

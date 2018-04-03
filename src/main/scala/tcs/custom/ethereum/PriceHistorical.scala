@@ -19,7 +19,7 @@ import scala.io.Source
 object PriceHistorical {
 
   private var marketCap: List[MarketCap] = _
-
+/*
   def getPriceHistorical(): CoinMarketPrices = {
     val url = new URL("https://graphs.coinmarketcap.com/currencies/ethereum/")
     val connection = url.openConnection().asInstanceOf[HttpURLConnection]
@@ -33,14 +33,22 @@ object PriceHistorical {
 
     val format = new SimpleDateFormat("yyyy-MM-dd")
 
-    val coinMarket = CoinMarketPrices(coinMarketRaw.market_cap_by_available_supply.map(l => format.format(new Date(l.head.longValue())) -> l.last.intValue()).toMap[String, Int],
-      coinMarketRaw.price_btc.map(l => format.format(new Date(l.head.longValue())) -> l.last.doubleValue()).toMap[String, Double],
-      coinMarketRaw.price_usd.map(l => format.format(new Date(l.head.longValue())) -> l.last.doubleValue()).toMap[String, Double])
+    val coinMarket = CoinMarketPrices(coinMarketRaw.market_cap_by_available_supply.map(l => format.format(new Date(l.head.longValue())) -> l.last.intValue()).toMap[Date, Int],
+      coinMarketRaw.price_btc.map(l => format.format(new Date(l.head.longValue())) -> l.last.doubleValue()).toMap[Date, Double],
+      coinMarketRaw.price_usd.map(l => format.format(new Date(l.head.longValue())) -> l.last.doubleValue()).toMap[Date, Double])
     coinMarket
   }
+*/
 
-  def getPriceHistorical(time: Long): String = {
-    val url = new URL("https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=USD&ts=" + time + "&markets=Coinbase")
+  def getRate(date : Date): Double ={
+    if(date.before(new Date(1438905600))) return 0
+    getPriceHistorical(date)
+  }
+
+
+  private def getPriceHistorical(time: Date): Double = {
+
+    val url = new URL("https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=USD&ts=" + time.getTime + "&markets=Coinbase")
     val connection = url.openConnection().asInstanceOf[HttpURLConnection]
     connection.setRequestMethod("GET")
     val br = new BufferedReader(new InputStreamReader(connection.getInputStream))
@@ -49,7 +57,7 @@ object PriceHistorical {
     val factory = JsonParserFactory.getInstance
     val parser = factory.newJsonParser
     val map = parser.parseJson(str)
-    val usd = map.get("ETH").asInstanceOf[java.util.HashMap[String, String]]
+    val usd = map.get("ETH").asInstanceOf[java.util.HashMap[String, Double]]
 
     usd.get("USD")
   }
@@ -60,6 +68,7 @@ object PriceHistorical {
     }
     this.marketCap
   }
+
 
   private def prepareMarketCapList(): Unit = {
     val bufferedSource = Source.fromFile("src/main/scala/tcs/custom/regression/export-MarketCap.csv")

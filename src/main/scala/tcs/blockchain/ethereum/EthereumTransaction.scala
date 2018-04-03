@@ -35,7 +35,7 @@ import tcs.utils.Etherscan.getSourceCodeFromEtherscan
   */
 case class EthereumTransaction(
                                 override val hash: String,
-                                override val date: BigInt,
+                                override val date: Date,
 
                                 val nonce: BigInt,
                                 val blockHash: String,
@@ -87,7 +87,7 @@ object EthereumTransaction{
     * @param tx Web3J representation of this transaction
     * @return new EthereumTransaction
     */
-  def factory(tx: TransactionObject, txDate: BigInt, receipt: Option[Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean): EthereumTransaction = {
+  def factory(tx: TransactionObject, txDate: Date, receipt: Option[Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean): EthereumTransaction = {
 
     // If the transaction creates a contract, initialize it.
     var contract : EthereumContract = null
