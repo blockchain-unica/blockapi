@@ -37,29 +37,30 @@ import scala.collection.JavaConverters._
   * @param sealFields sealFields
   */
 case class EthereumBlock(
-                          hash: String,
-                          height: BigInt,
-                          date: Date,
-                          size: BigInt,
-                          txs: List[EthereumTransaction],
-                          parentHash: String,
-                          nonce: BigInt,
-                          sha3Uncles: String,
-                          logsBloom: String,
-                          transactionRoot: String,
-                          stateRoot: String,
-                          receiptsRoot: String,
-                          author: String,
-                          miner: String,
-                          mixHash: String,
-                          difficulty: BigInt,
-                          totalDifficulty: BigInt,
-                          extraData: String,
-                          gasLimit: BigInt,
-                          gasUsed: BigInt,
-                          internalTransactions: List[EthereumInternalTransaction],
-                          uncles: List[String],
-                          sealFields: List[String]
+                          val hash: String,
+                          val height: BigInt,
+                          val date: Date,
+                          val size: BigInt,
+                          val txs: List[EthereumTransaction],
+
+                          val parentHash: String,
+                          val nonce: BigInt,
+                          val sha3Uncles: String,
+                          val logsBloom: String,
+                          val transactionRoot: String,
+                          val stateRoot: String,
+                          val receiptsRoot: String,
+                          val author: String,
+                          val miner: String,
+                          val mixHash: String,
+                          val difficulty: BigInt,
+                          val totalDifficulty: BigInt,
+                          val extraData: String,
+                          val gasLimit: BigInt,
+                          val gasUsed: BigInt,
+                          val internalTransactions: List[EthereumInternalTransaction],
+                          val uncles: List[String],
+                          val sealFields: List[String]
                    ) extends TCSBLock{
   /**
     * toString override
