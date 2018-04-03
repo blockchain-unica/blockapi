@@ -17,8 +17,9 @@ import scala.collection.mutable
   * @param outputs List of transaction outputs
   */
 class BitcoinTransaction(
-                          val hash: Sha256Hash,
+                          val hash: String,
                           val date: Date,
+
                           val txSize: Int,
                           val inputs: List[BitcoinInput],
                           val outputs: List[BitcoinOutput],
@@ -204,7 +205,7 @@ object BitcoinTransaction {
     val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o)).toList
 
     // TODO: Test getMessageSize
-    return new BitcoinTransaction(tx.getHash, txDate, tx.getMessageSize, inputs, outputs, tx.getLockTime)
+    return new BitcoinTransaction(tx.getHash.toString, txDate, tx.getMessageSize, inputs, outputs, tx.getLockTime)
   }
 
   /**
@@ -224,6 +225,6 @@ object BitcoinTransaction {
     val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o, tx.getHash, UTXOmap)).toList
 
     // TODO: Test getMessageSize
-    return new BitcoinTransaction(tx.getHash, txDate, tx.getMessageSize, inputs, outputs, tx.getLockTime)
+    return new BitcoinTransaction(tx.getHash.toString, txDate, tx.getMessageSize, inputs, outputs, tx.getLockTime)
   }
 }

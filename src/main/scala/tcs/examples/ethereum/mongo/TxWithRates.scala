@@ -27,7 +27,7 @@ object TxWithRates {
         val to = if(tx.to == null) "" else tx.to
         val list = List(
           ("txHash", tx.hash),
-          ("blockHeight", tx.blockNumber.toString()),
+          ("blockHeight", tx.blockHeight.toString()),
           ("txIndex", tx.transactionIndex),
           ("date", block.date),
           ("from", tx.from),

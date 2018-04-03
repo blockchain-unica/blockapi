@@ -18,7 +18,7 @@ import tcs.utils.Etherscan.getSourceCodeFromEtherscan
   * @param date date in which the transaction has been published (extracted from the containing block)
   * @param nonce transaction's nonce
   * @param blockHash hash of the block containing this transaction
-  * @param blockNumber number of the block containing this transaction
+  * @param blockHeight number of the block containing this transaction
   * @param transactionIndex index of the transaction inside its block
   * @param from from
   * @param to to
@@ -36,9 +36,10 @@ import tcs.utils.Etherscan.getSourceCodeFromEtherscan
 case class EthereumTransaction(
                                 hash: String,
                                 date: BigInt,
+
                                 nonce: BigInt,
                                 blockHash: String,
-                                blockNumber: BigInt,
+                                blockHeight: BigInt,
                                 transactionIndex: BigInt,
                                 from: String,
                                 to: String,
@@ -52,6 +53,7 @@ case class EthereumTransaction(
                                 r: String,
                                 s: String,
                                 v: Int,
+
                                 contract : EthereumContract,
                                 requestOpt: Option[Request[_, EthGetTransactionReceipt]]
                          ) extends Transaction {
