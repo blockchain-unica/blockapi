@@ -55,23 +55,6 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     }
   }
 
-  /**
-    * Returns an Ethereum block given its height in blockchain
-    *
-    * @param height block's height
-    * @return the requested Ethereum block
-    */
-  def getBlock(height: Long): EthereumBlock = {
-    try {
-      val block = web3j.ethGetBlockByNumber(new DefaultBlockParameterNumber(height), true).sendAsync().get().getBlock
-      getEthereumBlock(block)
-    } catch{
-      case e : Exception => {
-        e.printStackTrace
-        throw e
-      }
-    }
-  }
 
   /**
     * Returns an Ethereum block given its hash
@@ -79,7 +62,7 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     * @param hash block's hash
     * @return the requested Ethereum block
     */
-  def getBlock(hash: String): EthereumBlock = {
+  override def getBlock(hash: String): EthereumBlock = {
     try {
       getEthereumBlock(
         web3j.ethGetBlockByHash(hash, true).sendAsync().get().getBlock
@@ -91,6 +74,26 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     }
   }
 
+
+  /**
+    * Returns an Ethereum block given its height in blockchain
+    *
+    * @param height block's height
+    * @return the requested Ethereum block
+    */
+  override def getBlock(height: Long): EthereumBlock = {
+    try {
+      val block = web3j.ethGetBlockByNumber(new DefaultBlockParameterNumber(height), true).sendAsync().get().getBlock
+      getEthereumBlock(block)
+    } catch{
+      case e : Exception => {
+        e.printStackTrace
+        throw e
+      }
+    }
+  }
+
+
   /**
     * Set the first block in the blockchain to visit
     *
@@ -101,6 +104,7 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     this.startBlock = start
     this
   }
+
 
   /**
     * Set the last block in the blockchain to visit
@@ -161,8 +165,8 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     else{
       return EthereumBlock.factory(currBlock, List(), transactionReceipts, settings.retrieveVerifiedContracts)
     }
-
   }
+
 
   private def getResultBlockTrace(blockNumber: String): HttpResponse[String] = {
     try {
@@ -193,5 +197,4 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
   def getContractCode(contractAddress: String): String = {
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
-
 }
