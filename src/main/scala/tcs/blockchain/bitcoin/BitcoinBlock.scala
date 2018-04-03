@@ -18,10 +18,10 @@ import scala.collection.mutable
   * @param txs List of transactions appended to the block
   */
 class BitcoinBlock(
-                    val hash: String,
-                    val height: BigInt,
-                    val date: Date,
-                    val size: BigInt,
+                    override val hash: String,
+                    override val height: BigInt,
+                    override val date: Date,
+                    override val size: BigInt,
 
                     val txs: List[BitcoinTransaction]) extends TCSBlock{
 

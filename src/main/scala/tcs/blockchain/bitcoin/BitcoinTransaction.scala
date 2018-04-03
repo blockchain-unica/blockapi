@@ -17,8 +17,8 @@ import scala.collection.mutable
   * @param outputs List of transaction outputs
   */
 class BitcoinTransaction(
-                          val hash: String,
-                          val date: Date,
+                          override val hash: String,
+                          override val date: Date,
 
                           val txSize: Int,
                           val inputs: List[BitcoinInput],

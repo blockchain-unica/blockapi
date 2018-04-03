@@ -37,11 +37,11 @@ import scala.collection.JavaConverters._
   * @param sealFields sealFields
   */
 case class EthereumBlock(
-                          val hash: String,
-                          val height: BigInt,
-                          val date: Date,
-                          val size: BigInt,
-                          val txs: List[EthereumTransaction],
+                          override val hash: String,
+                          override val height: BigInt,
+                          override val date: Date,
+                          override val size: BigInt,
+                          override val txs: List[EthereumTransaction],
 
                           val parentHash: String,
                           val nonce: BigInt,

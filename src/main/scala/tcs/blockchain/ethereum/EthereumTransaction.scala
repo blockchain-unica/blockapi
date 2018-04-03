@@ -34,8 +34,8 @@ import tcs.utils.Etherscan.getSourceCodeFromEtherscan
   * @param v v part
   */
 case class EthereumTransaction(
-                                val hash: String,
-                                val date: BigInt,
+                                override val hash: String,
+                                override val date: BigInt,
 
                                 val nonce: BigInt,
                                 val blockHash: String,
