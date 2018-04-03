@@ -30,12 +30,12 @@ object EmptyBlocks {
 
 
     blockchain.foreach(block => {
-      if (block.number % 100 == 0) {
-        println(block.number)
+      if (block.height % 100 == 0) {
+        println(block.height)
       }
 
-      if (block.transactions.isEmpty) {
-        blockTable.insert(Seq(block.hash, block.timeStamp, block.miner))
+      if (block.txs.isEmpty) {
+        blockTable.insert(Seq(block.hash, block.date, block.miner))
       }
     })
 

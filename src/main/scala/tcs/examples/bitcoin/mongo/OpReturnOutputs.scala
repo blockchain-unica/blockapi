@@ -20,7 +20,7 @@ object OpReturnOutputs {
     val opReturnOutputs = new Collection("opReturn", mongo)
 
     blockchain.start(290000).end(480000).foreach(block => {
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         tx.outputs.foreach(out => {
           if(out.isOpreturn()) {
             opReturnOutputs.append(List(

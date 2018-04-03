@@ -31,7 +31,7 @@ object SignatureHashTypes {
         }
 
 
-        block.bitcoinTxs.foreach(tx => {
+        block.txs.foreach(tx => {
           var inputIndex: Integer = 0
 
           tx.inputs.foreach(in => {

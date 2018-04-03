@@ -19,8 +19,8 @@ object BlockchainForPonzi {
 
       if (block.height % 1 == 0) println("Block: " + block.height)
 
-      block.bitcoinTxs.foreach(tx => {
-        myBlockchain.append(Document(
+      block.txs.foreach(tx => {
+        myBlockchain.append(List(
           "txid" -> tx.hash.toString,
           "blockhash" -> block.hash.toString,
           "time" -> block.date.getTime,

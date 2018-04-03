@@ -18,7 +18,7 @@ object NonStandardTransactions {
 
     blockchain.start(320000).end(340000).foreach(block => {
       if (block.height % 10000 == 0) println("Block: " + block.height)
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         if (!tx.isStandard) {
           nonStandardTransactions.append(List(
             ("h", tx.hash),

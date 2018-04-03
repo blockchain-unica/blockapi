@@ -32,19 +32,19 @@ object VCWithPermissions {
 
     blockchain.start(1196010).end(1196020).foreach(block => {
 //      if(block.number % 1000 == 0){
-        println("Current block ->" + block.number)
+        println("Current block ->" + block.height)
 //      }
 
-      block.transactions.foreach(tx => {
+      block.txs.foreach(tx => {
 
-        println("Block: " + block.number + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated)
+        println("Block: " + block.height + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated)
 
         if (tx.hasContract){
 
           val list = List(
             ("contractAddress", tx.contract.address),
             ("contractName", tx.contract.name),
-            ("date", block.timeStamp),
+            ("date", block.date),
             ("dateVerified", tx.contract.verificationDate),
             ("sourceCode", tx.contract.sourceCode),
             ("usesPermissions", tx.contract.usesPermissions)

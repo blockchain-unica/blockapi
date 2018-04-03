@@ -17,7 +17,7 @@ object MyBlockchain {
     val myBlockchain = new Collection("myBlockchain", mongo)
 
     blockchain.foreach(block => {
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         myBlockchain.append(List(
           ("txHash", tx.hash),
           ("blockHash", block.hash),

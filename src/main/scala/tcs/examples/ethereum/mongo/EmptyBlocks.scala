@@ -13,17 +13,17 @@ object EmptyBlocks {
     val blocks = new Collection("emptyBlocks", mongo)
 
     // Iterating each block
-    blockchain.start(600001).end(700000).foreach(block => {
+    blockchain.start(1800001).end(2000000).foreach(block => {
 
-      if (block.number % 1000 == 0) println(block.number)
+      if (block.height % 1000 == 0) println(block.height)
 
       blocks.append(List(
         ("chain", "E"),
         ("hash", block.hash),
-        ("height", block.number),
+        ("height", block.height),
         ("pool", block.getMiningPool),
-        ("date", block.timeStamp),
-        ("txs", block.transactions.size)
+        ("date", block.date),
+        ("txs", block.txs.size)
       ))
     })
 

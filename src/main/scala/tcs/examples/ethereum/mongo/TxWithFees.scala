@@ -19,16 +19,16 @@ object TxWithFees {
     val priceHistorical = PriceHistorical.getPriceHistorical()
 
     blockchain.start(70000).end(150000).foreach(block => {
-      if(block.number % 1000 == 0){
-        println("Current block ->" + block.number)
+      if(block.height % 1000 == 0){
+        println("Current block ->" + block.height)
       }
-      block.transactions.foreach(tx => {
+      block.txs.foreach(tx => {
         val creates = if(tx.addressCreated == null) "" else tx.addressCreated
         val to = if(tx.to == null) "" else tx.to
         val list = List(
           ("blockHash", block.hash),
           ("txHash", tx.hash),
-          ("date", block.timeStamp),
+          ("date", block.date),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
           ("creates", creates),
           ("gas", tx.gas),

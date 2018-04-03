@@ -36,7 +36,7 @@ object OpReturnOutputs {
 
       if (block.height % 10000 == 0) println("Block: " + block.height)
 
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         tx.outputs.foreach(out => {
           if (out.isOpreturn()) {
             var protocol: String = MetadataParser.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.transOut.toString)

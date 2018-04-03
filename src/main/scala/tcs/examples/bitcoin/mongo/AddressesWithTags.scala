@@ -24,7 +24,7 @@ object AddressesWithTags {
         println(block.height)
       }
 
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         tx.outputs.foreach(out => {
           out.getAddress(MainNet) match {
             case Some(add) =>

@@ -12,17 +12,18 @@ import scala.collection.mutable
   * Defines a block of the Bitcoin blockchain.
   *
   * @param hash Block hash
-  * @param date Date in which the block was published
-  * @param blockSize Size of the block
   * @param height Height of the block
-  * @param bitcoinTxs List of transactions appended to the block
+  * @param date Date in which the block was published
+  * @param size Size of the block
+  * @param txs List of transactions appended to the block
   */
 class BitcoinBlock(
-                    val hash: Sha256Hash,
+                    val hash: String,
+                    val height: BigInt,
                     val date: Date,
-                    val blockSize: Int,
-                    val height: Long,
-                    val bitcoinTxs: List[BitcoinTransaction]) extends TCSBlock{
+                    val size: BigInt,
+
+                    val txs: List[BitcoinTransaction]) extends TCSBlock{
 
 
   /**
@@ -31,12 +32,12 @@ class BitcoinBlock(
     * @return String representation
     */
   override def toString(): String = {
-    val stringTransactions: String = "[ " + bitcoinTxs.map(tx => tx.toString() + " ") + "]"
-    return hash + " " + date + " " + blockSize + " " + height + " " + stringTransactions
+    val stringTransactions: String = "[ " + txs.map(tx => tx.toString() + " ") + "]"
+    return hash + " " + date + " " + size + " " + height + " " + stringTransactions
   }
 
-  def getMiningPool(): String = {
-    val firstTransaction: BitcoinTransaction = bitcoinTxs.head
+  override def getMiningPool(): String = {
+    val firstTransaction: BitcoinTransaction = txs.head
     var pool: String = "Unknown"
 
     if(firstTransaction.inputs.head.isCoinbase) {
@@ -107,7 +108,7 @@ object BitcoinBlock {
   def factory(block: Block, height: Long): BitcoinBlock = {
     val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map(tx => BitcoinTransaction.factory(tx, block.getTime)).toList
 
-    return new BitcoinBlock(block.getHash, block.getTime, block.getMessageSize, height, transactions)
+    return new BitcoinBlock(block.getHash.toString, height, block.getTime, block.getMessageSize, transactions)
   }
 
 
@@ -126,7 +127,7 @@ object BitcoinBlock {
   def factory(block: Block, height: Long, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): BitcoinBlock = {
     val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map(tx => BitcoinTransaction.factory(tx, block.getTime, UTXOmap, height)).toList
 
-    return new BitcoinBlock(block.getHash, block.getTime, block.getMessageSize, height, transactions)
+    return new BitcoinBlock(block.getHash.toString, height, block.getTime, block.getMessageSize, transactions)
   }
 
 
@@ -142,6 +143,6 @@ object BitcoinBlock {
   def factory(block: Block): BitcoinBlock = {
     val transactions: List[BitcoinTransaction] = block.getTransactions.asScala.map(tx => BitcoinTransaction.factory(tx, block.getTime)).toList
 
-    return new BitcoinBlock(block.getHash, block.getTime, block.getMessageSize, 0, transactions)
+    return new BitcoinBlock(block.getHash.toString, 0, block.getTime, block.getMessageSize, transactions)
   }
 }

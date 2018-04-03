@@ -22,7 +22,7 @@ object Addresses {
 
       println(block.height)
 
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         addresses.append(List(
           ("h", tx.hash),
           ("d", block.date.getTime),

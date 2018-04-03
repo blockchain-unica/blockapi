@@ -15,10 +15,10 @@ object MyBlockchain {
     val myBlockchain = new Collection("myBlockchain", mongo)
 
     blockchain.start(4900000).end(4900100).foreach(block => {
-      if(block.number % 1000 == 0){
-        println("Current block ->" + block.number)
+      if(block.height % 1000 == 0){
+        println("Current block ->" + block.height)
       }
-      block.transactions.foreach(tx => {
+      block.txs.foreach(tx => {
         val internalTransactions = block.internalTransactions.filter(itx => itx.parentTxHash.equals(tx.hash))
         val creates = if(tx.addressCreated == null) "" else tx.addressCreated
         val to = if(tx.to == null) "" else tx.to
@@ -26,7 +26,7 @@ object MyBlockchain {
           ("txHash", tx.hash),
           ("blockHeight", tx.blockNumber.toString()),
           ("txIndex", tx.transactionIndex),
-          ("date", block.timeStamp),
+          ("date", block.date),
           ("from", tx.from),
           ("to", to),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),

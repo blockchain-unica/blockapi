@@ -28,11 +28,11 @@ object EthereumPools {
 
     blockchain.foreach(block => {
 
-      if (block.number % 100 == 0) {
-        println(block.number)
+      if (block.height % 100 == 0) {
+        println(block.height)
       }
 
-      blockTable.insert(Seq(block.hash, block.timeStamp, block.getMiningPool))
+      blockTable.insert(Seq(block.hash, block.date, block.getMiningPool))
 
     })
 

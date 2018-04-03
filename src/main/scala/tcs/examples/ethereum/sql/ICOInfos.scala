@@ -104,13 +104,13 @@ object ICOInfos {
     )
 
     blockchain.start(3224233).foreach(block => {
-      if (block.number % 100 == 0) {
-        println(block.number)
+      if (block.height % 100 == 0) {
+        println(block.height)
       }
       blockTable.insert(Seq(
-        block.hash, block.number, block.parentHash, block.timeStamp, block.author, block.miner
+        block.hash, block.height, block.parentHash, block.date, block.author, block.miner
       ))
-      block.transactions.foreach(tx => {
+      block.txs.foreach(tx => {
         txTable.insert(Seq(
           tx.hash, tx.nonce, tx.transactionIndex, tx.from,
           tx.to, tx.value, tx.addressCreated, tx.gas,

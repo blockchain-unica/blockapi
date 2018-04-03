@@ -12,8 +12,11 @@ import scala.collection.JavaConverters._
 /**
   * Defines a block of the Etherum blockchain
   *
-  * @param number block number
   * @param hash block hash
+  * @param height block number
+  * @param date timestamp of block
+  * @param size size of block
+  * @param txs list of block's transactions
   * @param parentHash parent block hash
   * @param nonce nonce
   * @param sha3Uncles sha3 representation of block uncles
@@ -27,18 +30,18 @@ import scala.collection.JavaConverters._
   * @param difficulty difficulty
   * @param totalDifficulty totalDifficulty
   * @param extraData block extraData
-  * @param size size of block
   * @param gasLimit gasLimit
   * @param gasUsed gasUsed
-  * @param timeStamp timestamp of block
-  * @param transactions list of block's transactions
   * @param internalTransactions list of block's internal transactions
   * @param uncles list of uncles' hashes
   * @param sealFields sealFields
   */
 case class EthereumBlock(
-                          number: BigInt,
                           hash: String,
+                          height: BigInt,
+                          date: Date,
+                          size: BigInt,
+                          txs: List[EthereumTransaction],
                           parentHash: String,
                           nonce: BigInt,
                           sha3Uncles: String,
@@ -52,11 +55,8 @@ case class EthereumBlock(
                           difficulty: BigInt,
                           totalDifficulty: BigInt,
                           extraData: String,
-                          size: BigInt,
                           gasLimit: BigInt,
                           gasUsed: BigInt,
-                          timeStamp: Date,
-                          transactions: List[EthereumTransaction],
                           internalTransactions: List[EthereumInternalTransaction],
                           uncles: List[String],
                           sealFields: List[String]
@@ -66,14 +66,14 @@ case class EthereumBlock(
     * @return string representation of the Ethereum block
     */
   override def toString: String = {
-    "number: " + this.number + "; hash: " + this.hash
+    "number: " + this.height + "; hash: " + this.hash
   }
 
   /**
     * Get a string representation of the mining pool using the extradata infos
     * @return a string corresponding to the mining pool that created this block
     */
-  def getMiningPool: String = {
+  override def getMiningPool: String = {
     if(extraData.contains("7777772e62772e636f6d")) return "BW.COM"
     if(extraData.contains("65746865726d696e652d")) return "Ethermine"
     if(extraData.contains("e4b883e5bda9e7a59ee4bb99e9b1bc")) return "f2pool_2"
@@ -119,11 +119,11 @@ object EthereumBlock{
     if(sealFields == null){
       sealFields = List[String]().asJava
     }
-    new EthereumBlock(block.getNumber, block.getHash, block.getParentHash, block.getNonce, block.getSha3Uncles,
+    new EthereumBlock( block.getHash, block.getNumber, new Date(block.getTimestamp.longValue()),
+                      block.getSize, transactions, block.getParentHash, block.getNonce, block.getSha3Uncles,
                       block.getLogsBloom, block.getTransactionsRoot, block.getStateRoot, block.getReceiptsRoot,
                       block.getAuthor, block.getMiner, block.getMixHash, block.getDifficulty, block.getTotalDifficulty,
-                      block.getExtraData, block.getSize, block.getGasLimit, block.getGasUsed,
-                      new Date(block.getTimestamp.longValue()),
-                      transactions, internalTransactions, block.getUncles.asScala.toList, sealFields.asScala.toList)
+                      block.getExtraData, block.getGasLimit, block.getGasUsed,
+                      internalTransactions, block.getUncles.asScala.toList, sealFields.asScala.toList)
   }
 }

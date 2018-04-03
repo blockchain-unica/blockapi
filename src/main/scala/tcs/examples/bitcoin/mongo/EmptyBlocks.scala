@@ -23,7 +23,7 @@ object EmptyBlocks {
         ("height", block.height),
         ("pool", block.getMiningPool),
         ("date", block.date),
-        ("txs", block.bitcoinTxs.size)
+        ("txs", block.txs.size)
       ))
     })
 

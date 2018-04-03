@@ -13,10 +13,10 @@ object ContractsWithCode {
     val contractsWithCode = new Collection("contractsWithCode", mongo)
 
     blockchain.start(1000000).end(1200000).foreach(block => {
-      if (block.number % 100 == 0) {
-        println("Current block ->" + block.number)
+      if (block.height % 100 == 0) {
+        println("Current block ->" + block.height)
       }
-      block.transactions.foreach(tx => {
+      block.txs.foreach(tx => {
         if (tx.addressCreated != null) {
           val list = List(
             ("contractAddress", tx.addressCreated),
