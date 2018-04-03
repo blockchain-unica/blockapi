@@ -1,11 +1,11 @@
 package tcs.blockchain.ethereum
 
 import java.util.Date
-
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthBlock.{Block, TransactionObject}
 import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt}
 import tcs.blockchain.{Block => TCSBLock}
+import tcs.utils.DateConverter.getDateFromTimestamp
 
 import scala.collection.JavaConverters._
 
@@ -115,16 +115,18 @@ object EthereumBlock{
     val transactions: List[EthereumTransaction] =
       block.getTransactions.asScala.toList
         .map(_.asInstanceOf[TransactionObject])
-        .map((tx) => EthereumTransaction.factory(tx, new Date(block.getTimestamp.longValue()), transactionReceipts.get(tx.get().getHash), retrieveVerifiedContracts))
+        .map((tx) => EthereumTransaction.factory(tx, getDateFromTimestamp(block.getTimestamp), transactionReceipts.get(tx.get().getHash), retrieveVerifiedContracts))
     var sealFields = block.getSealFields
     if(sealFields == null){
       sealFields = List[String]().asJava
     }
-    new EthereumBlock( block.getHash, block.getNumber, new Date(block.getTimestamp.longValue()),
+
+    new EthereumBlock( block.getHash, block.getNumber, getDateFromTimestamp(block.getTimestamp),
                       block.getSize, transactions, block.getParentHash, block.getNonce, block.getSha3Uncles,
                       block.getLogsBloom, block.getTransactionsRoot, block.getStateRoot, block.getReceiptsRoot,
                       block.getAuthor, block.getMiner, block.getMixHash, block.getDifficulty, block.getTotalDifficulty,
                       block.getExtraData, block.getGasLimit, block.getGasUsed,
                       internalTransactions, block.getUncles.asScala.toList, sealFields.asScala.toList)
   }
+
 }

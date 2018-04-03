@@ -1,6 +1,5 @@
 package tcs.examples.ethereum.mongo.levensthein
 
-import org.web3j.protocol.http.HttpService
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.ethereum.{EthereumBlockchain, EthereumSettings}
 import tcs.db.DatabaseSettings

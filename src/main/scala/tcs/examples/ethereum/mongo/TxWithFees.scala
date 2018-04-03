@@ -13,8 +13,8 @@ object TxWithFees {
     val weiIntoEth = BigInt("1000000000000000000")
     val txWithFees = new Collection("txWithFees", mongo)
 
-    blockchain.end(150000).foreach(block => {
-      if(block.height % 1000 == 0){
+    blockchain.start(5350000).end(5367585).foreach(block => {
+      if(block.height % 100 == 0){
         println("Current block ->" + block.height)
       }
       block.txs.foreach(tx => {
