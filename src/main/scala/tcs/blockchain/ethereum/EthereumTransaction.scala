@@ -34,28 +34,28 @@ import tcs.utils.Etherscan.getSourceCodeFromEtherscan
   * @param v v part
   */
 case class EthereumTransaction(
-                                hash: String,
-                                date: BigInt,
+                                val hash: String,
+                                val date: BigInt,
 
-                                nonce: BigInt,
-                                blockHash: String,
-                                blockHeight: BigInt,
-                                transactionIndex: BigInt,
-                                from: String,
-                                to: String,
-                                value: BigInt,
-                                gasPrice: BigInt,
-                                gas: BigInt,
-                                input: String,
-                                addressCreated: String,
-                                publicKey: String,
-                                raw: String,
-                                r: String,
-                                s: String,
-                                v: Int,
+                                val nonce: BigInt,
+                                val blockHash: String,
+                                val blockHeight: BigInt,
+                                val transactionIndex: BigInt,
+                                val from: String,
+                                val to: String,
+                                val value: BigInt,
+                                val gasPrice: BigInt,
+                                val gas: BigInt,
+                                val input: String,
+                                val addressCreated: String,
+                                val publicKey: String,
+                                val raw: String,
+                                val r: String,
+                                val s: String,
+                                val v: Int,
 
-                                contract : EthereumContract,
-                                requestOpt: Option[Request[_, EthGetTransactionReceipt]]
+                                val contract : EthereumContract,
+                                val requestOpt: Option[Request[_, EthGetTransactionReceipt]]
                          ) extends Transaction {
 
   def getContractAddress(): Option[String] = {
