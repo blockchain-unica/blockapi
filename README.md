@@ -10,11 +10,12 @@ The workflow consists in two steps:
 The blockchains currently supported are Bitcoin and Ethereum.
 The DBMS currently supported are MongoDB and MySQL.
 
-The library is dicussed in [A general framework for blockchain analytics](https://arxiv.org/pdf/1707.01021.pdf).
+The library is dicussed in [A general framework for blockchain analytics](https://www.researchgate.net/publication/321415812_A_general_framework_for_blockchain_analytics),
+in proceeding of the [SERIAL workshop 2017](https://serial17.ibr.cs.tu-bs.de/).
 
-More material is available in the [project page](http://blockchain.unica.it/projects/blockchain-analytics/).
+More material is available in the [project page](http://blockchain.unica.it/projects/blockchain-analytics/analytics.html).
 
-The Scaladoc (uploaded on this repository in the [doc folder](https://github.com/bitbart/blockchain-analytics-api/tree/master/docs)) is also available at the following [link](https://bitbart.github.io/blockchain-analytics-api/).
+The Scaladoc is uploaded on this repository in the [doc folder](https://github.com/bitbart/blockchain-analytics-api/tree/master/docs).
 
 ### Install prerequisites
 Prerequisites depends on the target analyses.
