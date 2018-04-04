@@ -3,7 +3,8 @@ package tcs.blockchain.ethereum
 import java.net.URLEncoder
 import java.util.Date
 
-import org.web3j.protocol.core.Request
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.{DefaultBlockParameterName, Request}
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
 import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, TransactionReceipt}
 import tcs.blockchain.Transaction
@@ -80,6 +81,8 @@ case class EthereumTransaction(
   */
 object EthereumTransaction{
 
+  private var web3j : Web3j = null
+
   /**
     * Factory for [[tcs.blockchain.ethereum.EthereumTransaction]] instances
     * Returns an EthereumTransaction, given it's Web3J representation
@@ -87,12 +90,18 @@ object EthereumTransaction{
     * @param tx Web3J representation of this transaction
     * @return new EthereumTransaction
     */
-  def factory(tx: TransactionObject, txDate: Date, receipt: Option[Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean): EthereumTransaction = {
+  def factory(tx: TransactionObject, txDate: Date, receipt: Option[Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean, web3j: Web3j): EthereumTransaction = {
+
+    this.web3j = web3j
 
     // If the transaction creates a contract, initialize it.
     var contract : EthereumContract = null
-    if (retrieveVerifiedContracts && tx.getCreates() != null) {
-      contract = getVerifiedContract(tx)
+    if (tx.getCreates() != null) {
+      if(retrieveVerifiedContracts) {
+        contract = getVerifiedContract(tx)
+      } else {
+        contract = getContract(tx)
+      }
     }
 
     new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
@@ -100,6 +109,13 @@ object EthereumTransaction{
                                    tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
                                    contract, receipt)
   }
+
+
+  /** */
+  def getContract(tx: TransactionObject): EthereumContract = {
+    new EthereumContract("", tx.getCreates, tx.getHash, false, null, getContractBytecode(tx.getCreates), null)
+  }
+
 
   /**
     * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified.
@@ -176,7 +192,7 @@ object EthereumTransaction{
         }
       }
 
-      return new EthereumContract(name, tx.getCreates, tx.getHash, isVerified, date, getSourceCodeFromEtherscan(tx.getCreates))
+      return new EthereumContract(name, tx.getCreates, tx.getHash, isVerified, date, getContractBytecode(tx.getCreates), getSourceCodeFromEtherscan(tx.getCreates))
 
     } catch {
       case ioe: java.io.IOException => {ioe.printStackTrace(); return contract}
@@ -193,5 +209,10 @@ object EthereumTransaction{
     stringDate = stringDate.substring(stringDate.indexOf("<td>") + 4)
     stringDate = stringDate.substring(0, stringDate.indexOf("<"))
     return format.parse(stringDate)
+  }
+
+
+  private def getContractBytecode(contractAddress : String) : String = {
+    this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
 }

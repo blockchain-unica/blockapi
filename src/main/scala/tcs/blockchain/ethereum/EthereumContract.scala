@@ -11,6 +11,7 @@ case class EthereumContract(
                            val isVerified : Boolean,
                            val verificationDate : Date,
 
+                           val bytecode : String,
                            val sourceCode : String
   ){
 

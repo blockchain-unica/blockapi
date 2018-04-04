@@ -1,9 +1,11 @@
 package tcs.blockchain.ethereum
 
 import java.util.Date
+
+import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthBlock.{Block, TransactionObject}
-import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt}
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 import tcs.blockchain.{Block => TCSBLock}
 import tcs.utils.DateConverter.getDateFromTimestamp
 
@@ -111,11 +113,12 @@ object EthereumBlock{
     * @param internalTransactions block's internal transactions
     * @return new EtherumBlock
     */
-  def factory(block: Block, internalTransactions: List[EthereumInternalTransaction], transactionReceipts: Map[String, Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean): EthereumBlock = {
+  def factory(block: Block, internalTransactions: List[EthereumInternalTransaction], transactionReceipts: Map[String, Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean, web3j: Web3j): EthereumBlock = {
+
     val transactions: List[EthereumTransaction] =
       block.getTransactions.asScala.toList
         .map(_.asInstanceOf[TransactionObject])
-        .map((tx) => EthereumTransaction.factory(tx, getDateFromTimestamp(block.getTimestamp), transactionReceipts.get(tx.get().getHash), retrieveVerifiedContracts))
+        .map((tx) => EthereumTransaction.factory(tx, getDateFromTimestamp(block.getTimestamp), transactionReceipts.get(tx.get().getHash), retrieveVerifiedContracts, web3j))
     var sealFields = block.getSealFields
     if(sealFields == null){
       sealFields = List[String]().asJava

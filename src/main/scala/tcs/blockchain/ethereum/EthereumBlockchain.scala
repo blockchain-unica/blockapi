@@ -158,12 +158,12 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
         })
       }
 
-      EthereumBlock.factory(currBlock, internalTxs, transactionReceipts, settings.retrieveVerifiedContracts)
+      EthereumBlock.factory(currBlock, internalTxs, transactionReceipts, settings.retrieveVerifiedContracts, web3j)
 
     }
 
     else{
-      return EthereumBlock.factory(currBlock, List(), transactionReceipts, settings.retrieveVerifiedContracts)
+      return EthereumBlock.factory(currBlock, List(), transactionReceipts, settings.retrieveVerifiedContracts, web3j)
     }
   }
 
@@ -190,11 +190,5 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
       var r : TransactionReceipt = receipt.getTransactionReceipt.get()
       r.getContractAddress
     }
-  }
-
-
-  // TODO: Move this to utils?
-  def getContractCode(contractAddress: String): String = {
-    this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
 }
