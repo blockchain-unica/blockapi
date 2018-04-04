@@ -15,7 +15,7 @@ case class EthereumContract(
                            val sourceCode : String
   ){
 
-  val usesPermissions = checkPermissions()
+  val usesPermissions = isVerified && checkPermissions
 
 
   /**
