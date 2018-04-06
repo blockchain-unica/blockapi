@@ -146,13 +146,4 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     return this
   }
 
-
-  /**
-    * Return the UTXOmap
-    *
-    * @return The UTXOmap
-    */
-  def getUTXOmap : mutable.HashMap[(Sha256Hash, Long), Long] = {
-    return UTXOmap
-  }
 }
