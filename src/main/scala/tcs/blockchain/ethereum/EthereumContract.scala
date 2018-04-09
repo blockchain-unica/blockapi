@@ -16,7 +16,7 @@ case class EthereumContract(
                            ) {
 
   val usesPermissions = isVerified && checkPermissions
-
+  val erc20Compliant = isERC20Compliant
 
   /**
     * This method can be extended to implement smarter ways to find permissions,
