@@ -4,9 +4,12 @@ import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
 import scalikejdbc._
 import tcs.db.{DatabaseSettings, MySQL}
 import tcs.blockchain.BlockchainLib
-import tcs.blockchain.ethereum.{EthereumContract, EthereumSettings}
+import tcs.blockchain.ethereum.{EthereumContract, EthereumSettings, EthereumTransaction}
 import tcs.db.sql.Table
 import tcs.utils.HttpRequester
+import tcs.mongo.Collection
+
+import scala.collection.mutable
 
 object DuplicatedContracts {
   def main(args: Array[String]): Unit = {
@@ -37,7 +40,7 @@ object DuplicatedContracts {
       pg, 1
     )*/
 
-    blockchain.start(49400).foreach(block => {
+    blockchain.start(510600).foreach(block => {
 
       if (block.height % 100 == 0) {
         println(block.height)
@@ -45,12 +48,26 @@ object DuplicatedContracts {
 
       block.txs.foreach(tx => {
 
-        println("Block: " + block.height + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated)
+        //println("Block: " + block.height + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated)
 
-        if (tx.hasContract)
-        {
+        if (tx.hasContract) {
 
-          try {
+          //MONGO SETTINGS
+
+          if (tx.contract.name.length>0 && tx.contract.sourceCode.length>0) {
+
+            val list = List(
+              ("contractAddress", tx.contract.address),
+              ("contractName", tx.contract.name),
+              ("date", block.date),
+              ("sourceCode", tx.contract.sourceCode)
+            )
+            contracts.append(list)  //saves table into MongDB
+
+          }
+
+
+          /*try {
 
                 val content = HttpRequester.get("http://etherscan.io/find-similiar-contracts?a=" + tx.contract.address)
                 //println(content)
@@ -81,37 +98,29 @@ object DuplicatedContracts {
 
                   }while(subContent.contains(strForAddress))
 
+
+
                 }
 
           } catch {
                 case ioe: java.io.IOException => {ioe.printStackTrace(); return tx.contract.address}
                 case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return tx.contract.address}
                 case e: Exception => {e.printStackTrace(); return tx.contract.address}
-          }
-
+          }*/
 
         }//ifHasContrac
       }) //foreach block
     })//foreach blockChain
+
+    contracts.close
+
   }//main
+
+
+
 }//object
 
-    /*  MONGO SETTINGS
 
-        val list = List(
-            ("contractAddress", tx.contract.address),
-            ("contractName", tx.contract.name),
-            ("date", block.date),
-            ("sourceCode", tx.contract.sourceCode)
-                            )
-          //contracts.append(list)  //saves table into MongDB
-        }
-
-        })
-        }
-
-    //contracts.close
-    */
 
     /*
 
