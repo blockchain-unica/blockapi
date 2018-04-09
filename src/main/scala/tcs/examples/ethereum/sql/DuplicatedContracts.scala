@@ -20,10 +20,11 @@ object DuplicatedContracts {
 
     var number = "" //number of contracts duplicated
     var addressContract ="" //temporaney address of contract duplicated
+    var nameContract=""
+    var index = 0
 
     /*
       SQL SETTINGS
-
       val pg = new DatabaseSettings("ethereum", MySQL, "root", "toor")
       val contractTable = new Table(
       sql"""
@@ -52,125 +53,72 @@ object DuplicatedContracts {
 
         if (tx.hasContract) {
 
-          //MONGO SETTINGS
+          try {
+            val content = HttpRequester.get("http://etherscan.io/find-similiar-contracts?a=" + tx.contract.address)
+            //println(content)
+            if(!content.contains(" Found a total of <b>0</b> EXACT match(es)<br><br>"))
+            {
+              println("il contratto ha dei duplicati")
 
-          if (tx.contract.name.length>0 && tx.contract.sourceCode.length>0) {
+              // recupero il numero esatto di quante volte è stato duplicato
+              val strForNumDuplicated = " Found a total of <b>"
+              number = content.substring(content.indexOf(strForNumDuplicated)+strForNumDuplicated.length)
+              number = number.substring(0, number.indexOf("<"))
+              println(number)
 
-            val list = List(
-              ("contractAddress", tx.contract.address),
-              ("contractName", tx.contract.name),
-              ("date", block.date),
-              ("sourceCode", tx.contract.sourceCode)
-            )
-            contracts.append(list)  //saves table into MongDB
+              //memorizzo la tabella
+              var subContent = content.substring(content.indexOf("</tr>\n<tr><td>Exact [100]</td><td>"),content.indexOf("</table>"))
+              //println(subContent)
 
+              val strForDate = "</a></td><td><span rel='tooltip' data-placement='bottom' title='"
+              val strForAddress = "</span></td><td><a href='/address/"
+              val strForName = "<td>Contract Name:\n</td>\n<td>\n"
+
+              do
+              {
+
+                //recuero la data
+                subContent = subContent.substring(subContent.indexOf(strForDate) + strForDate.length)
+                dateContract = subContent.substring(0, subContent.indexOf(" "))
+
+                //recupero l'indirizzo
+                subContent = subContent.substring(subContent.indexOf(strForAddress) + strForAddress.length)
+                addressContract = subContent.substring(0, 42)
+                //println(addressContract)
+                index += 1
+
+                println("indirizzo contratto: " + index + " " + addressContract + " " + dateContract)
+
+                //recupero il nome dei contratti
+                Thread.sleep(400)
+
+                var content3 = HttpRequester.get("http://etherscan.io/address/" + addressContract + "#code")
+                nameContract = content3.substring(content3.indexOf(strForName) + strForName.length)
+                nameContract = nameContract.substring(0, nameContract.indexOf("</td>\n</tr>\n<tr>\n<td>Compiler Version:"))
+                println("nome contratto " nameContract)
+
+              }while(subContent.contains(strForAddress))
+            }
+          } catch {
+            case ioe: java.io.IOException => {ioe.printStackTrace(); return tx.contract.address}
+            case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return tx.contract.address}
+            case e: Exception => {e.printStackTrace(); return tx.contract.address}
           }
 
 
-          /*try {
-
-                val content = HttpRequester.get("http://etherscan.io/find-similiar-contracts?a=" + tx.contract.address)
-                //println(content)
-                if(!content.contains(" Found a total of <b>0</b> EXACT match(es)<br><br>"))
-                {
-                  println("il contratto ha dei duplicati")
-
-                  // recupero il numero esatto di quante volte è stato duplicato
-                  val strForNumDuplicated = " Found a total of <b>"
-                  number = content.substring(content.indexOf(strForNumDuplicated)+strForNumDuplicated.length)
-                  number = number.substring(0, number.indexOf("<"))
-                  println(number)
-
-
-                  //indirizzi dei contratti che hanno lo stesso codice sorgente
-
-                  //memorizzo la tabella
-                  var subContent = content.substring(content.indexOf("</tr>\n<tr><td>Exact [100]</td><td>"),content.indexOf("</table>"))
-                  //println(subContent)
-                  val strForAddress ="</span></td><td><a href='/address/"
-
-                  do
-                  {
-                    subContent = subContent.substring(subContent.indexOf(strForAddress) + strForAddress.length)
-                    addressContract = subContent.substring(0, 42)
-                    println("###      indirizzo contratto      ###")
-                    println(addressContract)
-
-                  }while(subContent.contains(strForAddress))
+        }
 
 
 
-                }
 
-          } catch {
-                case ioe: java.io.IOException => {ioe.printStackTrace(); return tx.contract.address}
-                case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return tx.contract.address}
-                case e: Exception => {e.printStackTrace(); return tx.contract.address}
-          }*/
+      }//ifHasContrac
+    }) //foreach block
+  })//foreach blockChain
 
-        }//ifHasContrac
-      }) //foreach block
-    })//foreach blockChain
+  contracts.close
 
-    contracts.close
-
-  }//main
+}//main
 
 
 
 }//object
-
-
-
-    /*
-
-    SCRIPT PARSING DI ESEMPIO
-
-    val addressExample = "0x82EDa86610356B90e92ed23f2a5c3AA9670681A3"
-    var number = ""
-    var addressContract =""
-
-    try {
-
-      val content = HttpRequester.get("http://etherscan.io/find-similiar-contracts?a=" + addressExample)
-      //println(content)
-      if(!content.contains(" Found a total of <b>0</b> EXACT match(es)<br><br>"))
-        {
-          println("il contratto ha dei duplicati")
-
-          // recupero il numero esatto di quante volte è stato duplicato
-          val strForNumDuplicated = " Found a total of <b>"
-          number = content.substring(content.indexOf(strForNumDuplicated)+strForNumDuplicated.length)
-          number = number.substring(0, number.indexOf("<"))
-          println(number)
-
-
-          //indirizzi dei contratti che hanno lo stesso codice sorgente
-
-          //memorizzo la tabella
-          var subContent = content.substring(content.indexOf("</tr>\n<tr><td>Exact [100]</td><td>"),content.indexOf("</table>"))
-          //println(subContent)
-          val strForAddress ="</span></td><td><a href='/address/"
-
-          do
-          {
-            subContent = subContent.substring(subContent.indexOf(strForAddress) + strForAddress.length)
-            addressContract = subContent.substring(0, 42)
-            println("#########  indirizzo contratto ##########")
-            println(addressContract)
-
-          }while(subContent.contains(strForAddress))
-
-        }
-
-    } catch {
-      case ioe: java.io.IOException => {ioe.printStackTrace(); return addressExample}
-      case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return addressExample}
-      case e: Exception => {e.printStackTrace(); return addressExample}
-    }
-
-
-    */
-
-
-
