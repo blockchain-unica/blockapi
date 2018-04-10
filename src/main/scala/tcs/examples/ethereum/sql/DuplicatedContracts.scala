@@ -47,7 +47,7 @@ object DuplicatedContracts {
         println(block.height)
       }
 
-      block.txs.foreach(tx => {
+      /*block.txs.foreach(tx => {
 
         //println("Block: " + block.height + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated)
 
@@ -108,14 +108,30 @@ object DuplicatedContracts {
 
         }
 
-
-
-
       }//ifHasContrac
-    }) //foreach block
+    }) //foreach block*/
+      block.txs.foreach(tx => {
+
+        if (tx.hasContract && tx.contract.sourceCode.length>0) {
+
+          //println("Block: " + block.height + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated)
+
+          if (tx.hasContract) {
+            val list = List(
+              ("contractAddress", tx.contract.address),
+              ("contractName", tx.contract.name),
+              ("date", block.date),
+              ("sourceCode", tx.contract.sourceCode)
+            )
+            contracts.append(list)
+          }
+
+        }
+      })
   })//foreach blockChain
 
   contracts.close
+
 
 }//main
 
