@@ -19,7 +19,7 @@ object EthereumTokens {
         println("Current Block " + block.height)
       }
       block.txs.foreach(tx => {
-          if (tx.hasContract && tx.contract.erc20Compliant) {
+          if (tx.hasContract && tx.contract.isERC20Compliant){
             tokens.append(
               List(
                 ("contractAddress", tx.contract.address),
@@ -30,5 +30,6 @@ object EthereumTokens {
           }
       })
     })
+    tokens.close
   }
 }
