@@ -80,7 +80,7 @@ class BitcoinOutput(
 
     try {
 
-      Some(transOut.getScriptPubKey.getToAddress(param))
+      Some(transOut.getScriptPubKey.getToAddress(param, true))
 
     } catch {
       case _: Throwable => None
