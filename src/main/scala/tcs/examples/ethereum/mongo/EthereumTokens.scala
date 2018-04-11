@@ -1,7 +1,6 @@
 package tcs.examples.ethereum.mongo
 
 import tcs.blockchain.BlockchainLib
-import tcs.blockchain.ethereum.EthereumContract
 import tcs.blockchain.ethereum.EthereumSettings
 import tcs.db.DatabaseSettings
 
@@ -10,31 +9,26 @@ import tcs.mongo.Collection
 object EthereumTokens {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("https://mainnet.infura.io/XerLZnGLLqs26v1mQZAE:8545"))
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
     val mongo = new DatabaseSettings("EthereumTokens")
-    val blocks = new Collection("EthereumTokens", mongo)
+    val tokens = new Collection("EthereumTokens", mongo)
 
-    blockchain.start(1196010).end(1196020).foreach(block => {
-
+    // Iterating each block
+    blockchain.start(4880000).end(4881012).foreach(block => {
+      if(block.height%100 == 0){
+        println("Current Block " + block.height)
+      }
       block.txs.foreach(tx => {
-
-        if (tx.hasContract){
-          if(tx.contract.erc20Compliant){
-            val list = List(
-              ("contractAddress", tx.contract.address),
-              ("contractName", tx.contract.name),
-              ("date", block.date),
-              ("dateVerified", tx.contract.verificationDate),
-              ("sourceCode", tx.contract.sourceCode),
-              ("usesPermissions", tx.contract.usesPermissions)
+          if (tx.hasContract && tx.contract.erc20Compliant) {
+            tokens.append(
+              List(
+                ("contractAddress", tx.contract.address),
+                ("txhash",tx.hash),
+                ("date",tx.date)
+              )
             )
-            blocks.append(list)
           }
-        }
-
       })
-
     })
-
   }
 }
