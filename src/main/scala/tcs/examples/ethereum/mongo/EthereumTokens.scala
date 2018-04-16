@@ -24,7 +24,9 @@ object EthereumTokens {
               List(
                 ("contractAddress", tx.contract.address),
                 ("txhash",tx.hash),
-                ("date",tx.date)
+                ("date",tx.date),
+                ("from",tx.getTransactionOut)
+                //("to",tx.getTransactionIn)
               )
             )
           }

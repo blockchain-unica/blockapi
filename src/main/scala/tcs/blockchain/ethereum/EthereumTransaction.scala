@@ -1,5 +1,6 @@
 package tcs.blockchain.ethereum
 
+import java.math.BigInteger
 import java.net.URLEncoder
 import java.util.Date
 
@@ -74,6 +75,14 @@ case class EthereumTransaction(
   def hasContract : Boolean = {
     return contract != null
   }
+
+  def getTransactionOut : BigInteger = {
+    return EthereumTransaction.getNumberOfTransaction(from)
+  }
+
+//  def getTransactionIn : BigInteger = {
+//    return EthereumTransaction.getNumberOfTransaction(to)
+//  }
 }
 
 /**
@@ -115,7 +124,6 @@ object EthereumTransaction{
   def getContract(tx: TransactionObject): EthereumContract = {
     new EthereumContract("", tx.getCreates, tx.getHash, false, null, getContractBytecode(tx.getCreates), null)
   }
-
 
   /**
     * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified.
@@ -214,5 +222,9 @@ object EthereumTransaction{
 
   private def getContractBytecode(contractAddress : String) : String = {
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
+  }
+
+  private def getNumberOfTransaction(contractAddress : String) : BigInteger = {
+    this.web3j.ethGetTransactionCount(contractAddress, DefaultBlockParameterName.LATEST).send().getTransactionCount
   }
 }
