@@ -9,10 +9,8 @@ object ContractsCollection {
 
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545", true))
-    //connection
-    val mongo = new DatabaseSettings("ethereum")
-    //creates DB mongoDB
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545", true)) //connection
+    val mongo = new DatabaseSettings("ethereum") //creates DB mongoDB
     val contracts = new Collection("contracts", mongo) //creates the collection
 
 
