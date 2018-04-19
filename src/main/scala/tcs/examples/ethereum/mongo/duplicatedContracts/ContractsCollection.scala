@@ -6,9 +6,7 @@ import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
 /*
-  The script identifies duplicate contracts, ie contracts that have exactly the same source code
-  as another contract in the blockchain.  For each distinct source code, the script adds to the
-  database contracts:
+  For each distinct contract, the script adds to the collection contracts:
   - contractAddress
   - contractName
   - date
@@ -27,7 +25,7 @@ object ContractsCollection {
     val contracts = new Collection("contracts", mongo) //creates the collection contracts
 
 
-    blockchain.start(510600).end(510800)foreach(block => {
+    blockchain.start(46900).end(500000)foreach(block => {
 
       if (block.height % 100 == 0) {
         println("Current block:   " + block.height)
