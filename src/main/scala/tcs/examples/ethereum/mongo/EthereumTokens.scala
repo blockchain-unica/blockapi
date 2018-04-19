@@ -23,7 +23,7 @@ object EthereumTokens {
               List(
                 ("contractAddress", tx.contract.address),
                 ("txhash",tx.contract.hashOriginatingTx),
-                ("date",tx.date)/*,
+                ("date",tx.date) /*,
                 ("balance",EthereumTransaction.getContractBalance(tx.contract.address)),
                 ("transactionCountFrom",EthereumTransaction.getContractTransactionCount(tx.contract.address))*/
               )
