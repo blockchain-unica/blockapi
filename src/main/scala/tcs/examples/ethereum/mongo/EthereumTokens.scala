@@ -1,9 +1,8 @@
 package tcs.examples.ethereum.mongo
 
 import tcs.blockchain.BlockchainLib
-import tcs.blockchain.ethereum.EthereumSettings
+import tcs.blockchain.ethereum.{EthereumSettings, EthereumTransaction}
 import tcs.db.DatabaseSettings
-
 import tcs.mongo.Collection
 
 object EthereumTokens {
@@ -23,8 +22,10 @@ object EthereumTokens {
             tokens.append(
               List(
                 ("contractAddress", tx.contract.address),
-                ("txhash",tx.hash),
-                ("date",tx.date)
+                ("txhash",tx.contract.hashOriginatingTx),
+                ("date",tx.date)/*,
+                ("balance",EthereumTransaction.getContractBalance(tx.contract.address)),
+                ("transactionCountFrom",EthereumTransaction.getContractTransactionCount(tx.contract.address))*/
               )
             )
           }
