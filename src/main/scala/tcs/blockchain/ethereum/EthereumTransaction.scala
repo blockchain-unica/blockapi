@@ -117,6 +117,10 @@ object EthereumTransaction{
     new EthereumContract("", tx.getCreates, tx.getHash, false, null, getContractBytecode(tx.getCreates), null)
   }
 
+  def getConctractBalance(contractAddress : String) : BigInteger = {
+    this.web3j.ethGetBalance(contractAddress,DefaultBlockParameterName.LATEST).send().getBalance
+  }
+
   /**
     * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified.
     * If so, it finds its name on the platform and its date of verification, then creates an EthereumContract.
