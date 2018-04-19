@@ -117,14 +117,6 @@ object EthereumTransaction{
     new EthereumContract("", tx.getCreates, tx.getHash, false, null, getContractBytecode(tx.getCreates), null)
   }
 
-  def getContractBalance(contractAddress : String) : BigInteger = {
-    this.web3j.ethGetBalance(contractAddress,DefaultBlockParameterName.LATEST).send().getBalance
-  }
-
- /* def getContractTransactionCount(contractAddress : String) : BigInteger = {
-    this.web3j.ethGetTransactionCount(contractAddress,DefaultBlockParameterName.LATEST).send().getTransactionCount
-  }*/
-
   /**
     * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified.
     * If so, it finds its name on the platform and its date of verification, then creates an EthereumContract.
@@ -218,6 +210,7 @@ object EthereumTransaction{
     stringDate = stringDate.substring(0, stringDate.indexOf("<"))
     return format.parse(stringDate)
   }
+
 
   private def getContractBytecode(contractAddress : String) : String = {
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
