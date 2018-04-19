@@ -5,17 +5,19 @@ import tcs.blockchain.ethereum.EthereumSettings
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
-/*
-  For each distinct contract, the script adds to the collection contracts:
-  - contractAddress
-  - contractName
-  - date
-  - sourceCode
+/**
+  * For each distinct contract, the script adds to the collection contracts:
+  * - contractAddress
+  * - contractName
+  * - date
+  * - sourceCode
+  *
+  * @author Flavia Murru
+  * @author Francesca Malloci
+  * @author Fabio Carta
+  *
+  * */
 
-  @author: Flavia Murru
-  @author: Francesca Malloci
-  @author: Fabio Carta
- */
 object ContractsCollection {
 
   def main(args: Array[String]): Unit = {
