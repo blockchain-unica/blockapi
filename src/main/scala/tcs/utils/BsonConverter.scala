@@ -47,6 +47,7 @@ object BsonConverter {
           "outScript" -> x.outScript.toString).toBsonDocument
       case pairsList(x) => toBson(x.map(i => convertPair(i)).reduce(_ ++ _))
       case x: Seq[Any] => toBson(x.map(i => Seq(convert(i))).reduce(_ ++ _))
+      case x: Document => toBson(x)
       case x: Any => toBson(x.toString)
     }
   }
