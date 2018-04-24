@@ -26,7 +26,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   // Connects to Bitcoin Core
   val clientFactory =
     new BitcoindClientFactory(
-      new URL("http://" + settings.rpcHost + ":" + settings.rpcPort + "/" + settings.rpcPath),
+      new URL(settings.rpcProtocol + "://" + settings.rpcHost + ":" + settings.rpcPort + "/" + settings.rpcPath),
       settings.rpcUser,
       settings.rpcPassword);
 

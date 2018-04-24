@@ -13,6 +13,7 @@ package tcs.blockchain.bitcoin
 class BitcoinSettings(
                        val rpcUser: String,
                        val rpcPassword: String,
+                       val rpcProtocol : String = "http",
                        val rpcPort: String,
                        val rpcHost: String,
                        val rpcPath: String = "",
@@ -23,27 +24,27 @@ class BitcoinSettings(
            rpcPassword: String,
            rpcPort: String,
            rpcHost: String,
-           network: Network) = this(rpcUser, rpcPassword, rpcPort, rpcHost, "", network, false)
+           network: Network) = this(rpcUser, rpcPassword, "http", rpcPort, rpcHost, "", network, false)
 
   def this(rpcUser: String,
            rpcPassword: String,
            rpcPort: String,
            rpcHost: String,
            network: Network,
-           retrieveInputValues: Boolean) = this(rpcUser, rpcPassword, rpcPort, rpcHost, "", network, retrieveInputValues)
+           retrieveInputValues: Boolean) = this(rpcUser, rpcPassword, "http", rpcPort, rpcHost, "", network, retrieveInputValues)
 
 
   def this(rpcUser: String,
            rpcPassword: String,
            rpcPort: String,
            network: Network,
-           retrieveInputValues: Boolean) = this(rpcUser, rpcPassword, rpcPort, "localhost", "", network, retrieveInputValues)
+           retrieveInputValues: Boolean) = this(rpcUser, rpcPassword, "http", rpcPort, "localhost", "", network, retrieveInputValues)
 
 
   def this(rpcUser: String,
            rpcPassword: String,
            rpcPort: String,
-           network: Network) = this(rpcUser, rpcPassword, rpcPort, "localhost", "", network)
+           network: Network) = this(rpcUser, rpcPassword, "http", rpcPort, "localhost", "", network)
 
 }
 
