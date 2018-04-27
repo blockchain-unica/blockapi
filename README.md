@@ -90,3 +90,4 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Giovanni Laerte Frongia](https://www.linkedin.com/in/giovanni-laerte-frongia-3899b2107/), [Luca Pitzalis](https://github.com/pizza1994) - Verified contracts from Etherscan.io
    * [Filippo Andrea Fanni](https://www.linkedin.com/in/filippo-andrea-fanni/), [Martina Senis](), [Alessandro Tola](https://www.linkedin.com/in/alessandro-tola-54048238/) - Ethereum pools 
    * [Riccardo Mulas](https://github.com/riccardomulas) - Non-standard transactions
+   * [Fabio Carta](https://github.com/fabseulo), [Francesca Malloci](https://github.com/mallociFrancesca), [Flavia Murru](https://github.com/murruFlavia) - Duplicate Ethereum contracts
