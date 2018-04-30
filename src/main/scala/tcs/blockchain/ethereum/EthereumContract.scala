@@ -108,22 +108,31 @@ case class EthereumContract(
 
   }
 
+
+  /**
+    * This method finds token divisibility in bytecode, if not returns "Unknown"
+    *
+    * @return token's divisibility
+    */
+
   def getTokenDivisibility(): String = {
 
-    try {
+    val pattern = new Regex("565b60[0-3][0-9]8156")
 
-      val pattern = new Regex("565b60[0-3][0-9]8156")
-
-      val stringa = StringUtils.substringBetween((pattern findAllIn bytecode).mkString(",")
+    val stringa = StringUtils.substringBetween((pattern findAllIn bytecode).mkString(",")
         , "565b60", "8156")
 
-      stringa
+    if (stringa == null){
 
-    } catch {
+      "Unknown"
 
-      case e: Exception => "Unknown"  //TODO found some real exceptions
+    } else {
+
+      val num = Integer.parseInt(stringa, 16)
+
+      num.toString
+
     }
-
   }
 
 }

@@ -14,7 +14,7 @@ object EthereumTokens {
     val tokens = new Collection("EthereumTokens", mongo)
 
     // Iterating each block
-    blockchain.start(5061244).end(5061444).foreach(block => {
+    blockchain.start(5530000).end(5530500).foreach(block => {
       if(block.height%100 == 0){
         println("Current Block " + block.height)
       }
