@@ -6,6 +6,7 @@ import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
 object EthereumTokens {
+
   def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
@@ -13,7 +14,7 @@ object EthereumTokens {
     val tokens = new Collection("EthereumTokens", mongo)
 
     // Iterating each block
-    blockchain.start(5058444).end(5061444).foreach(block => {
+    blockchain.start(5061244).end(5061444).foreach(block => {
       if(block.height%100 == 0){
         println("Current Block " + block.height)
       }
@@ -25,12 +26,10 @@ object EthereumTokens {
                 ("contractAddress", tx.contract.address),
                 ("txhash",tx.contract.hashOriginatingTx),
                 ("date",tx.date),
-                ("bytecode", tx.contract.bytecode),
+                //("bytecode", tx.contract.bytecode),
                 ("tokenName", tx.contract.getTokenName()),
-                ("tokenSymbol", tx.contract.getTokenSymbol())
-//                ("tokenDivisibility", tx.contract.getTokenDivisibility())
-                /*("balance",EthereumTransaction.getContractBalance(tx.contract.address)),
-                ("transactionCountFrom",EthereumTransaction.getContractTransactionCount(tx.contract.address))*/
+                ("tokenSymbol", tx.contract.getTokenSymbol()),
+                ("tokenDivisibility", tx.contract.getTokenDivisibility())
               )
             )
           }

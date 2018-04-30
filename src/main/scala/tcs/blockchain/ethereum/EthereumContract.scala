@@ -6,6 +6,8 @@ import org.apache.commons.codec.DecoderException
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.StringUtils
 
+import scala.util.matching.Regex
+
 
 case class EthereumContract(
                              val name: String,
@@ -40,7 +42,7 @@ case class EthereumContract(
     */
 
   def isERC20Compliant(): Boolean = {
-    return bytecode.contains("18160ddd") &&
+    bytecode.contains("18160ddd") &&
       bytecode.contains("70a08231") &&
       bytecode.contains("dd62ed3e") &&
       bytecode.contains("a9059cbb") &&
@@ -77,7 +79,7 @@ case class EthereumContract(
   }
 
   /**
-    * TThis method checks if there is a token symbol in bytecode, if not returns "Unknown"
+    * This method checks if there is a token symbol in bytecode, if not returns "Unknown"
     *
     * @return token's symbol
     */
@@ -102,6 +104,24 @@ case class EthereumContract(
     } catch {
       case np : NullPointerException => "Unknown"
       case de : DecoderException => "Unknown"
+    }
+
+  }
+
+  def getTokenDivisibility(): String = {
+
+    try {
+
+      val pattern = new Regex("565b60[0-3][0-9]8156")
+
+      val stringa = StringUtils.substringBetween((pattern findAllIn bytecode).mkString(",")
+        , "565b60", "8156")
+
+      stringa
+
+    } catch {
+
+      case e: Exception => "Unknown"  //TODO found some real exceptions
     }
 
   }
