@@ -40,4 +40,6 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.2"
 
+libraryDependencies += "org.apache.jena" % "apache-jena-libs" % "3.7.0"
+
 

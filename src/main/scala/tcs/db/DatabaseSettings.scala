@@ -17,6 +17,8 @@ class DatabaseSettings(val database: String,
       "27017"
     else if(dbType.equals(PostgreSQL))
       "5432"
+    else if(dbType.equals(Fuseki))
+      "3030"
     else
       ""
 }
@@ -26,5 +28,7 @@ class Database
 object Mongo extends Database
 
 object MySQL extends Database
+
+object Fuseki extends Database
 
 object PostgreSQL extends Database
