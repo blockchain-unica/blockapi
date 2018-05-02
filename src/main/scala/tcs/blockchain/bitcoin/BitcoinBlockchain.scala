@@ -77,7 +77,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @param hash Hash of the block
     * @return BitcoinBlock representation of the block
     */
-  def getBlock(hash: String): BitcoinBlock = {
+  override def getBlock(hash: String): BitcoinBlock = {
     val hex = client.getblock(hash, 0)
     val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
     val jBlock = bitcoinSerializer.makeBlock(ConvertUtils.hexToBytes(hex))
