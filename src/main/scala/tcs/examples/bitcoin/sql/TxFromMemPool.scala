@@ -4,9 +4,18 @@ import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.utils.DateConverter.convertDate
+import tcs.custom.bitcoin.Exchange
+import tcs.db.{DatabaseSettings, MySQL}
+import tcs.db.sql.Table
+import tcs.utils.DateConverter
+import java.util.Calendar
 import java.io._
+import scala.collection.mutable.ListBuffer
 
 
+/**
+  * Created by Antonio Sanna on 27/04/2018.
+  */
 object TxFromMemPool
 {
   
@@ -15,48 +24,89 @@ object TxFromMemPool
   def main(args: Array[String]): Unit =
   {
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("bitcoin", "L4mbWnzC11BNrmTK","https", "443","co2.unica.it" ,"bitcoin-mainnet", MainNet))
+    val mySQL = new DatabaseSettings("mempool", MySQL, "root", "")
 
     val startTime = System.currentTimeMillis()/1000
-
-    var hashList:List[String] = Nil
-    /*val pw = new PrintWriter(new File("memPoolTransactions.txt" ))
+    var hashList= new ListBuffer[String]()
 
 
-    def printToFile(hashList: List[String]): Unit= 
+    val txTable = new Table(
+      sql"""
+      create table if not exists transaction(
+        id serial not null primary key,
+        hash varchar(256) not null,
+        txdate TIMESTAMP not null,
+        inputsSum bigint,
+        outputsSum bigint,
+        fee bigint,
+        error Boolean not null
+    )""",
+      sql"""insert into transaction (hash, txdate,inputsSum,outputsSum, fee, error) values(?,?,?,?,?,?)""",
+      mySQL)
+
+    for(hash <- blockchain.getMemPool())
     {
-      for (hash <- hashList)
-      {
+        hashList += hash
         try
         {
-          
-          pw.write(blockchain.getTransaction(hash).getPrintableTransaction())
+          val tx = blockchain.getTransaction(hash)
+          txTable.insert(Seq(
+            tx.hash.toString,
+            convertDate(Calendar.getInstance().getTime()),
+            tx.getInputsSum(),
+            tx.getOutputsSum(),
+            null,
+            false))
         } 
         catch
         {
-          case e: RuntimeException => println("error at hash " + hash + ": " + e.toString())
-          case _: Throwable => println("Got some other kind of exception")
+          case e: RuntimeException => 
+                    txTable.insert(Seq(
+                        hash,
+                        convertDate(Calendar.getInstance().getTime()),
+                        null,
+                        null,
+                        null,
+                        true))
+                case _: Throwable => println("Got some other kind of exception")
         }
-      }
-    }
-
-    println(hashList.length)
-    printToFile(hashList)*/
-    for(hash <- blockchain.getMemPool())
-    {
-        hashList = hash :: hashList
     }
 
     do{
         for(hash <- blockchain.getMemPool())
         {
-            if(!hashList.contains(hash))
+            if(!(hashList contains hash))
             {
-                hashList = hash :: hashList
+                hashList += hash
+                try
+                {
+                val tx = blockchain.getTransaction(hash)
+                txTable.insert(Seq(
+                    hash,
+                    convertDate(Calendar.getInstance().getTime()),
+                    tx.getInputsSum(),
+                    tx.getOutputsSum(),
+                    null,
+                    false))
+                } 
+                catch
+                {
+                case e: RuntimeException => 
+                    txTable.insert(Seq(
+                        hash,
+                        convertDate(Calendar.getInstance().getTime()),
+                        null,
+                        null,
+                        null,
+                        true))
+                case _: Throwable => println("Got some other kind of exception")
+                }
             }
         }
         println(hashList.length)
-    }while((System.currentTimeMillis() / 1000)>=300)
+    }while((System.currentTimeMillis() / 1000)/60<=10)
     //pw.close
+    txTable.close
   }
 }
