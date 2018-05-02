@@ -152,7 +152,6 @@ class GraphTransactions(
 
   private def forwardTransactions() = {
 
-    //ArrayBuffer (hash_tx, deep, output_indexes)
     var transactionList: ArrayBuffer[(String, Int, List[Int])] = ArrayBuffer((tx_hash, 0, List()))
 
     println("Start forwardTransaction..")
