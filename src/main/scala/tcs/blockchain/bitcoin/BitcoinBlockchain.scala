@@ -10,6 +10,7 @@ import tcs.blockchain.Blockchain
 import tcs.utils.ConvertUtils
 
 import scala.collection.mutable
+import scala.collection.JavaConversions._
 
 
 /**
@@ -121,6 +122,13 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     BitcoinBlock.factory(jBlock, height, UTXOmap)
   }
 
+  def getTransaction(hash: String): BitcoinTransaction = {
+    val hex = client.getrawtransaction(hash)
+    val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
+    val jTx = bitcoinSerializer.makeTransaction(ConvertUtils.hexToBytes(hex))
+
+    BitcoinTransaction.factory(jTx)
+  }
 
   /**
     * Sets the first block of the blockchain to visit.
@@ -132,6 +140,12 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     starBlock = height
 
     return this
+  }
+
+  def getMemPool(): List[String] ={
+    val results = client.getrawmempool()
+
+    results.toList
   }
 
 
