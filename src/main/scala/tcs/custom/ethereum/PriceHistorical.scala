@@ -108,5 +108,5 @@ object PriceHistorical {
     try {
       Some(s.toDouble)
       s.toDouble
-    } catch { case _ => 0d }
+    } catch { case _ : Throwable => 0d }
 }
