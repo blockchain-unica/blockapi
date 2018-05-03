@@ -9,13 +9,15 @@ import scala.collection.mutable
 import scala.util.control.Breaks._
 import scala.collection.mutable.ArrayBuffer
 
-class GraphTransactions(
+class Addresses(
                         val tx_hash: String = "",
+                        val tx_height: Long = 0l,
                         val deep: Int = 4,
+                        val inputoutput: Boolean = false,
                         val network: Network = MainNet
                       ) {
 
-  val fuseki = new DatabaseSettings("graphTransactions", Fuseki)
+  val fuseki = new DatabaseSettings("addresses", Fuseki)
 
   val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", network))
 
@@ -26,14 +28,14 @@ class GraphTransactions(
   var startBlock: Long = 1l
   var endBlock: Long = 300000l
 
-  def startGraphTx(side: Direction = Both): Unit = {
+  def startAddressGraph(side: Direction = Both): Unit = {
     if (side.equals(Back))
-      backTransactions()
-    else if (side.equals(Forward))
-      forwardTransactions()
+      backAddresses()
+    else if (side.equals(Forward)){
+
+    }
     else if (side.equals(Both)) {
-      backTransactions()
-      forwardTransactions()
+
     }
   }
 
@@ -45,42 +47,30 @@ class GraphTransactions(
     model.datasetQuery(query)
   }
 
-  private def backTransactions(): Unit = {
+  private def backAddresses(): Unit = {
 
-    var queue: mutable.Queue[(String, Int, String, Int)] = mutable.Queue()
+    var queue: mutable.Queue[(String, Int, String, Int)] = mutable.Queue()  //backtxhash, depth, txhash, redeemedoutindex
 
     var tx = blockchain.getTransaction(tx_hash)
+
     if (fst_model) {
+      //create tx graph
       println("Creation first graph: " + tx.hash.toString)
       model.addStatements(BlockchainURI.TX + tx.hash.toString,
         List(
           (BlockchainURI.TXHASH, tx.hash.toString),
           (BlockchainURI.TXSIZE, tx.txSize.toString),
-          (BlockchainURI.LOCKTIME, tx.lock_time.toString),
-          (BlockchainURI.DEPTH, "0")
+          (BlockchainURI.LOCKTIME, tx.lock_time.toString)
         )
       )
       fst_model = false
     }
+
     tx.inputs.foreach(in => {
-
-      var redeemedOutIndex : Int = -1
-        model.addStatements(BlockchainURI.IN + tx.hash.toString,
-          List(
-            (BlockchainURI.REDEEMEDTXHASH, in.redeemedTxHash.toString),
-            (BlockchainURI.INPUTVALUE, in.value.toString()),
-            (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString()),
-            (BlockchainURI.ISCOINBASE, in.isCoinbase.toString()),
-            (BlockchainURI.SEQUENCENO, in.sequenceNo.toString()),
-            (BlockchainURI.OUTPOINT, in.outPoint.toString()),
-            (BlockchainURI.INSCRIPT, in.inScript.toString)
-          ),
-          (BlockchainURI.TX + tx.hash.toString, BlockchainURI.IN_PROP))
-
-        redeemedOutIndex = in.redeemedOutIndex
-
-      queue += ((in.redeemedTxHash.toString, 1, tx.hash.toString, redeemedOutIndex))
+      queue += ((in.redeemedTxHash.toString, 1, tx.hash.toString, in.redeemedOutIndex))
     })
+
+    //println(queue)
 
     while (queue.nonEmpty) {
       val tl = queue.dequeue()
@@ -89,75 +79,71 @@ class GraphTransactions(
 
           tx.outputs.foreach(out => {
             if (tl._4 == out.index) {
-              model.addStatements(BlockchainURI.OUT + tx.hash.toString,
+
+              println("Address: " + out.getAddress(network).get.toString)
+              println("Tx1: " + tl._3)
+              println("Tx2: " + tx.hash.toString)
+              model.addStatements(BlockchainURI.ADDRESS + out.getAddress(network).get.toString,
+                List(
+                  (BlockchainURI.ADDRESSPROP, out.getAddress(network).get.toString),
+                  (BlockchainURI.DEPTH, tl._2)
+                ),
+                (BlockchainURI.TX + tl._3, BlockchainURI.SENTBY)
+              )
+
+              model.addStatements(BlockchainURI.OUT + out.getAddress(network).get.toString,
                 List(
                   (BlockchainURI.INDEX, out.index.toString),
                   (BlockchainURI.VALUE, out.value.toString),
-                  (BlockchainURI.OUTADDRESS, out.getAddress(network).get.toString)
+                  (BlockchainURI.OUTSCRIPT, out.outScript.toString)
                 ),
-                (BlockchainURI.IN + tl._3, BlockchainURI.BACKTX)
+                (BlockchainURI.ADDRESS + out.getAddress(network).get.toString, BlockchainURI.OUTINFO)
               )
             }
-          })
 
-        model.addStatements(BlockchainURI.TX + tx.hash.toString,
-          List(
-            (BlockchainURI.TXHASH, tx.hash.toString),
-            (BlockchainURI.TXSIZE, tx.txSize.toString),
-            (BlockchainURI.LOCKTIME, tx.lock_time.toString),
-            (BlockchainURI.DEPTH, tl._2.toString)
-          ),
-          (BlockchainURI.OUT + tx.hash.toString, BlockchainURI.ISOUTOF))
+            model.addStatements(BlockchainURI.TX + tx.hash.toString,
+              List(
+                (BlockchainURI.TXHASH, tx.hash.toString),
+                (BlockchainURI.TXSIZE, tx.txSize.toString),
+                (BlockchainURI.LOCKTIME, tx.lock_time.toString)
+              ),
+              (BlockchainURI.ADDRESS + out.getAddress(network).get.toString, BlockchainURI.ISOUTOF))
+          })
 
         if (tl._2 < deep) {
           tx.inputs.foreach(in => {
 
             var redeemedOutIndex : Int = -1
 
-              model.addStatements(BlockchainURI.IN + tx.hash.toString + "/" + in.redeemedTxHash.toString,
-                List(
-                  (BlockchainURI.REDEEMEDTXHASH, in.redeemedTxHash.toString),
-                  (BlockchainURI.INPUTVALUE, in.value.toString()),
-                  (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString()),
-                  (BlockchainURI.ISCOINBASE, in.isCoinbase.toString()),
-                  (BlockchainURI.SEQUENCENO, in.sequenceNo.toString()),
-                  (BlockchainURI.OUTPOINT, in.outPoint.toString()),
-                  (BlockchainURI.INSCRIPT, in.inScript.toString)
-                ),
-                (BlockchainURI.TX + tx.hash.toString, BlockchainURI.IN_PROP))
-
               redeemedOutIndex = in.redeemedOutIndex
 
             if (in.redeemedTxHash.toString != "0000000000000000000000000000000000000000000000000000000000000000") {
               queue += ((in.redeemedTxHash.toString, tl._2 + 1, tx.hash.toString, redeemedOutIndex))
             } else {
-              queue += (("coinbase", tl._2 + 1, tx.hash.toString,redeemedOutIndex))
-
+              queue += (("coinbase", tl._2 + 1, tx.hash.toString, in.redeemedOutIndex))
             }
           })
         }
-      } else {
-        model.addStatements(BlockchainURI.TX + "coinbase",
-          List(
-            (BlockchainURI.TXHASH, "coinbase"),
-            (BlockchainURI.DEPTH, tl._2.toString)
-          ),
-          (BlockchainURI.TX + tl._3, BlockchainURI.BACKTX)
-        )
       }
+
+      //println(queue)
     }
     model.commit()
   }
 
-  private def forwardTransactions() = {
+  private def forwardTransactionWithInputAndOutput() = {
 
+    //ArrayBuffer (hash_tx, deep, output_indexes)
     var transactionList: ArrayBuffer[(String, Int, List[Int])] = ArrayBuffer((tx_hash, 0, List()))
 
     println("Start forwardTransaction..")
 
     var start: Long = 0l
 
-    start = startBlock
+    if (tx_height == 0l)
+      start = startBlock
+    else
+      start = tx_height
 
     var fst: Boolean = true
     var change: Boolean = true
@@ -188,27 +174,34 @@ class GraphTransactions(
                 tx.outputs.foreach(out => {
                   tmp_lst = out.index :: tmp_lst
 
-                  println("we")
+                  model.addStatements(BlockchainURI.ADDRESS + out.getAddress(network).get.toString,
+                    List(
+                      (BlockchainURI.ADDRESSPROP, out.getAddress(network).get.toString),
+                      (BlockchainURI.DEPTH, 1)
+                    ),
+                    (BlockchainURI.TX + tx.hash.toString, BlockchainURI.SENTTO)
+                  )
+
                   model.addStatements(BlockchainURI.OUT + tx.hash.toString,
                     List(
                       (BlockchainURI.INDEX, out.index.toString),
                       (BlockchainURI.VALUE, out.value.toString),
                       (BlockchainURI.OUTADDRESS, out.getAddress(network).get.toString)
                     ),
-                    (BlockchainURI.TX + tx.hash.toString, BlockchainURI.OUT_PROP)
+                    (BlockchainURI.ADDRESS + out.getAddress(network).get.toString, BlockchainURI.OUTINFO)
                   )
                 })
-                transactionList += ((tx_hash, 0, tmp_lst))
+                transactionList += ((tx_hash, 1, tmp_lst))
                 fst = false
               }
             } else {
               tx.inputs.foreach(in => {
-
                 // with Selection you can choose if the item into tmpChanges have to be added or removed from transactionList
 
                 var tmpChanges: ArrayBuffer[(String, Int, List[Int], Selection)] = ArrayBuffer()
 
                 transactionList.foreach(tl => {
+                  //println("a - "+tl._1+" deep - "+deep)
                   if (in.redeemedTxHash.toString == tl._1) {
                     if (tl._3.contains(in.redeemedOutIndex)) {
 
@@ -222,7 +215,7 @@ class GraphTransactions(
                           (BlockchainURI.ISCOINBASE, in.isCoinbase.toString()),
                           (BlockchainURI.SEQUENCENO, in.sequenceNo.toString()),
                           (BlockchainURI.OUTPOINT, in.outPoint.toString()),
-                          (BlockchainURI.INSCRIPT, in.inScript.toString())
+                          (BlockchainURI.INSCRIPT, in.inScript.toString)
                         ),
                         (BlockchainURI.OUT + tl._1, BlockchainURI.FORWARDTX)
                       )
@@ -256,6 +249,7 @@ class GraphTransactions(
                     }
                   }
 
+                  //delete item when all outputs of the tx have been finded
                   if (tl._3.isEmpty)
                     tmpChanges += ((tl._1, tl._2, tl._3, Delete))
                 })
@@ -286,28 +280,14 @@ class GraphTransactions(
     transactionList.clear()
   }
 
-  def start(start : Long): GraphTransactions = {
+  def start(start : Long): Addresses = {
     startBlock = start
     this
   }
 
-  def end(end : Long) : GraphTransactions = {
+  def end(end : Long) : Addresses = {
     endBlock = end
     this
   }
 }
-
-class Direction
-
-object Back extends Direction
-
-object Forward extends Direction
-
-object Both extends Direction
-
-class Selection
-
-object Add extends Selection
-
-object Delete extends Selection
 

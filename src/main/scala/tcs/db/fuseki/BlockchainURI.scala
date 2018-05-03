@@ -35,6 +35,7 @@ object BlockchainURI{
   val OUT_PROP = ResourceFactory.createProperty(properties + "out")
   val TX_PROP = ResourceFactory.createProperty(properties + "tx")
   val ISINOF = ResourceFactory.createProperty(properties + "isInOf")
+  val SENTTO = ResourceFactory.createProperty(properties + "sentTo")
 
   //input
   val REDEEMEDTXHASH = ResourceFactory.createProperty(properties + "redeemedTxHash")
