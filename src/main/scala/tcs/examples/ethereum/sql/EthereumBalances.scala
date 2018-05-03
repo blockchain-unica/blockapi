@@ -10,58 +10,21 @@ import tcs.custom.ethereum.PriceHistorical
 
 object EthereumBalances {
     def main(args: Array[String]): Unit = {
-        val start = 500000
+        val start = 4000000
         val nBlocks = 10000
         val end = start + nBlocks
         val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("https://mainnet.infura.io/lGhdnAJw7n56K0xXGP3i:8545")).start(start).end(end)
         val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres", "0")
 
-
         println("start block: " + start)
         println("  end block: " + end)
         println("number of blocks: " + nBlocks + "\n")
 
-        /**
-          * Table:
-          * address: ~
-          * sent: amount of ethereum that the address has sent
-          * received: amount of ethereum that the address has received
-          * total: ~
-          * n_sent: number of transactions which the address has sent etheruem,
-          *         or number of transactions that have withdrawn from that address
-          * n_received: number of transactions which the address has received
-          *             etheruem from, or number of transactions that have sent
-          *             ethereum to that address
-          */
-        val blockTable = new Table(
-            sql"""
-                      DROP TABLE IF EXISTS balances;
-                CREATE TABLE IF NOT EXISTS balances(
-                address CHARACTER VARYING(100) NOT NULL PRIMARY KEY,
-                received DOUBLE PRECISION,
-                sent DOUBLE PRECISION,
-                final DOUBLE PRECISION,
-                n_sent_to DOUBLE PRECISION,
-                n_received_from DOUBLE PRECISION
-                )
-                """,
-            sql"""
-                INSERT INTO balances(address, received, sent, final, n_sent_to, n_received_from)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
-            pg, nBlocks
-        )
-
-
-        println("table created")
-
-        // map from the address to the array of data
+        // map from the address to the array of data; see the db table at the end of the code
         // address => received, sent, final, n_sent_to, n_received_from
         var map = Map[String, Array[Double]]()
 
-        
         val weiInEth = 1e18
-
 
         println("foreach starting...")
         blockchain.foreach(block => {
@@ -101,7 +64,7 @@ object EthereumBalances {
                 else {
                     // the address "from" is not in the map, so it must be added
                     // only if there is a transaction sending money
-                    if (dollars > 0)
+                    if (dollars > 0 && transaction.from != null && transaction.from != "")
 
                     /** add an entry to the map which goes from the "from" address to
                       * an array with:
@@ -141,7 +104,7 @@ object EthereumBalances {
                 else {
                     // the address "to" is not in the map, so it must be added
                     // only if there is a transaction sending money
-                    if (dollars > 0)
+                    if (dollars > 0 && transaction.to != null && transaction.to != "")
 
                     /** add an entry to the map which goes from the "to" address to
                       * an array with:
@@ -157,10 +120,45 @@ object EthereumBalances {
         })
         println("...foreach ended")
 
+
+        /**
+          * Table:
+          * address: ~
+          * sent: amount of ethereum that the address has sent
+          * received: amount of ethereum that the address has received
+          * total: ~
+          * n_sent: number of transactions which the address has sent etheruem,
+          *         or number of transactions that have withdrawn from that address
+          * n_received: number of transactions which the address has received
+          *             etheruem from, or number of transactions that have sent
+          *             ethereum to that address
+          */
+        val blockTable = new Table(
+            sql"""
+                      DROP TABLE IF EXISTS balances;
+                CREATE TABLE IF NOT EXISTS balances(
+                address CHARACTER VARYING(100) NOT NULL PRIMARY KEY,
+                received DOUBLE PRECISION,
+                sent DOUBLE PRECISION,
+                final DOUBLE PRECISION,
+                n_sent_to DOUBLE PRECISION,
+                n_received_from DOUBLE PRECISION
+                )
+                """,
+            sql"""
+                INSERT INTO balances(address, received, sent, final, n_sent_to, n_received_from)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+            pg, nBlocks
+        )
+
+
+        println("table created\ninserting data...")
+
         for(address <- map.keys)
             blockTable.insert(address :: map(address).toList) // insert each element of the map in the db
 
-        println("data inserted")
+        println("...data inserted")
 
         blockTable.close
         println("table closed")
