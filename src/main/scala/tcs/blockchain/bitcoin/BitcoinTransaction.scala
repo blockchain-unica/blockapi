@@ -238,6 +238,24 @@ object BitcoinTransaction {
     * Values of each appended BitcoinInput will be set to 0.
     *
     * @param tx BitcoinJ representation of the transaction
+    * @return A new BitcoinTransaction
+    */
+
+  def factory(tx : Transaction) : BitcoinTransaction = {
+    val inputs: List[BitcoinInput] = tx.getInputs.asScala.map(i => BitcoinInput.factory(i)).toList
+    val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o)).toList
+
+    // TODO: Test getMessageSize
+    return new BitcoinTransaction(tx.getHash.toString, null, tx.getMessageSize, inputs, outputs, tx.getLockTime)
+
+
+  }
+  /**
+    * Factory for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
+    * Creates a new transaction given its BitcoinJ representation.
+    * Values of each appended BitcoinInput will be set to 0.
+    *
+    * @param tx BitcoinJ representation of the transaction
     * @param txDate Date in which the containing block has been published
     * @return A new BitcoinTransaction
     */

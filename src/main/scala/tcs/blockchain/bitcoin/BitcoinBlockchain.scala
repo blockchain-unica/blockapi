@@ -122,8 +122,15 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     BitcoinBlock.factory(jBlock, height, UTXOmap)
   }
 
-  def getTransaction(hash: String): BitcoinTransaction = {
-    val hex = client.getrawtransaction(hash)
+  /**
+    * Returns a transaction given its hash
+    *
+    * @param hash Hash of the transaction
+    * @return BitcoinTransaction representation of the transaction
+    */
+
+  def getTransaction(hash: String) : BitcoinTransaction= {
+    var hex = client.getrawtransaction(hash)
     val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
     val jTx = bitcoinSerializer.makeTransaction(ConvertUtils.hexToBytes(hex))
 
