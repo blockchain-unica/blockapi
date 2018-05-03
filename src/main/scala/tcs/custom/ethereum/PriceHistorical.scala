@@ -69,7 +69,7 @@ object PriceHistorical {
 
   private def getPriceHistorical(time: Date): Double = {
 
-    val url = new URL("https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=USD&ts=" + time.getTime + "&markets=Coinbase")
+    val url = new URL("https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=USD&ts=" + time.getTime.toString.dropRight(3) + "&markets=Coinbase")
     val connection = url.openConnection().asInstanceOf[HttpURLConnection]
     connection.setRequestMethod("GET")
     val br = new BufferedReader(new InputStreamReader(connection.getInputStream))
