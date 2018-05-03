@@ -1,6 +1,5 @@
 package tcs.examples.ethereum.sql
 
-import java.util.Calendar
 
 import tcs.blockchain.BlockchainLib
 import tcs.db.sql.Table
@@ -11,11 +10,16 @@ import tcs.custom.ethereum.PriceHistorical
 
 object EthereumBalances {
     def main(args: Array[String]): Unit = {
-        val start = 5461000
-        val nBlocks = 100
+        val start = 500000
+        val nBlocks = 10000
         val end = start + nBlocks
         val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("https://mainnet.infura.io/lGhdnAJw7n56K0xXGP3i:8545")).start(start).end(end)
         val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres", "0")
+
+
+        println("start block: " + start)
+        println("  end block: " + end)
+        println("number of blocks: " + nBlocks + "\n")
 
         /**
           * Table:
@@ -55,10 +59,9 @@ object EthereumBalances {
         // address => received, sent, final, n_sent_to, n_received_from
         var map = Map[String, Array[Double]]()
 
-
-        val rate = PriceHistorical.getRate(Calendar.getInstance().getTime)
+        
         val weiInEth = 1e18
-        println("rate ETH->USD: " + rate.toString)
+
 
         println("foreach starting...")
         blockchain.foreach(block => {
@@ -66,17 +69,19 @@ object EthereumBalances {
                 println(block.height + ") n transactions inside: " + block.txs.length)
 
             block.txs.foreach(transaction => {
-                val dollars = transaction.value.toDouble / weiInEth * rate
+                val rateInTransactionDate = PriceHistorical.getRate(transaction.date)
+//                println(transaction.date + " - " + rateInTransactionDate)
+                val dollars = transaction.value.toDouble / weiInEth * rateInTransactionDate
 
                 if (map.contains(transaction.from)) {
                     // if the address "from" is already present in the map,
                     // we can update its balance
                     /** how to update:
-                      * the "value" goes from the "from" address to the "to" address
-                      * 1. add "value" to the sent ethereums
-                      * 2. substract "value" from the final balance
+                      * the amount of dollars goes from the "from" address to the "to" address
+                      * 1. add "dollars" to the sent ethereums
+                      * 2. substract "dollars" from the final balance
                       * 3. increment the number of transactions that have taken
-                      * eth from "from", i.e. increment n_sent
+                      *    eth from "from", i.e. increment n_sent
                       */
 
                     // current balance
@@ -85,10 +90,10 @@ object EthereumBalances {
                     // update of the quantities
 
                     // update of the quantity of eth sent
-                    balance(1) += dollars // sent += value
+                    balance(1) += dollars // sent += dollars
 
                     // update of the final balance
-                    balance(2) -= dollars // final -= value
+                    balance(2) -= dollars // final -= dollars
 
                     // update of the number of transaction that the address has sent to
                     balance(3) += 1 // n_sent ++
@@ -101,8 +106,8 @@ object EthereumBalances {
                     /** add an entry to the map which goes from the "from" address to
                       * an array with:
                       * received: 0
-                      * sent: value
-                      * final: -value
+                      * sent: dollars
+                      * final: -dollars
                       * n_sent: 1
                       * n_received: 0
                       */
@@ -114,21 +119,21 @@ object EthereumBalances {
                     // we can update its balance
 
                     /** how to update:
-                      * the "value" goes from the "from" address to the "to" address
-                      * 1. add "value" to the received ethereums
-                      * 2. add "value" to the final balance
+                      * the "dollars" goes from the "from" address to the "to" address
+                      * 1. add "dollars" to the received ethereums
+                      * 2. add "dollars" to the final balance
                       * 3. increment the number of transactions that have sent
-                      * eth to "to", i.e. increment n_receivd
+                      *     eth to "to", i.e. increment n_received
                       */
 
                     // current balance
                     val balance: Array[Double] = map(transaction.to)
 
                     // update of the quantity of eth sent
-                    balance(0) += dollars // received += value
+                    balance(0) += dollars // received += dollars
 
                     // update of the final balance
-                    balance(2) += dollars // final += value
+                    balance(2) += dollars // final += dollars
 
                     // update of the number of transaction that have taken eth from that address
                     balance(4) += 1 // n_received ++
@@ -140,9 +145,9 @@ object EthereumBalances {
 
                     /** add an entry to the map which goes from the "to" address to
                       * an array with:
-                      * received: value
+                      * received: dollars
                       * sent: 0
-                      * final: value
+                      * final: dollars
                       * n_sent: 0
                       * n_received: 1
                       */
