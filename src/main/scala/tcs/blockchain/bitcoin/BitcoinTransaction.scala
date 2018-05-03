@@ -70,6 +70,30 @@ class BitcoinTransaction(
     return hash + " " + txSize + " " + stringInputs + " " + stringOutputs
   }
 
+  def printTransaction(): Unit = {
+    val stringInputs: String = "[ " + inputs.map(i => "\n  " + i.toString()) + "\n]"
+    val stringOutputs: String = "[ " + outputs.map(o =>"\n  " + o.toString()) + "\n]"
+    println()
+    println( "Hash: " +  hash)
+    println( "TxSize: " + txSize)
+    println( "LockTime: " + getLockTime())
+    println( "InputsSum: " + getInputsSum())
+    println( "OutputsSum: " + getOutputsSum())
+    println( "StringInputs: " +  stringInputs)
+    println( "StringOutputs: " +  stringOutputs)
+    println()
+    
+
+  }
+
+  def getPrintableTransaction(): String = {
+    val stringInputs: String = "[ " + inputs.map(i => "\n  " + i.toString()) + "\n]"
+    val stringOutputs: String = "[ " + outputs.map(o =>"\n  " + o.toString()) + "\n]"
+    "\n" + "Hash: " +  hash + "\nTxSize: " + txSize + "\nLockTime: " + getLockTime() + "\nInputsSum: " + getInputsSum() + "\nOutputsSum: " + getOutputsSum() + "\nStringInputs: " +  stringInputs + "\nStringOutputs: " +  stringOutputs + "\n"
+    
+
+  }
+
 
   /**
     * Returns a boolean which states if the transaction is standard or not
@@ -190,7 +214,24 @@ object TxType extends Enumeration {
   * Factories for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
   */
 object BitcoinTransaction {
+  /**
+    * Factory for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
+    * Creates a new transaction given its BitcoinJ representation.
+    * Values of each appended BitcoinInput will be set to 0.
+    *
+    * @param tx BitcoinJ representation of the transaction
+    * @return A new BitcoinTransaction
+    */
 
+  def factory(tx : Transaction) : BitcoinTransaction = {
+    val inputs: List[BitcoinInput] = tx.getInputs.asScala.map(i => BitcoinInput.factory(i)).toList
+    val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o)).toList
+
+    // TODO: Test getMessageSize
+    return new BitcoinTransaction(tx.getHash.toString, null, tx.getMessageSize, inputs, outputs, tx.getLockTime)
+
+
+  }
   /**
     * Factory for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
     * Creates a new transaction given its BitcoinJ representation.

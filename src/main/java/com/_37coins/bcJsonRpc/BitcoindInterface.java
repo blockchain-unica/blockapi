@@ -96,5 +96,7 @@ public interface BitcoindInterface {
 	//stop
 	public String stop();
 	public String getbestblockhash();
+	public List<String> getrawmempool();
+	public String getrawtransaction(String hash);
 	
 }
