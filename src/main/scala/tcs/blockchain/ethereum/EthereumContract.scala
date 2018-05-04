@@ -117,7 +117,7 @@ case class EthereumContract(
 
   def getTokenDivisibility(): String = {
 
-    val pattern = new Regex("565b60[0-3][0-9]8156")
+    val pattern = new Regex("565b60([0-9]|[a-f])([0-9]|[a-f])8156")
 
     val stringa = StringUtils.substringBetween((pattern findAllIn bytecode).mkString(",")
         , "565b60", "8156")
