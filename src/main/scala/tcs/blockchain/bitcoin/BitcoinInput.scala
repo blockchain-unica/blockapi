@@ -144,6 +144,9 @@ class BitcoinInput(
     * @return Input sequence number
     */
   def getSequenceNo: Long = sequenceNo
+
+  def getRedeemedTxHashAsString: String = redeemedTxHash.toString
+  def getRedeemedOutIndex: Int = redeemedOutIndex
 }
 
 

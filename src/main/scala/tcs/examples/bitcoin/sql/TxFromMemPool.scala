@@ -24,7 +24,7 @@ object TxFromMemPool
   def main(args: Array[String]): Unit =
   {
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("bitcoin", "L4mbWnzC11BNrmTK","https", "443","co2.unica.it" ,"bitcoin-mainnet", MainNet))
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mySQL = new DatabaseSettings("mempool", MySQL, "root", "")
 
     val startTime = System.currentTimeMillis()/1000
@@ -51,12 +51,14 @@ object TxFromMemPool
         try
         {
           val tx = blockchain.getTransaction(hash)
+          val in = tx.getInputsSumUsingTxIndex(blockchain)
+          val out = tx.getOutputsSum()
           txTable.insert(Seq(
             tx.hash.toString,
             convertDate(Calendar.getInstance().getTime()),
-            tx.getInputsSum(),
-            tx.getOutputsSum(),
-            null,
+            in,
+            out,
+            in - out,
             false))
         } 
         catch
@@ -82,12 +84,14 @@ object TxFromMemPool
                 try
                 {
                 val tx = blockchain.getTransaction(hash)
+                val in = tx.getInputsSumUsingTxIndex(blockchain)
+                val out = tx.getOutputsSum()
                 txTable.insert(Seq(
-                    hash,
+                    tx.hash.toString,
                     convertDate(Calendar.getInstance().getTime()),
-                    tx.getInputsSum(),
-                    tx.getOutputsSum(),
-                    null,
+                    in,
+                    out,
+                    in - out,
                     false))
                 } 
                 catch
@@ -106,7 +110,6 @@ object TxFromMemPool
         }
         println(hashList.length)
     }while((System.currentTimeMillis() / 1000)/60<=10)
-    //pw.close
     txTable.close
   }
 }
