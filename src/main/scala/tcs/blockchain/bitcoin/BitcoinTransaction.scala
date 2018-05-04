@@ -4,7 +4,7 @@ import org.bitcoinj.core.{Sha256Hash, Transaction}
 import org.bitcoinj.script.Script.ScriptType
 import tcs.blockchain.{Transaction => TCSTransaction}
 import java.util.Date
-
+import scala.collection.mutable.ListBuffer
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 
@@ -36,6 +36,20 @@ class BitcoinTransaction(
     inputs.map(input => input.value).reduce(_ + _)
   }
 
+  /**
+    * Returns the sum of all the input values.
+    * If TxIndex is not set in your bitcoin client this method will not work
+    *
+    * @param blockchain instance of the BitcoinBlockchain
+    * @return Sum of all the input values
+    */
+  def getInputsSumUsingTxIndex(blockchain: BitcoinBlockchain): Long = {
+    var sum: Long = 0
+    for(input <- inputs){
+      sum += blockchain.getTransaction(input.getRedeemedTxHashAsString).getOutputValueByIndex(input.getRedeemedOutIndex)
+    }
+    return sum
+  }
 
   /**
     * Returns the sum of all the output values.
@@ -44,6 +58,23 @@ class BitcoinTransaction(
     */
   def getOutputsSum(): Long = {
     outputs.map(output => output.value).reduce(_ + _)
+  }
+
+  /**
+    * Returns the list containing all the hashes(as strings) of the input values.
+    *
+    * @return List of all the hashes(as strings) of the input values
+    */
+  def getInputsHashList(): List[String] = {
+    (inputs.foldLeft(new ListBuffer[String])((list, a) => (list += a.getRedeemedTxHashAsString))).toList
+  }
+
+
+  def getOutputValueByIndex(index: Int): Long = {
+    outputs.filter((a) => a.getIndex == index ) match{
+      case element :: Nil => element.value
+      case _ => 0
+    }
   }
 
 
@@ -82,16 +113,12 @@ class BitcoinTransaction(
     println( "StringInputs: " +  stringInputs)
     println( "StringOutputs: " +  stringOutputs)
     println()
-    
-
   }
 
   def getPrintableTransaction(): String = {
     val stringInputs: String = "[ " + inputs.map(i => "\n  " + i.toString()) + "\n]"
     val stringOutputs: String = "[ " + outputs.map(o =>"\n  " + o.toString()) + "\n]"
     "\n" + "Hash: " +  hash + "\nTxSize: " + txSize + "\nLockTime: " + getLockTime() + "\nInputsSum: " + getInputsSum() + "\nOutputsSum: " + getOutputsSum() + "\nStringInputs: " +  stringInputs + "\nStringOutputs: " +  stringOutputs + "\n"
-    
-
   }
 
 
@@ -214,24 +241,6 @@ object TxType extends Enumeration {
   * Factories for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
   */
 object BitcoinTransaction {
-  /**
-    * Factory for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
-    * Creates a new transaction given its BitcoinJ representation.
-    * Values of each appended BitcoinInput will be set to 0.
-    *
-    * @param tx BitcoinJ representation of the transaction
-    * @return A new BitcoinTransaction
-    */
-
-  def factory(tx : Transaction) : BitcoinTransaction = {
-    val inputs: List[BitcoinInput] = tx.getInputs.asScala.map(i => BitcoinInput.factory(i)).toList
-    val outputs: List[BitcoinOutput] = tx.getOutputs.asScala.map(o => BitcoinOutput.factory(o)).toList
-
-    // TODO: Test getMessageSize
-    return new BitcoinTransaction(tx.getHash.toString, null, tx.getMessageSize, inputs, outputs, tx.getLockTime)
-
-
-  }
   /**
     * Factory for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
     * Creates a new transaction given its BitcoinJ representation.
