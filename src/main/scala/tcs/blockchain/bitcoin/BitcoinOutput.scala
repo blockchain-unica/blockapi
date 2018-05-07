@@ -26,6 +26,8 @@ class BitcoinOutput(
     }
   }
 
+  def getValue : Long = value
+  def getIndex : Int = index
 
   /**
     * String representation of a BitcoinOutput.

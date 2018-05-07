@@ -6,7 +6,6 @@ import org.bitcoinj.crypto.TransactionSignature
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 import org.bitcoinj.script.ScriptChunk
 import tcs.utils.ConvertUtils
-import tcs.blockchain.bitcoin.SignatureHash
 
 import scala.collection.mutable
 
@@ -144,6 +143,9 @@ class BitcoinInput(
     * @return Input sequence number
     */
   def getSequenceNo: Long = sequenceNo
+
+  def getRedeemedTxHashAsString: String = redeemedTxHash.toString
+  def getRedeemedOutIndex: Int = redeemedOutIndex
 }
 
 
