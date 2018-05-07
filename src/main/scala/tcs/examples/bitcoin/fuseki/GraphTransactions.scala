@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class GraphTransactions(
                         val tx_hash: String = "",
-                        val deep: Int = 4,
+                        val depth: Int = 4,
                         val network: Network = MainNet
                       ) {
 
@@ -62,17 +62,18 @@ class GraphTransactions(
       )
       fst_model = false
     }
+
     tx.inputs.foreach(in => {
 
       var redeemedOutIndex : Int = -1
-        model.addStatements(BlockchainURI.IN + tx.hash.toString,
+        model.addStatements(BlockchainURI.IN + tx.hash.toString + "/" + in.redeemedTxHash.toString + "/" + in.redeemedOutIndex.toString,
           List(
             (BlockchainURI.REDEEMEDTXHASH, in.redeemedTxHash.toString),
-            (BlockchainURI.INPUTVALUE, in.value.toString()),
-            (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString()),
-            (BlockchainURI.ISCOINBASE, in.isCoinbase.toString()),
-            (BlockchainURI.SEQUENCENO, in.sequenceNo.toString()),
-            (BlockchainURI.OUTPOINT, in.outPoint.toString()),
+            (BlockchainURI.INPUTVALUE, in.value.toString),
+            (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString),
+            (BlockchainURI.ISCOINBASE, in.isCoinbase.toString),
+            (BlockchainURI.SEQUENCENO, in.sequenceNo.toString),
+            (BlockchainURI.OUTPOINT, in.outPoint.toString),
             (BlockchainURI.INSCRIPT, in.inScript.toString)
           ),
           (BlockchainURI.TX + tx.hash.toString, BlockchainURI.IN_PROP))
@@ -89,39 +90,41 @@ class GraphTransactions(
 
           tx.outputs.foreach(out => {
             if (tl._4 == out.index) {
-              model.addStatements(BlockchainURI.OUT + tx.hash.toString,
+              model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
                 List(
                   (BlockchainURI.INDEX, out.index.toString),
                   (BlockchainURI.VALUE, out.value.toString),
                   (BlockchainURI.OUTADDRESS, out.getAddress(network).get.toString)
                 ),
-                (BlockchainURI.IN + tl._3, BlockchainURI.BACKTX)
+                (BlockchainURI.IN + tl._3 + "/" + tl._1 + "/" + tl._4, BlockchainURI.BACKTX)
               )
+
+              model.addStatements(BlockchainURI.TX + tx.hash.toString,
+                List(
+                  (BlockchainURI.TXHASH, tx.hash.toString),
+                  (BlockchainURI.TXSIZE, tx.txSize.toString),
+                  (BlockchainURI.LOCKTIME, tx.lock_time.toString),
+                  (BlockchainURI.DEPTH, tl._2.toString)
+                ),
+                (BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString, BlockchainURI.ISOUTOF))
             }
           })
 
-        model.addStatements(BlockchainURI.TX + tx.hash.toString,
-          List(
-            (BlockchainURI.TXHASH, tx.hash.toString),
-            (BlockchainURI.TXSIZE, tx.txSize.toString),
-            (BlockchainURI.LOCKTIME, tx.lock_time.toString),
-            (BlockchainURI.DEPTH, tl._2.toString)
-          ),
-          (BlockchainURI.OUT + tx.hash.toString, BlockchainURI.ISOUTOF))
 
-        if (tl._2 < deep) {
+
+        if (tl._2 < depth) {
           tx.inputs.foreach(in => {
 
             var redeemedOutIndex : Int = -1
 
-              model.addStatements(BlockchainURI.IN + tx.hash.toString + "/" + in.redeemedTxHash.toString,
+              model.addStatements(BlockchainURI.IN + tx.hash.toString + "/" + in.redeemedTxHash.toString + "/" + in.redeemedOutIndex.toString,
                 List(
                   (BlockchainURI.REDEEMEDTXHASH, in.redeemedTxHash.toString),
-                  (BlockchainURI.INPUTVALUE, in.value.toString()),
-                  (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString()),
-                  (BlockchainURI.ISCOINBASE, in.isCoinbase.toString()),
-                  (BlockchainURI.SEQUENCENO, in.sequenceNo.toString()),
-                  (BlockchainURI.OUTPOINT, in.outPoint.toString()),
+                  (BlockchainURI.INPUTVALUE, in.value.toString),
+                  (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString),
+                  (BlockchainURI.ISCOINBASE, in.isCoinbase.toString),
+                  (BlockchainURI.SEQUENCENO, in.sequenceNo.toString),
+                  (BlockchainURI.OUTPOINT, in.outPoint.toString),
                   (BlockchainURI.INSCRIPT, in.inScript.toString)
                 ),
                 (BlockchainURI.TX + tx.hash.toString, BlockchainURI.IN_PROP))
@@ -149,7 +152,7 @@ class GraphTransactions(
     model.commit()
   }
 
-  private def forwardTransactions() = {
+  private def forwardTransactions(): Unit = {
 
     var transactionList: ArrayBuffer[(String, Int, List[Int])] = ArrayBuffer((tx_hash, 0, List()))
 
@@ -171,7 +174,6 @@ class GraphTransactions(
           block.txs.foreach(tx => {
             if (fst) {
               if (tx.hash.toString == tx_hash) {
-                //create tx graph
                 println("Creation first graph: " + tx.hash.toString)
                 if (fst_model) {
                   model.addStatements(BlockchainURI.TX + tx.hash.toString,
@@ -185,11 +187,11 @@ class GraphTransactions(
                 }
 
                 var tmp_lst: List[Int] = List()
+
                 tx.outputs.foreach(out => {
                   tmp_lst = out.index :: tmp_lst
 
-                  println("we")
-                  model.addStatements(BlockchainURI.OUT + tx.hash.toString,
+                  model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
                     List(
                       (BlockchainURI.INDEX, out.index.toString),
                       (BlockchainURI.VALUE, out.value.toString),
@@ -214,17 +216,17 @@ class GraphTransactions(
 
                       change = true
 
-                      model.addStatements(BlockchainURI.IN + tx.hash.toString,
+                      model.addStatements(BlockchainURI.IN + tx.hash.toString + "/" + in.redeemedTxHash.toString + "/" + in.redeemedOutIndex.toString,
                         List(
                           (BlockchainURI.REDEEMEDTXHASH, in.redeemedTxHash.toString),
-                          (BlockchainURI.INPUTVALUE, in.value.toString()),
-                          (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString()),
-                          (BlockchainURI.ISCOINBASE, in.isCoinbase.toString()),
-                          (BlockchainURI.SEQUENCENO, in.sequenceNo.toString()),
-                          (BlockchainURI.OUTPOINT, in.outPoint.toString()),
-                          (BlockchainURI.INSCRIPT, in.inScript.toString())
+                          (BlockchainURI.INPUTVALUE, in.value.toString),
+                          (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString),
+                          (BlockchainURI.ISCOINBASE, in.isCoinbase.toString),
+                          (BlockchainURI.SEQUENCENO, in.sequenceNo.toString),
+                          (BlockchainURI.OUTPOINT, in.outPoint.toString),
+                          (BlockchainURI.INSCRIPT, in.inScript.toString)
                         ),
-                        (BlockchainURI.OUT + tl._1, BlockchainURI.FORWARDTX)
+                        (BlockchainURI.OUT + tl._1 + "/" + in.redeemedOutIndex, BlockchainURI.FORWARDTX)
                       )
 
                       model.addStatements(BlockchainURI.TX + tx.hash.toString,
@@ -233,13 +235,22 @@ class GraphTransactions(
                           (BlockchainURI.TXSIZE, tx.txSize.toString),
                           (BlockchainURI.LOCKTIME, tx.lock_time.toString)
                         ),
-                        (BlockchainURI.IN + tx.hash.toString, BlockchainURI.ISINOF)
+                        (BlockchainURI.IN + tx.hash.toString + "/" + in.redeemedTxHash.toString + "/" + in.redeemedOutIndex.toString, BlockchainURI.ISINOF)
                       )
 
                       var tmp_lst: List[Int] = List()
-                      if (tl._2 < deep) {
+                      if (tl._2 < depth) {
                         tx.outputs.foreach(out => {
                           tmp_lst = out.index :: tmp_lst
+
+                          model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
+                            List(
+                              (BlockchainURI.INDEX, out.index.toString),
+                              (BlockchainURI.VALUE, out.value.toString),
+                              (BlockchainURI.OUTADDRESS, out.getAddress(network).get.toString)
+                            ),
+                            (BlockchainURI.TX + tx.hash.toString, BlockchainURI.OUT_PROP)
+                          )
                         })
                       }
 
