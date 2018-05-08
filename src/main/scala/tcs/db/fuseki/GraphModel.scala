@@ -53,7 +53,6 @@ class GraphModel(
 
       if(appendToResource._1 != null && appendToResource._2 != null){
         model.createResource(appendToResource._1).addProperty(appendToResource._2, res)
-        //model.getResource(appendToResource._1)addProperty(appendToResource._2, res)
         count += 1
       }
 
