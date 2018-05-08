@@ -1,10 +1,12 @@
 package tcs.examples.bitcoin.fuseki
 
 import org.apache.jena.query.ResultSet
+import org.bitcoinj.core.Address
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet, Network}
 import tcs.db.{DatabaseSettings, Fuseki}
 import tcs.db.fuseki.{BlockchainURI, GraphModel}
+
 import scala.collection.mutable
 import scala.util.control.Breaks._
 import scala.collection.mutable.ArrayBuffer
@@ -19,7 +21,7 @@ class Addresses(
 
   val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", network))
 
-  val model: GraphModel = new GraphModel(fuseki)
+  val model: GraphModel = new GraphModel(fuseki, 500000l)
 
   var fst_model: Boolean = true
 
@@ -46,7 +48,7 @@ class Addresses(
     model.datasetQuery(query)
   }
 
-  private def backAddresses(): Unit =   {
+  private def backAddresses(): Unit = {
 
     var queue: mutable.Queue[(String, Int, String, Int)] = mutable.Queue()
 
@@ -68,8 +70,6 @@ class Addresses(
       queue += ((in.redeemedTxHash.toString, 1, tx.hash.toString, in.redeemedOutIndex))
     })
 
-    //println(queue)
-
     while (queue.nonEmpty) {
       val tl = queue.dequeue()
       if (tl._1 != "coinbase") {
@@ -78,34 +78,42 @@ class Addresses(
           tx.outputs.foreach(out => {
             if (tl._4 == out.index) {
 
-              println("Address: " + out.getAddress(network).get.toString)
-              println("Tx1: " + tl._3)
-              println("Tx2: " + tx.hash.toString)
-              model.addStatements(BlockchainURI.ADDRESS + out.getAddress(network).get.toString,
-                List(
-                  (BlockchainURI.ADDRESSPROP, out.getAddress(network).get.toString),
-                  (BlockchainURI.DEPTH, tl._2)
-                ),
-                (BlockchainURI.TX + tl._3, BlockchainURI.BACKADDR)
-              )
+              val address : String = out.getAddress(network) match {
+                case Some(addr : Address) =>
+                  addr.toString
+                case None => ""
+              }
 
-              model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
-                List(
-                  (BlockchainURI.INDEX, out.index.toString),
-                  (BlockchainURI.VALUE, out.value.toString),
-                  (BlockchainURI.OUTSCRIPT, out.outScript.toString)
-                ),
-                (BlockchainURI.ADDRESS + out.getAddress(network).get.toString, BlockchainURI.OUTINFO)
-              )
+              if(address != "") {
+                println("Address: " + address + "Depth: " + tl._2)
+                println("Tx1: " + tl._3)
+                println("Tx2: " + tx.hash.toString)
+                model.addStatements(BlockchainURI.ADDRESS + address + "/" + tx.hash.toString + "/" + out.index.toString,
+                  List(
+                    (BlockchainURI.ADDRESSPROP, address),
+                    (BlockchainURI.DEPTH, tl._2.toString)
+                  ),
+                  (BlockchainURI.TX + tl._3, BlockchainURI.BACKADDR)
+                )
+
+                model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
+                  List(
+                    (BlockchainURI.INDEX, out.index.toString),
+                    (BlockchainURI.VALUE, out.value.toString),
+                    (BlockchainURI.OUTSCRIPT, out.outScript.toString)
+                  ),
+                  (BlockchainURI.ADDRESS + address + "/" + tx.hash.toString + "/" + out.index.toString, BlockchainURI.OUTINFO)
+                )
+
+                model.addStatements(BlockchainURI.TX + tx.hash.toString,
+                  List(
+                    (BlockchainURI.TXHASH, tx.hash.toString),
+                    (BlockchainURI.TXSIZE, tx.txSize.toString),
+                    (BlockchainURI.LOCKTIME, tx.lock_time.toString)
+                  ),
+                  (BlockchainURI.ADDRESS + address + "/" + tx.hash.toString + "/" + out.index.toString, BlockchainURI.ISOUTOF))
+              }
             }
-
-            model.addStatements(BlockchainURI.TX + tx.hash.toString,
-              List(
-                (BlockchainURI.TXHASH, tx.hash.toString),
-                (BlockchainURI.TXSIZE, tx.txSize.toString),
-                (BlockchainURI.LOCKTIME, tx.lock_time.toString)
-              ),
-              (BlockchainURI.ADDRESS + out.getAddress(network).get.toString, BlockchainURI.ISOUTOF))
           })
 
         if (tl._2 < depth) {
@@ -162,26 +170,36 @@ class Addresses(
 
                 var tmp_lst: List[(Int, String)] = List()
                 tx.outputs.foreach(out => {
-                  tmp_lst = (out.index, out.getAddress(network).get.toString) :: tmp_lst
 
-                  model.addStatements(BlockchainURI.ADDRESS + out.getAddress(network).get.toString,
-                    List(
-                      (BlockchainURI.ADDRESSPROP, out.getAddress(network).get.toString),
-                      (BlockchainURI.DEPTH, 1)
-                    ),
-                    (BlockchainURI.TX + tx.hash.toString, BlockchainURI.FORWARDADDR)
-                  )
+                  val address : String = out.getAddress(network) match {
+                    case Some(addr : Address) =>
+                      addr.toString
+                    case None => ""
+                  }
 
-                  model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
-                    List(
-                      (BlockchainURI.INDEX, out.index.toString),
-                      (BlockchainURI.VALUE, out.value.toString),
-                      (BlockchainURI.OUTADDRESS, out.getAddress(network).get.toString)
-                    ),
-                    (BlockchainURI.ADDRESS + out.getAddress(network).get.toString, BlockchainURI.OUTINFO)
-                  )
+                  if(address != "") {
+                    tmp_lst = (out.index, address) :: tmp_lst
+
+
+                    model.addStatements(BlockchainURI.ADDRESS + address + "/" + tx.hash.toString + "/" + out.index.toString,
+                      List(
+                        (BlockchainURI.ADDRESSPROP, address),
+                        (BlockchainURI.DEPTH, 1.toString)
+                      ),
+                      (BlockchainURI.TX + tx.hash.toString, BlockchainURI.FORWARDADDR)
+                    )
+
+                    model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
+                      List(
+                        (BlockchainURI.INDEX, out.index.toString),
+                        (BlockchainURI.VALUE, out.value.toString),
+                        (BlockchainURI.OUTADDRESS, address)
+                      ),
+                      (BlockchainURI.ADDRESS + address + "/" + tx.hash.toString + "/" + out.index.toString, BlockchainURI.OUTINFO)
+                    )
+                  }
                 })
-                transactionList += ((tx_hash, 1, tmp_lst))
+                transactionList += ((tx_hash, 2, tmp_lst))
                 fst = false
               }
             } else {
@@ -202,30 +220,39 @@ class Addresses(
                           (BlockchainURI.TXSIZE, tx.txSize.toString),
                           (BlockchainURI.LOCKTIME, tx.lock_time.toString)
                         ),
-                        (BlockchainURI.ADDRESS + outInfo._2, BlockchainURI.ISINOF)
+                        (BlockchainURI.ADDRESS + outInfo._2 + "/" + tl._1 + "/" + outInfo._1, BlockchainURI.ISINOF)
                       )
 
                       var tmp_lst: List[(Int, String)] = List()
-                      if (tl._2 < depth) {
+                      if (tl._2 <= depth) {
                         tx.outputs.foreach(out => {
-                          tmp_lst = (out.index, out.getAddress(network).get.toString) :: tmp_lst
 
-                          model.addStatements(BlockchainURI.ADDRESS + out.getAddress(network).get.toString,
-                            List(
-                              (BlockchainURI.ADDRESSPROP, out.getAddress(network).get.toString),
-                              (BlockchainURI.DEPTH, tl._2)
-                            ),
-                            (BlockchainURI.TX + tx.hash.toString, BlockchainURI.FORWARDADDR)
-                          )
+                          val address : String = out.getAddress(network) match {
+                            case Some(addr : Address) =>
+                              addr.toString
+                            case None => ""
+                          }
 
-                          model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
-                            List(
-                              (BlockchainURI.INDEX, out.index.toString),
-                              (BlockchainURI.VALUE, out.value.toString),
-                              (BlockchainURI.OUTADDRESS, out.getAddress(network).get.toString)
-                            ),
-                            (BlockchainURI.ADDRESS + out.getAddress(network).get.toString, BlockchainURI.OUTINFO)
-                          )
+                          if(address != "") {
+                            tmp_lst = (out.index, address) :: tmp_lst
+
+                            model.addStatements(BlockchainURI.ADDRESS + address + "/" + tx.hash.toString + "/" + out.index.toString,
+                              List(
+                                (BlockchainURI.ADDRESSPROP, address),
+                                (BlockchainURI.DEPTH, tl._2.toString)
+                              ),
+                              (BlockchainURI.TX + tx.hash.toString, BlockchainURI.FORWARDADDR)
+                            )
+
+                            model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
+                              List(
+                                (BlockchainURI.INDEX, out.index.toString),
+                                (BlockchainURI.VALUE, out.value.toString),
+                                (BlockchainURI.OUTADDRESS, address)
+                              ),
+                              (BlockchainURI.ADDRESS + address + "/" + tx.hash.toString + "/" + out.index.toString, BlockchainURI.OUTINFO)
+                            )
+                          }
                         })
                       }
 

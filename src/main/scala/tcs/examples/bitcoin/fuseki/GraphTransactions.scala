@@ -172,6 +172,7 @@ class GraphTransactions(
         while (change) {
           change = false
           block.txs.foreach(tx => {
+
             if (fst) {
               if (tx.hash.toString == tx_hash) {
                 println("Creation first graph: " + tx.hash.toString)
