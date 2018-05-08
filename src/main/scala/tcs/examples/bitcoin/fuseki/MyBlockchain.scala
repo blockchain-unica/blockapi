@@ -35,14 +35,14 @@ object MyBlockchain {
 
         tx.inputs.foreach(in => {
           modell.addStatements(
-            BlockchainURI.IN + in.redeemedTxHash.toString,
+            BlockchainURI.IN + in.redeemedTxHash.toString + "/" + in.sequenceNo.toString,
             List(
               (BlockchainURI.REDEEMEDTXHASH, in.redeemedTxHash.toString),
-              (BlockchainURI.INPUTVALUE, in.value.toString()),
-              (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString()),
-              (BlockchainURI.ISCOINBASE, in.isCoinbase.toString()),
-              (BlockchainURI.SEQUENCENO, in.sequenceNo.toString()),
-              (BlockchainURI.OUTPOINT, in.outPoint.toString()),
+              (BlockchainURI.INPUTVALUE, in.value.toString),
+              (BlockchainURI.REDEEMEDOUTINDEX, in.redeemedOutIndex.toString),
+              (BlockchainURI.ISCOINBASE, in.isCoinbase.toString),
+              (BlockchainURI.SEQUENCENO, in.sequenceNo.toString),
+              (BlockchainURI.OUTPOINT, in.outPoint.toString),
               (BlockchainURI.INSCRIPT, in.inScript.toString)
             ),
             (BlockchainURI.TX + tx.hash.toString, BlockchainURI.INPUTS)
@@ -51,7 +51,7 @@ object MyBlockchain {
 
         tx.outputs.foreach(out => {
           modell.addStatements(
-            BlockchainURI.OUT + tx.hash.toString,
+            BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
             List(
               (BlockchainURI.INDEX, out.index.toString),
               (BlockchainURI.OUTSCRIPT, out.outScript.toString),
@@ -62,7 +62,6 @@ object MyBlockchain {
           )
         })
       })
-
 
       if (block.height % 1 == 0) {
         println(block.height)

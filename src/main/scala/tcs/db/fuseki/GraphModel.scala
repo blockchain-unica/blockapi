@@ -57,8 +57,6 @@ class GraphModel(
       }
 
       res = null
-
-      println("Count: " + count)
     }
 
     def addPropertiesToResource(resource : String,
@@ -88,6 +86,8 @@ class GraphModel(
     }
 
     private def loadTriples(): Unit ={
+
+      println("Count: " + count)
 
       //indicazioni memoria
       println("Total memory: "+Runtime.getRuntime.totalMemory()/Math.pow(1024,2))
