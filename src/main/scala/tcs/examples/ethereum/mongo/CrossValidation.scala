@@ -1,6 +1,6 @@
 package tcs.examples.ethereum.mongo
 
-import java.util.{LinkedList, Map}
+import java.util
 
 import org.web3j.utils.Numeric
 import tcs.blockchain.BlockchainLib
@@ -11,9 +11,8 @@ import tcs.utils.{DateConverter, Etherscan}
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
-    val startBlock = 700500
-    val endBlock = 700510
-    val apiRateLimit = 200 // ensure max 5 request per second
+    val startBlock = 2429000
+    val endBlock = 2429129
     val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
@@ -43,36 +42,40 @@ object CrossValidation {
       println("Get blocks' info by using Etherscan API")
 
       for (ind <- startBlock to endBlock) {
-        val block = Etherscan.getBlock(ind.toHexString)
-
-        val timestamp = Numeric.decodeQuantity(block.get("timestamp"))
+        val response = Option[util.Map[String,Any]](
+          Etherscan.getBlock(ind.toHexString)
+        ).getOrElse(None)
 
         if (ind % 100 == 0) {
           println("Current block -> " + ind)
         }
 
-        if (!(block.isEmpty) && block.get("transactions") != "Empty") {
-          val txs = block.get("transactions").asInstanceOf[LinkedList[Map[String, String]]]
+        response match {
+          case None => {}
+          case block:util.Map[String,Any] => {
+            val transactions = block.get("transactions")
+            transactions match {
+              case "Empty" => {}
+              case txs: util.ArrayList[util.Map[String, Any]] => {
+                val timestamp = Numeric.decodeQuantity(block.get("timestamp").toString)
 
-          txs.forEach((tx: Map[String, String]) => {
-            val list = List(
-              ("txHash", tx.get("hash")),
-              ("date", DateConverter.getDateFromTimestamp(timestamp)),
-              ("value", Numeric.decodeQuantity(tx.get("value")).doubleValue() / weiIntoEth.doubleValue()),  // skip 0x
-              ("hasContract", "PLACEHOLDER") // just a predefinite value. TODO replace with the real value
-            )
-            myBlockchain2.append(list)
-          })
+                txs.forEach((tx: util.Map[String, Any]) => {
+                  val list = List(
+                    ("txHash", tx.get("hash")),
+                    ("date", DateConverter.getDateFromTimestamp(timestamp)),
+                    ("value", Numeric.decodeQuantity(tx.get("value").toString).doubleValue() / weiIntoEth.doubleValue()), // skip 0x
+                    ("hasContract", tx.get("hasContract"))
+                  )
+                  myBlockchain2.append(list)})
+              }
+            }
+          }
         }
-
-        // wait for some time - needed to not exceed api rate limit of 5 requests/sec
-        Thread.sleep(apiRateLimit) // wait for 1000 millisecond
       }
       myBlockchain2.close
     } catch {
       case e: Exception => {
         e.printStackTrace();
-        println("Parameter error")
       }
     }
   }

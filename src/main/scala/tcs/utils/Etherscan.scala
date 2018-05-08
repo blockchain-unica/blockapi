@@ -1,15 +1,15 @@
 package tcs.utils
 
-import com.codesnippets4all.json.parsers.JsonParserFactory
+import java.util
 
+import com.codesnippets4all.json.parsers.JsonParserFactory
 import com.codesnippets4all.json.config.handlers.ValidationConfigType
-import java.util.Map
-import java.util.LinkedList
+
 import scalaj.http.Http
 import tcs.custom.ethereum.Utils
 
 package object Etherscan {
-  def apiKey = "apiKey"
+  def apiKey = "8FEKR3YIIKP97NTT8XV3EGK1P8VJQ9W6TI"
   /**
     *
     * This method of fetching the contract's source code is NOT optimal, but until etherscan.io extends its API to
@@ -43,21 +43,43 @@ package object Etherscan {
 
   /**
     * @param blockAddress the block address
-    * @return json structure of the block
+    * @return map describing block fields
     */
-  def getBlock(blockAddress: String): Map[String,String] = {
+  def getBlock(blockAddress: String): util.Map[String,Any] = {
+    waitForRequest()
     try {
       //The json parser fails when it finds an empty array
       val content = HttpRequester.get("https://api.etherscan.io/api?module=proxy&action=eth_getBlockByNumber&tag=" +
         blockAddress +"&boolean=true&apikey==" + apiKey).replaceAll("\\Q[]\\E","\"Empty\"")
-      println(content)
 
-      val factory = JsonParserFactory.getInstance
-      val parser = factory.newJsonParser(ValidationConfigType.JSON)
-      val map = parser.parseJson(content)
-      val block = map.get("result").asInstanceOf[java.util.Map[String,String]]
+      val map = JsonParserFactory.getInstance.newJsonParser().parseJson(content)
+      val result = map.get("result").asInstanceOf[util.Map[String,Any]]
 
-      return block
+      result match {
+        case block:util.Map[String,Any] => {
+          val transactions = block.get("transactions")
+          transactions match {
+            case "Empty" => return block
+            case txs: util.ArrayList[util.Map[String, Any]] => {
+              txs.forEach((tx: util.Map[String, Any]) => {
+                //If to is null there can be a contract
+                if (tx.get("hash")=="0x25919722adaadfa193bbb2a5fd24e7df469bce90e221c2c88595d2016bee64e7")
+                  println(tx.get("to"),tx.get("to")=="null")
+
+                if (tx.get("to") == "null" && transactionHasContract(tx.get("hash").toString)) {
+                  tx.put("hasContract", true)
+                }
+                else {
+                  tx.put("hasContract", false)
+                }
+                block.replace("transactions", txs)
+              })
+              return block
+            }
+          }
+        }
+        case _ => return null
+      }
     }
     catch {
       case ioe: java.io.IOException => {
@@ -70,5 +92,27 @@ package object Etherscan {
         e.printStackTrace(); return null
       }
     }
+  }
+
+  def transactionHasContract(transactionAddress: String): Boolean = {
+    waitForRequest()
+    try {
+      val content = HttpRequester.get("https://api.etherscan.io/api?module=proxy&action=eth_getTransactionReceipt&txhash="
+        + transactionAddress + "&apikey=" + apiKey).replaceAll("\\Q[]\\E","\"Empty\"")
+
+      val map = JsonParserFactory.getInstance.newJsonParser().parseJson(content)
+
+      return (map.get("contractAddress") != "null")
+
+    } catch {
+      case e: Exception => {
+        return false
+      }
+    }
+  }
+
+  def waitForRequest() = {
+    // wait for some time - needed to not exceed api rate limit of 5 requests/sec
+    Thread.sleep(200)
   }
 }
