@@ -1,5 +1,7 @@
 package tcs.examples.ethereum.mongo
 
+import org.bson.Document
+import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.ethereum.EthereumSettings
 import tcs.db.DatabaseSettings
@@ -13,6 +15,9 @@ object EthereumERC20Info {
     val mongo = new DatabaseSettings("EthereumTokens")
     val tokens = new Collection("EthereumTokens", mongo)
 
+    val mongoClient: MongoClient = MongoClient("mongodb://localhost:27017/Sandbox")
+    val database: MongoDatabase = mongoClient.getDatabase("EthereumTokens")
+    val collection: MongoCollection[Document] = database.getCollection("EthereumTokens")
 
     // Iterating each block
     blockchain.start(1703600).end(2100000).foreach(block => {
