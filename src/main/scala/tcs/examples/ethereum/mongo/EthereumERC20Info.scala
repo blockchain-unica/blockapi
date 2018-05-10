@@ -19,8 +19,9 @@ object EthereumERC20Info {
     val database: MongoDatabase = mongoClient.getDatabase("EthereumTokens")
     val collection: MongoCollection[Document] = database.getCollection("EthereumTokens")
 
+
     // Iterating each block
-    blockchain.start(1703600).end(2100000).foreach(block => {
+    blockchain.start(1700000).end(2100000).foreach(block => {
       if(block.height%100 == 0){
         println("Current Block " + block.height)
       }
@@ -28,7 +29,28 @@ object EthereumERC20Info {
       if (block.internalTransactions != List.empty){
 
         block.internalTransactions.foreach(itx => {
-            println(itx)
+
+          collection.find().foreach( u => {
+
+            val txIn = 0
+            val txOut = 0
+
+            if (u.containsKey("txIn")){
+              val txIn = Integer.parseInt(u.get("txIn").toString)
+            }
+
+            if (u.containsKey("txOut")){
+              val txOut = Integer.parseInt(u.get("txIn").toString)
+            }
+
+            if (itx.to == u.get("contractAddress")){
+              u.append("txIn",txIn + 1)
+            } else if (itx.from == u.get("contractAddress")){
+              u.append("txOut", txOut + 1)
+            }
+
+          })
+
         })
 
       } else {
@@ -36,6 +58,28 @@ object EthereumERC20Info {
       }
 
       block.txs.foreach(tx => {
+
+        collection.find().foreach( u => {
+
+          val txIn = 0
+          val txOut = 0
+
+          if (u.containsKey("txIn")){
+            val txIn = Integer.parseInt(u.get("txIn").toString)
+          }
+
+          if (u.containsKey("txOut")){
+            val txOut = Integer.parseInt(u.get("txIn").toString)
+          }
+
+
+          if (tx.to == u.get("contractAddress")){
+            u.append("txIn", txIn + 1)
+          } else if (tx.from == u.get("contractAddress")){
+            u.append("txOut", txOut + 1)
+          }
+
+        })
 
       })
     })
