@@ -31,11 +31,7 @@ object EthereumERC20Info {
       }
 
       block.txs.foreach(tx => {
-        if (tx.hasContract && tx.contract.isERC20Compliant){
 
-
-
-        }
       })
     })
     tokens.close
