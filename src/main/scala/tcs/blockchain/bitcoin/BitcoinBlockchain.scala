@@ -146,4 +146,28 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     return this
   }
 
+
+  /**
+    * Returns an UTXO set until block with given height.
+    *
+    * @param blockHeight
+    * @return
+    */
+  def getUTXOSetAt(blockHeight: Long): collection.Set[(String, Long)] = {
+    val block = getBlock(blockHeight, UTXOmap)
+
+    this.end(blockHeight).foreach(block => {
+//        println("Block: " + block.height)
+//        block.txs.foreach(tx =>
+//          println(tx.hash + tx.outputs))
+    })
+
+    var UTXOset = UTXOmap.keySet.map(couple => (couple._1.toString, couple._2))
+
+//    UTXOset.foreach(u => println(u._1 + " " + u._2))
+    println("\n\nUTXO set size: " + UTXOset.size)
+
+    return UTXOset
+  }
+
 }
