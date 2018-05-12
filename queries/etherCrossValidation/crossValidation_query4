@@ -1,0 +1,20 @@
+
+var differencesCount = 0;
+db.ethValidation1.find().forEach(function(doc1){
+    var doc2 = db.ethValidation2.findOne({txHash: doc1.txHash, hasContract: doc1.hasContract});
+
+    /* If any difference is found it's inserted into the collection ethValidationDifferences */
+    if (!(doc2)) {
+            var doc3 = {'txHash': doc1.txHash, "expectedHasContract": doc1.hasContract};
+            db.ethValidationDifferences.insert(doc3);
+            differencesCount += 1;
+    }
+});
+
+print("Check for differences in HAS CONTRACT");
+
+if (differencesCount > 0) {
+    print("Found " + differencesCount + " between the collections");
+} else {
+    print("No difference found");
+}
