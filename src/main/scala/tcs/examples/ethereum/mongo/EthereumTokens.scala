@@ -26,7 +26,6 @@ object EthereumTokens {
                 ("contractAddress", tx.contract.address),
                 ("txhash",tx.contract.hashOriginatingTx),
                 ("date",tx.date),
-                //("bytecode", tx.contract.bytecode),
                 ("tokenName", tx.contract.getTokenName()),
                 ("tokenSymbol", tx.contract.getTokenSymbol()),
                 ("tokenDivisibility", tx.contract.getTokenDivisibility())
