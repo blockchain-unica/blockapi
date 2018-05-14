@@ -11,16 +11,13 @@ import tcs.utils.{DateConverter, Etherscan}
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
-    val startBlock = 3600000
-    val endBlock = 3630000
+    val startBlock = 3500000
+    val endBlock = 3550000
     val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
     val myBlockchain1 = new Collection("ethValidation1", mongo)
     val myBlockchain2 = new Collection("ethValidation2", mongo)
-
-    val bc1Errors = new util.ArrayList[BigInt]()
-    val bc2Errors = new util.ArrayList[BigInt]()
 
     var currentBlockId = BigInt(0) // initialization of current block
 
@@ -30,8 +27,8 @@ object CrossValidation {
 
         currentBlockId = block.height
 
-        if (block.height % 100 == 0) {
-          println("Current block -> " + block.height)
+        if (currentBlockId % 100 == 0) {
+          println("Current block -> " + currentBlockId)
         }
 
         block.txs.foreach(tx => {
@@ -46,11 +43,12 @@ object CrossValidation {
       })
 
     } catch {
+
       case e: Exception => {
-        bc1Errors.add(currentBlockId);
         print("Errors occurred while processing block " + currentBlockId)
-        e.printStackTrace();
+        e.printStackTrace()
       }
+
     } finally {
 
       myBlockchain1.close
@@ -97,27 +95,13 @@ object CrossValidation {
     } catch {
 
       case e: Exception => {
-        bc2Errors.add(currentBlockId);
         print("Errors occurred while processing block " + currentBlockId)
-
-        e.printStackTrace();
+        e.printStackTrace()
       }
 
     } finally {
-
       myBlockchain2.close
     }
 
-    // print errors if any
-
-    if (bc1Errors.size() > 0){
-      println("Some errors occurred while processing local Blockchain")
-      println(bc1Errors.toString)
-    }
-
-    if (bc2Errors.size() > 0) {
-      println("Some errors occurred while getting data with Etherscan API")
-      println(bc2Errors.toString)
-    }
   }
 }
