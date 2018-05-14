@@ -54,6 +54,11 @@ case class EthereumContract(
     * This method checks if there is a token name in bytecode, if not returns "Unknown"
     *
     * @return token's name
+    *
+    * @author Chessa Stefano Raimondo
+    * @author Guria Marco
+    * @author Manai Alessio
+    * @author Speroni Alessio
     */
 
   def getTokenName(): String = {
@@ -82,6 +87,11 @@ case class EthereumContract(
     * This method checks if there is a token symbol in bytecode, if not returns "Unknown"
     *
     * @return token's symbol
+    *
+    * @author Chessa Stefano Raimondo
+    * @author Guria Marco
+    * @author Manai Alessio
+    * @author Speroni Alessio
     */
 
   def getTokenSymbol(): String = {
@@ -113,6 +123,11 @@ case class EthereumContract(
     * This method finds token divisibility in bytecode, if not returns "Unknown"
     *
     * @return token's divisibility
+    *
+    * @author Chessa Stefano Raimondo
+    * @author Guria Marco
+    * @author Manai Alessio
+    * @author Speroni Alessio
     */
 
   def getTokenDivisibility(): String = {
