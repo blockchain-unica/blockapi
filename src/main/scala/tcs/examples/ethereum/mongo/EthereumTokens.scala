@@ -5,6 +5,22 @@ import tcs.blockchain.ethereum.{EthereumSettings, EthereumTransaction}
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
+/** Get a set of transactions, for each ERC20 standard contract,
+  * this script finds:
+  * - contract address
+  * - hash of originating transaction
+  * - date
+  * - name of the token
+  * - symbol of the token
+  * - divisibility
+  *
+  *
+  * @author Chessa Stefano Raimondo
+  * @author Guria Marco
+  * @author Manai Alessio
+  * @author Speroni Alessio
+  * */
+
 object EthereumTokens {
 
   def main(args: Array[String]): Unit = {

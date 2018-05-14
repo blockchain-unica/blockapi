@@ -1,6 +1,5 @@
 package tcs.examples.ethereum.mongo
 
-
 import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase}
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.ethereum.{EthereumInternalTransaction, EthereumSettings, EthereumTransaction}
@@ -8,6 +7,17 @@ import tcs.examples.ethereum.mongo.levensthein.Helpers._
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates._
 
+/** For each contract, this script adds:
+  * - balance
+  * - number of transaction in
+  * - number of transaction out
+  *
+  *
+  * @author Chessa Stefano Raimondo
+  * @author Guria Marco
+  * @author Manai Alessio
+  * @author Speroni Alessio
+  * */
 
 object EthereumERC20Info {
 
@@ -91,12 +101,12 @@ object EthereumERC20Info {
 
     }
     //Incremento il bilancio. Fare la conversione perchè mongo da eccezione con i bigint
-    if(collection.find(and(equal("contractAddress", address), exists("bilance"))).results().nonEmpty)
+    if(collection.find(and(equal("contractAddress", address), exists("balance"))).results().nonEmpty)
     {
-      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("bilance")),inc("bilance",value.toFloat)).results()
+      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("balance")), inc("balance", value.toFloat)).results()
 
     }else{
-      collection.findOneAndUpdate(equal("contractAddress", address), set("bilance",value.toFloat)).results()
+      collection.findOneAndUpdate(equal("contractAddress", address), set("balance", value.toFloat)).results()
     }
   }
 
@@ -115,8 +125,8 @@ object EthereumERC20Info {
 
     }
     //decremento il bilancio
-    if(collection.find(and(equal("contractAddress", address), exists("bilance"))).results().nonEmpty) {
-      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("bilance")), inc("bilance", - value.toFloat)).results()
+    if(collection.find(and(equal("contractAddress", address), exists("balance"))).results().nonEmpty) {
+      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("balance")), inc("balance", - value.toFloat)).results()
     }
 
   }
