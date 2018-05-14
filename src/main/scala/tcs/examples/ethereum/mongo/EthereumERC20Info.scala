@@ -7,7 +7,7 @@ import tcs.examples.ethereum.mongo.levensthein.Helpers._
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates._
 
-/** For each contract, this script adds:
+/** For each contract, this script adds to database:
   * - balance
   * - number of transaction in
   * - number of transaction out
@@ -28,7 +28,7 @@ object EthereumERC20Info {
 
   def main(args: Array[String]): Unit = {
 
-    blockchain.start(2101639).end(2101647).foreach(block => {
+    blockchain.start(2100000).end(2355000).foreach(block => {
 
       if(block.height%100 == 0){
         println("Current Block " + block.height)
