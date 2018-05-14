@@ -1,6 +1,5 @@
 package tcs.blockchain.ethereum
 
-import java.math.BigInteger
 import java.net.URLEncoder
 import java.util.Date
 
@@ -117,9 +116,6 @@ object EthereumTransaction{
     new EthereumContract("", tx.getCreates, tx.getHash, false, null, getContractBytecode(tx.getCreates), null)
   }
 
-  def getConctractBalance(contractAddress : String) : BigInteger = {
-    this.web3j.ethGetBalance(contractAddress,DefaultBlockParameterName.LATEST).send().getBalance
-  }
 
   /**
     * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified.
