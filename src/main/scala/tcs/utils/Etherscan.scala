@@ -82,14 +82,9 @@ package object Etherscan {
       }
     }
     catch {
-      case ioe: java.io.IOException => {
-        ioe.printStackTrace(); return null
-      }
-      case ste: java.net.SocketTimeoutException => {
-        ste.printStackTrace(); return null
-      }
       case e: Exception => {
-        e.printStackTrace(); return null
+        e.printStackTrace();
+        throw e
       }
     }
   }
@@ -103,8 +98,8 @@ package object Etherscan {
       val map = JsonParserFactory.getInstance.newJsonParser().parseJson(content)
 
       return (map.get("contractAddress") != "null")
-
-    } catch {
+    }
+    catch {
       case e: Exception => {
         return false
       }
