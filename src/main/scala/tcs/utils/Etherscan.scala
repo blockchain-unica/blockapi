@@ -83,8 +83,9 @@ package object Etherscan {
     }
     catch {
       case e: Exception => {
-        e.printStackTrace();
-        throw e
+        println("Errors while getting block num: 0x" + blockAddress)
+        e.printStackTrace()
+        return null
       }
     }
   }
