@@ -11,17 +11,25 @@ import tcs.utils.{DateConverter, Etherscan}
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
-    val startBlock = 2429000
-    val endBlock = 2429129
+    val startBlock = 3600000
+    val endBlock = 3630000
     val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
     val mongo = new DatabaseSettings("myDatabase")
     val weiIntoEth = BigInt("1000000000000000000")
     val myBlockchain1 = new Collection("ethValidation1", mongo)
     val myBlockchain2 = new Collection("ethValidation2", mongo)
 
+    val bc1Errors = new util.ArrayList[BigInt]()
+    val bc2Errors = new util.ArrayList[BigInt]()
+
+    var currentBlockId = BigInt(0) // initialization of current block
+
     try {
-      // Chiedere se gli estremi dei blocchi devono essere passati in input o hardcoded
+
       blockchain.start(startBlock).end(endBlock).foreach(block => {
+
+        currentBlockId = block.height
+
         if (block.height % 100 == 0) {
           println("Current block -> " + block.height)
         }
@@ -37,11 +45,24 @@ object CrossValidation {
         })
       })
 
-      myBlockchain1.close
+    } catch {
+      case e: Exception => {
+        bc1Errors.add(currentBlockId);
+        print("Errors occurred while processing block " + currentBlockId)
+        e.printStackTrace();
+      }
+    } finally {
 
-      println("Get blocks' info by using Etherscan API")
+      myBlockchain1.close
+    }
+
+    println("Get blocks' info by using Etherscan API")
+
+    try {
 
       for (ind <- startBlock to endBlock) {
+        currentBlockId = ind
+
         val response = Option[util.Map[String,Any]](
           Etherscan.getBlock(ind.toHexString)
         ).getOrElse(None)
@@ -72,11 +93,31 @@ object CrossValidation {
           }
         }
       }
-      myBlockchain2.close
+
     } catch {
+
       case e: Exception => {
+        bc2Errors.add(currentBlockId);
+        print("Errors occurred while processing block " + currentBlockId)
+
         e.printStackTrace();
       }
+
+    } finally {
+
+      myBlockchain2.close
+    }
+
+    // print errors if any
+
+    if (bc1Errors.size() > 0){
+      println("Some errors occurred while processing local Blockchain")
+      println(bc1Errors.toString)
+    }
+
+    if (bc2Errors.size() > 0) {
+      println("Some errors occurred while getting data with Etherscan API")
+      println(bc2Errors.toString)
     }
   }
 }
