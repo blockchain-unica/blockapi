@@ -25,34 +25,22 @@ object BitcoinBalances
     */
   type balance = (Double, Double, Double, BigInt, BigInt)
 
-  def main(args: Array[String]): Unit =
-  {
+  def main(args: Array[String]): Unit = {
     // - Bitcoind settings, retrieveInputValues set as true
-    var bitcoindSett = new BitcoinSettings(
-      "user",
-      "password",
-      "8332",
-      MainNet,
-      true
-    )
+    var bitcoindSett = new BitcoinSettings("user", "password", "8332", MainNet, true)
 
     // - MySQL database settings
-    val mySQL = new DatabaseSettings(
-      "bitcoinBalances",
-      MySQL,
-      "user",
-      "password"
-    )
+    val mySQL = new DatabaseSettings("bitcoinBalances", MySQL, "user", "password")
 
     // - Conversion rate from satoshi to bitcoin
     val satoshiToBTC = 0.00000001
 
     // - Slice of blockchain to analyse
-    val startingBlock = 68780
-    val endingBlock = 78124
+    val startingBlock = 0
+    val endingBlock = 100000
 
     // - Get blockchain slice
-    var blockchainSlice = BlockchainLib.getBitcoinBlockchain(bitcoindSett).start(startingBlock).end(endingBlock)
+    var bitcoinBlockchain = BlockchainLib.getBitcoinBlockchain(bitcoindSett)
 
     // - Table definition
     val outTable = new Table(
@@ -71,23 +59,17 @@ object BitcoinBalances
     // - Mutable map containing addresses and their balances, with the user defined type balance
     var balances = mutable.Map[String, balance]()
 
-    println("Blockchain analysis start")
     // - Updating the map for each block
-    blockchainSlice.foreach(block =>
-    {
-      println("Block " + block.height + " | Transactions " + block.txs.size +  " | Time " + DateConverter.formatTimestamp(System.currentTimeMillis()))
+    bitcoinBlockchain.start(startingBlock).end(endingBlock).foreach(block => {
 
       // - Updating the map for each transaction
-      block.txs.foreach(tx =>
-      {
+      block.txs.foreach(tx => {
         // - Get conversion rate using date of transaction
         val conversionRate = Exchange.getRate(tx.date)
 
         // - Updating the map for each input
-        tx.inputs.foreach(in =>
-        {
-          if (in.getAddress(MainNet).isDefined) // checks if None
-          {
+        tx.inputs.foreach(in => {
+          if (in.getAddress(MainNet).isDefined) {// checks if None
             // - Get address of input
             val addr = in.getAddress(MainNet).get.toBase58
 
@@ -101,11 +83,10 @@ object BitcoinBalances
             // - Calculate the value in dollars
             val valueInDollars = in.value.toDouble * satoshiToBTC * conversionRate
 
-            /* - Update the map's entry for the address, the value in dollars gets added to the total output
-             * - and subtracted to the current balance, the output transactions counter is also incremented
+            /* - Update the map's entry for the address, the value in dollars gets added to the total output and
+             * - subtracted to the current balance, the output transactions counter is also incremented
              */
-            balances(addr) =
-              (
+            balances(addr) = (
                 balanceOfAddress._1,                  // input value
                 balanceOfAddress._2 + valueInDollars, // output value
                 balanceOfAddress._3 - valueInDollars, // total balance value
@@ -116,10 +97,8 @@ object BitcoinBalances
         })
 
         // - Updating the map for each output
-        tx.outputs.foreach(out =>
-        {
-          if (out.getAddress(MainNet).isDefined) // checks if None
-          {
+        tx.outputs.foreach(out => {
+          if (out.getAddress(MainNet).isDefined) { // checks if None
             // - Get address of input
             val addr = out.getAddress(MainNet).get.toBase58
 
@@ -136,8 +115,7 @@ object BitcoinBalances
             /* - Update the map's entry for the address, the value in dollars gets added to the total input
              * - and to the total balance, the input transactions counter is also incremented
              */
-            balances(addr) =
-              (
+            balances(addr) = (
                 data._1 + valueInDollars, // input value
                 data._2,                  // output value
                 data._3 + valueInDollars, // total balance value
@@ -148,10 +126,9 @@ object BitcoinBalances
         })
       })
     })
-    println("Blockchain analysis end")
 
-    println("Table insertion start")
-    // - Each entry of the map is inserted into the table
+
+    // Add each entry of the map into the table
     for(balanceInfo <- balances.toSeq)
     {
       outTable.insert(
@@ -164,7 +141,7 @@ object BitcoinBalances
         List()
       )
     }
-    println("Table insertion end")
+
     outTable.close
   }
 }
