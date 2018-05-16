@@ -11,23 +11,27 @@ import tcs.utils.{DateConverter, Etherscan}
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
-    val startBlock = 3500000
-    val endBlock = 3550000
-    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
+    val startBlock = 4870921//2424969
+    val endBlock = 4880920//2429450
     val mongo = new DatabaseSettings("myDatabase")
-    val weiIntoEth = BigInt("1000000000000000000")
-    val myBlockchain1 = new Collection("ethValidation1", mongo)
-    val myBlockchain2 = new Collection("ethValidation2", mongo)
 
-    var currentBlockId = BigInt(0) // initialization of current block
+    getDataFromTool(startBlock, endBlock, mongo)
+    getDataFromEtherScan(startBlock, endBlock, mongo)
+  }
+
+  def getDataFromTool(startBlock: Long, endBlock: Long, mongo: DatabaseSettings): Unit = {
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
+    val myBlockchain1 = new Collection("ethValidation1", mongo)
+    var currentBlockId: Long = startBlock // initialization of current block
+    val weiIntoEth = BigInt("1000000000000000000")
+    var ind = BigInt(0)
 
     try {
-
       blockchain.start(startBlock).end(endBlock).foreach(block => {
+        ind = block.height
+        currentBlockId = startBlock + ind.asInstanceOf[Long]
 
-        currentBlockId = block.height
-
-        if (currentBlockId % 100 == 0) {
+        if (ind % 100 == 0) {
           println("Current block -> " + currentBlockId)
         }
 
@@ -41,37 +45,36 @@ object CrossValidation {
           myBlockchain1.append(list)
         })
       })
-
-    } catch {
-
-      case e: Exception => {
-        print("Errors occurred while processing block " + currentBlockId)
-        e.printStackTrace()
-      }
-
-    } finally {
-
       myBlockchain1.close
+    } catch {
+      case e: Exception => {
+        myBlockchain1.close
+        println("Errors occurred while processing block " + currentBlockId)
+        getDataFromTool(currentBlockId+1, endBlock, mongo)
+      }
     }
+  }
+
+  def getDataFromEtherScan(startBlock: Long, endBlock: Long, mongo: DatabaseSettings): Unit = {
+    val myBlockchain2 = new Collection("ethValidation2", mongo)
+    val currentBlockId = BigInt(0)
+    val weiIntoEth = BigInt("1000000000000000000")
 
     println("Get blocks' info by using Etherscan API")
 
-    try {
-
-      for (ind <- startBlock to endBlock) {
-        currentBlockId = ind
-
-        val response = Option[util.Map[String,Any]](
-          Etherscan.getBlock(ind.toHexString)
+    for (currentBlockId <- startBlock to endBlock) {
+      try {
+        val response = Option[util.Map[String, Any]](
+          Etherscan.getBlock(("0x" + currentBlockId.toHexString))
         ).getOrElse(None)
 
-        if (ind % 100 == 0) {
-          println("Current block -> " + ind)
+        if (currentBlockId % 100 == 0) {
+          println("Current block -> " + currentBlockId)
         }
 
         response match {
           case None => {}
-          case block:util.Map[String,Any] => {
+          case block: util.Map[String, Any] => {
             val transactions = block.get("transactions")
             transactions match {
               case "Empty" => {}
@@ -85,23 +88,19 @@ object CrossValidation {
                     ("value", Numeric.decodeQuantity(tx.get("value").toString).doubleValue() / weiIntoEth.doubleValue()), // skip 0x
                     ("hasContract", tx.get("hasContract"))
                   )
-                  myBlockchain2.append(list)})
+                  myBlockchain2.append(list)
+                })
               }
             }
           }
         }
+      } catch {
+        case e: Exception => {
+          println("Errors occurred while processing block " + currentBlockId)
+          e.printStackTrace()
+        }
       }
-
-    } catch {
-
-      case e: Exception => {
-        print("Errors occurred while processing block " + currentBlockId)
-        e.printStackTrace()
-      }
-
-    } finally {
       myBlockchain2.close
     }
-
   }
 }
