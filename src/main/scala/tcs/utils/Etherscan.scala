@@ -62,10 +62,6 @@ package object Etherscan {
             case "Empty" => return block
             case txs: util.ArrayList[util.Map[String, Any]] => {
               txs.forEach((tx: util.Map[String, Any]) => {
-                //If to is null there can be a contract
-                if (tx.get("hash")=="0x25919722adaadfa193bbb2a5fd24e7df469bce90e221c2c88595d2016bee64e7")
-                  println(tx.get("to"),tx.get("to")=="null")
-
                 if (tx.get("to") == "null" && transactionHasContract(tx.get("hash").toString)) {
                   tx.put("hasContract", true)
                 }
