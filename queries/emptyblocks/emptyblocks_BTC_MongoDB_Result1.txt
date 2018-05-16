@@ -1,0 +1,8 @@
+The interactive chart is avaible at this link: https://francescopisu.github.io
+
+As shown in the chart, being the 2009 the year of initial growth of Bitcoin, the number of empty blocks coincide, in almost all cases,  with the total number of blocks mined on a daily basis. Since these blocks only contain the coinbase transaction, they allowed to generate currency.
+From March 2010 it is noted a growing detachment of the empty blocks mining trend from the total number of blocks, in fact fewer empty blocks are observed.
+An high peak it has been reached on the 13 of July 2010, recording about 340 empty blocks on a total of 712.
+The empty blocks trend decreases more and more until the 30 of January 2011, where only 5 empty blocks have been mined ona  total of 155.
+Unfortunately we could not extend the study beyond January 2011 due to hard drive space problems.
+

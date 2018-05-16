@@ -38,7 +38,7 @@ object TxWithRates {
 
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         txTable.insert(Seq(
           tx.hash.toString,
           convertDate(block.date),

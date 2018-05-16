@@ -1,14 +1,15 @@
 package tcs.custom.ethereum
 
-import java.io.{BufferedReader, InputStreamReader}
+import java.io.{BufferedReader, IOException, InputStreamReader}
 import java.net.{HttpURLConnection, URL}
-import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.codesnippets4all.json.parsers.JsonParserFactory
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import org.apache.commons.lang3.time.DateUtils
+import tcs.custom.bitcoin.Exchange.lastDate
 import tcs.pojos.{CoinMarketPrices, CoinMarketPricesRaw}
 
 import scala.io.Source
@@ -18,8 +19,13 @@ import scala.io.Source
   */
 object PriceHistorical {
 
+  var lastDate: Date = new Date(0)
+  var price: Double = 0
+
+
   private var marketCap: List[MarketCap] = _
 
+/*
   def getPriceHistorical(): CoinMarketPrices = {
     val url = new URL("https://graphs.coinmarketcap.com/currencies/ethereum/")
     val connection = url.openConnection().asInstanceOf[HttpURLConnection]
@@ -33,14 +39,37 @@ object PriceHistorical {
 
     val format = new SimpleDateFormat("yyyy-MM-dd")
 
-    val coinMarket = CoinMarketPrices(coinMarketRaw.market_cap_by_available_supply.map(l => format.format(new Date(l.head.longValue())) -> l.last.intValue()).toMap[String, Int],
-      coinMarketRaw.price_btc.map(l => format.format(new Date(l.head.longValue())) -> l.last.doubleValue()).toMap[String, Double],
-      coinMarketRaw.price_usd.map(l => format.format(new Date(l.head.longValue())) -> l.last.doubleValue()).toMap[String, Double])
+    val coinMarket = CoinMarketPrices(coinMarketRaw.market_cap_by_available_supply.map(l => format.format(new Date(l.head.longValue())) -> l.last.intValue()).toMap[Date, Int],
+      coinMarketRaw.price_btc.map(l => format.format(new Date(l.head.longValue())) -> l.last.doubleValue()).toMap[Date, Double],
+      coinMarketRaw.price_usd.map(l => format.format(new Date(l.head.longValue())) -> l.last.doubleValue()).toMap[Date, Double])
     coinMarket
   }
+*/
 
-  def getPriceHistorical(time: Long): String = {
-    val url = new URL("https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=USD&ts=" + time + "&markets=Coinbase")
+  def getRate(date : Date): Double = {
+
+
+    // Coindesk has no rates before this timestamp
+    if(date.before(new Date(1438905600))) return 0
+
+    if (!DateUtils.isSameDay(date, lastDate)) {
+      lastDate = date
+
+      try {
+        price = getPriceHistorical(date)
+      } catch {
+        case e: IOException =>
+          return 0
+      }
+    }
+
+    return price
+  }
+
+
+  private def getPriceHistorical(time: Date): Double = {
+
+    val url = new URL("https://min-api.cryptocompare.com/data/pricehistorical?fsym=ETH&tsyms=USD&ts=" + time.getTime.toString.dropRight(3) + "&markets=Coinbase")
     val connection = url.openConnection().asInstanceOf[HttpURLConnection]
     connection.setRequestMethod("GET")
     val br = new BufferedReader(new InputStreamReader(connection.getInputStream))
@@ -51,7 +80,8 @@ object PriceHistorical {
     val map = parser.parseJson(str)
     val usd = map.get("ETH").asInstanceOf[java.util.HashMap[String, String]]
 
-    usd.get("USD")
+    return parseDouble(usd.get("USD"))
+
   }
 
   def getMarketCapList(): List[MarketCap] = {
@@ -60,6 +90,7 @@ object PriceHistorical {
     }
     this.marketCap
   }
+
 
   private def prepareMarketCapList(): Unit = {
     val bufferedSource = Source.fromFile("src/main/scala/tcs/custom/regression/export-MarketCap.csv")
@@ -72,4 +103,10 @@ object PriceHistorical {
       }
     })
   }
+
+  private def parseDouble(s: String) : Double =
+    try {
+      Some(s.toDouble)
+      s.toDouble
+    } catch { case _ : Throwable => 0d }
 }

@@ -4,6 +4,7 @@ import java.util.Date
 
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib
+import tcs.blockchain.ethereum.EthereumSettings
 import tcs.custom.ethereum.ICO
 import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, PostgreSQL}
@@ -11,8 +12,7 @@ import tcs.db.{DatabaseSettings, PostgreSQL}
 
 object ICOInfos {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain("http://52.38.68.64:8545")
-      .setStart(3224233)
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://52.38.68.64:8545"))
     val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres")
 
     val blockTable = new Table(
@@ -103,22 +103,21 @@ object ICOInfos {
       pg, 1
     )
 
-    blockchain.foreach(block => {
-      if (block.number % 100 == 0) {
-        println(block.number)
+    blockchain.start(3224233).foreach(block => {
+      if (block.height % 100 == 0) {
+        println(block.height)
       }
       blockTable.insert(Seq(
-        block.hash, block.number, block.parentHash,
-        new Date(block.timeStamp.longValue() * 1000), block.author, block.miner
+        block.hash, block.height, block.parentHash, block.date, block.author, block.miner
       ))
-      block.transactions.foreach(tx => {
+      block.txs.foreach(tx => {
         txTable.insert(Seq(
           tx.hash, tx.nonce, tx.transactionIndex, tx.from,
-          tx.to, tx.value, tx.creates, tx.gas,
+          tx.to, tx.value, tx.addressCreated, tx.gas,
           tx.gasPrice, tx.blockHash
         ))
-        if (tx.creates != null) {
-            val ico = new ICO(tx.creates)
+        if (tx.addressCreated != null) {
+            val ico = new ICO(tx.addressCreated)
             if(ico.itExists){
               icoTable.insert(Seq(
                 ico.getName, ico.getSymbol, ico.getContractAddress,

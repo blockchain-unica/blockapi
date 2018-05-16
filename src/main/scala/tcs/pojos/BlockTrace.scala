@@ -1,5 +1,7 @@
 package tcs.pojos
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 /**
   * Created by Ferruvich on 03/08/2017.
   */
@@ -13,7 +15,7 @@ class BlockTrace(
                   traceAddress: List[Int],
                   transactionHash: String,
                   transactionPosition: Int,
-                  traceType: String
+                  @JsonProperty("trace") traceType: String
                 ) {
 
   def this() = {

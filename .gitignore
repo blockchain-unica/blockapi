@@ -11,3 +11,4 @@ project/target/**/*.class
 project/target/**
 target/**
 src/main/scala/tcs/custom/bitcoin/metadata/test/*
+/.vs

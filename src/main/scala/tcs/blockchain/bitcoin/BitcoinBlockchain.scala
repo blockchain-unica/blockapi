@@ -10,22 +10,24 @@ import tcs.blockchain.Blockchain
 import tcs.utils.ConvertUtils
 
 import scala.collection.mutable
+import scala.collection.JavaConversions._
 
 
 /**
   * Defines a Bitcoin blockchain given the Bitcoin Core settings.
   *
-  * @param settings Bitcoin Core settings (e.g. network, user, password, etc.)
+  * @param settings Bitcoin settings (e.g. Bitcoin core network, user, password, etc.)
   */
 class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBlock] with Blockchain {
 
-  private var starBlock = 1l
-  private var endBlock = 0l
+  private var starBlock : Long = 1l
+  private var endBlock : Long = 0l
+  private var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long] // Unspent Transaction Output Map
 
   // Connects to Bitcoin Core
   val clientFactory =
     new BitcoindClientFactory(
-      new URL("http://" + settings.rpcHost + ":" + settings.rpcPort + "/" + settings.rpcPath),
+      new URL(settings.rpcProtocol + "://" + settings.rpcHost + ":" + settings.rpcPort + "/" + settings.rpcPath),
       settings.rpcUser,
       settings.rpcPassword);
 
@@ -38,9 +40,6 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
   }
 
   Context.getOrCreate(networkParameters)
-
-  // Unspent Transaction Output Map
-  var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long]
 
 
   /**
@@ -68,6 +67,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
       println("Done")
     } catch {
       case e: HttpException => println("Error occurred:\n" + e.getMessage)
+        e.printStackTrace
     }
   }
 
@@ -78,7 +78,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @param hash Hash of the block
     * @return BitcoinBlock representation of the block
     */
-  def getBlock(hash: String): BitcoinBlock = {
+  override def getBlock(hash: String): BitcoinBlock = {
     val hex = client.getblock(hash, 0)
     val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
     val jBlock = bitcoinSerializer.makeBlock(ConvertUtils.hexToBytes(hex))
@@ -93,7 +93,7 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @param height Height of the block
     * @return BitcoinBlock representation of the block
     */
-  def getBlock(height: Long): BitcoinBlock = {
+  override def getBlock(height: Long): BitcoinBlock = {
     val blockHash = client.getblockhash(height)
 
     val hex = client.getblock(blockHash, 0)
@@ -122,6 +122,20 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     BitcoinBlock.factory(jBlock, height, UTXOmap)
   }
 
+  /**
+    * Returns a transaction given its hash
+    *
+    * @param hash Hash of the transaction
+    * @return BitcoinTransaction representation of the transaction
+    */
+
+  def getTransaction(hash: String) : BitcoinTransaction= {
+    var hex = client.getrawtransaction(hash)
+    val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
+    val jTx = bitcoinSerializer.makeTransaction(ConvertUtils.hexToBytes(hex))
+
+    BitcoinTransaction.factory(jTx)
+  }
 
   /**
     * Sets the first block of the blockchain to visit.
@@ -129,10 +143,16 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @param height Height of the specified block
     * @return This
     */
-  def start(height: Long): BitcoinBlockchain = {
+  override def start(height: Long): BitcoinBlockchain = {
     starBlock = height
 
     return this
+  }
+
+  def getMemPool(): List[String] ={
+    val results = client.getrawmempool()
+
+    results.toList
   }
 
 
@@ -142,10 +162,9 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @param height Height of the specified block
     * @return This
     */
-  def end(height: Long): BitcoinBlockchain = {
+  override def end(height: Long): BitcoinBlockchain = {
     endBlock = height
     return this
   }
-
 
 }

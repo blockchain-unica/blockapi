@@ -55,6 +55,10 @@ public interface BitcoindInterface {
 	public long gethashespersec();
 	//Returns an object about the given transaction hash.
 	public Transaction gettransaction(String hash);
+	//Returns a raw transaction given its transaction hash
+	public String getrawtransaction(String hash);
+	//Returns a decoded transaction given its transaction hex string
+	public Transaction decoderawtransaction(String rawTransaction);
 	//Returns Object that has account names as keys, account balances as values.
 	public Map<String,BigDecimal> listaccounts(long confirmations);
 	//Returns an array of objects containing:"account" : the account of the receiving addresses,"amount" : total amount received by addresses with this account,"confirmations" : number of confirmations of the most recent transaction included
@@ -92,5 +96,5 @@ public interface BitcoindInterface {
 	//stop
 	public String stop();
 	public String getbestblockhash();
-	
+	public List<String> getrawmempool();
 }

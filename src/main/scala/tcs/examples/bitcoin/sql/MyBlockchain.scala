@@ -49,7 +49,7 @@ object MyBlockchain{
 
 
     blockchain.end(473100).foreach(block => {
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
 
         txTable.insert(Seq(tx.hash.toString, block.hash.toString, convertDate(block.date)))
 

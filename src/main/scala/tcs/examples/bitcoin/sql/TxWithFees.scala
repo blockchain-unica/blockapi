@@ -39,7 +39,7 @@ object TxWithFees {
 
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         txTable.insert(Seq(
           block.hash.toString,
           tx.hash.toString,

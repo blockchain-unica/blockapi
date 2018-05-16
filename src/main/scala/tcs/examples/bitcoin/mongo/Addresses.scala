@@ -11,13 +11,18 @@ import tcs.mongo.Collection
 object Addresses {
   def main(args: Array[String]): Unit ={
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("bitcoin", "password", "https", "443", "co2.unica.it", "bitcoin-mainnet", MainNet))
+    //val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+
     val mongo = new DatabaseSettings("clustering")
 
     val addresses = new Collection("addresses", mongo)
 
     blockchain.foreach(block => {
-      block.bitcoinTxs.foreach(tx => {
+
+      println(block.height)
+
+      block.txs.foreach(tx => {
         addresses.append(List(
           ("h", tx.hash),
           ("d", block.date.getTime),

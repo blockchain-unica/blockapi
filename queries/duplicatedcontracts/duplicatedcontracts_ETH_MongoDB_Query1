@@ -1,0 +1,2 @@
+//Total number of contracts
+db.getCollection('duplicatedContracts').aggregate([{$group: { _id: null, contractsNum: { $sum: { $size: "$address"}} }},{ $project : {_id : 0 , contractsNum: 1 }} ])

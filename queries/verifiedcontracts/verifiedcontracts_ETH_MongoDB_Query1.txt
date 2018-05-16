@@ -1,0 +1,1 @@
+db.getCollection('VerifiedContracts').find({usesPermissions: true}).count() / db.getCollection('VerifiedContracts').count() * 100

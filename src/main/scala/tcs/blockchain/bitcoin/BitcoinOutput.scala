@@ -26,6 +26,8 @@ class BitcoinOutput(
     }
   }
 
+  def getValue : Long = value
+  def getIndex : Int = index
 
   /**
     * String representation of a BitcoinOutput.
@@ -80,7 +82,7 @@ class BitcoinOutput(
 
     try {
 
-      Some(transOut.getScriptPubKey.getToAddress(param))
+      Some(transOut.getScriptPubKey.getToAddress(param, true))
 
     } catch {
       case _: Throwable => None
