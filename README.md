@@ -92,3 +92,4 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Riccardo Mulas](https://github.com/riccardomulas) - Non-standard transactions
    * [Fabio Carta](https://www.linkedin.com/in/fabio-carta-45781196/), [Francesca Malloci](https://www.linkedin.com/in/francescamalloci/), [Flavia Murru](https://www.linkedin.com/in/flavia-murru-269459159) - Duplicate Ethereum contracts
    * [Carlo Cabras](https://www.linkedin.com/in/carlocabras21/), [Federico Maria Cau](https://www.linkedin.com/in/federico-maria-cau-9178b114a/), [Mattia Samuel Mancosu](https://www.linkedin.com/in/mattia-samuel-mancosu/) - Balances of Ethereum addresses
+   * [Andrea Demontis](), [Stefano Dessì](https://github.com/StefanoDessi) - Balances of Bitcoin addresses
