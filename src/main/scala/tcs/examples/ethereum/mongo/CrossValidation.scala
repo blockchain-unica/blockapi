@@ -16,7 +16,7 @@ object CrossValidation {
     val mongo = new DatabaseSettings("myDatabase")
 
     getDataFromTool(startBlock, endBlock, mongo)
-    //getDataFromEtherScan(startBlock, endBlock, mongo)
+    getDataFromEtherScan(startBlock, endBlock, mongo)
   }
 
   def getDataFromTool(startBlock: Long, endBlock: Long, mongo: DatabaseSettings): Unit = {
@@ -30,7 +30,7 @@ object CrossValidation {
       blockchain.start(startBlock).end(endBlock).foreach(block => {
         currentBlockId = block.height.longValue()
 
-        if (ind % 100 == 0) {
+        if (currentBlockId % 100 == 0) {
           println("Current block -> " + currentBlockId)
         }
 
