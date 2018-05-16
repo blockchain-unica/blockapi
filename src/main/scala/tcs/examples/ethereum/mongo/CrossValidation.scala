@@ -11,8 +11,8 @@ import tcs.utils.{DateConverter, Etherscan}
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
-    val startBlock:Long = 3500000
-    val endBlock:Long = 3550000
+    val startBlock:Long = 800000
+    val endBlock:Long = 820000
     val mongo = new DatabaseSettings("myDatabase")
 
     getDataFromTool(startBlock, endBlock, mongo)
