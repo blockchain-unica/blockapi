@@ -11,8 +11,8 @@ import tcs.utils.{DateConverter, Etherscan}
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
-    val startBlock = 4870921//2424969
-    val endBlock = 4880920//2429450
+    val startBlock = 2424969
+    val endBlock = 2425969
     val mongo = new DatabaseSettings("myDatabase")
 
     getDataFromTool(startBlock, endBlock, mongo)
@@ -100,7 +100,7 @@ object CrossValidation {
           e.printStackTrace()
         }
       }
-      myBlockchain2.close
     }
+    myBlockchain2.close
   }
 }
