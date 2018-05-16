@@ -11,25 +11,24 @@ import tcs.utils.{DateConverter, Etherscan}
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
-    val startBlock = 2424969
-    val endBlock = 2425969
+    val startBlock:Long = 3500000
+    val endBlock:Long = 3550000
     val mongo = new DatabaseSettings("myDatabase")
 
     getDataFromTool(startBlock, endBlock, mongo)
-    getDataFromEtherScan(startBlock, endBlock, mongo)
+    //getDataFromEtherScan(startBlock, endBlock, mongo)
   }
 
   def getDataFromTool(startBlock: Long, endBlock: Long, mongo: DatabaseSettings): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
     val myBlockchain1 = new Collection("ethValidation1", mongo)
-    var currentBlockId: Long = startBlock // initialization of current block
+    var currentBlockId:Long = startBlock // initialization of current block
     val weiIntoEth = BigInt("1000000000000000000")
     var ind = BigInt(0)
 
     try {
       blockchain.start(startBlock).end(endBlock).foreach(block => {
-        ind = block.height
-        currentBlockId = startBlock + ind.asInstanceOf[Long]
+        currentBlockId = block.height.longValue()
 
         if (ind % 100 == 0) {
           println("Current block -> " + currentBlockId)
@@ -50,6 +49,7 @@ object CrossValidation {
       case e: Exception => {
         myBlockchain1.close
         println("Errors occurred while processing block " + currentBlockId)
+        e.printStackTrace()
         getDataFromTool(currentBlockId+1, endBlock, mongo)
       }
     }
