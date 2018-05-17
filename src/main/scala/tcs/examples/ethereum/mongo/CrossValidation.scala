@@ -15,8 +15,8 @@ object CrossValidation {
     val endBlock:Long =   2010500
     val mongo = new DatabaseSettings("myDatabase")
 
-    getDataFromEtherScan(startBlock, endBlock, mongo)
     getDataFromTool(startBlock, endBlock, mongo)
+    getDataFromEtherScan(startBlock, endBlock, mongo)
   }
 
   def getDataFromTool(startBlock: Long, endBlock: Long, mongo: DatabaseSettings): Unit = {
