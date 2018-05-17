@@ -11,12 +11,12 @@ import tcs.utils.{DateConverter, Etherscan}
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
-    val startBlock:Long = 3500000
-    val endBlock:Long = 3550000
+    val startBlock:Long = 2010000
+    val endBlock:Long =   2010500
     val mongo = new DatabaseSettings("myDatabase")
 
-    getDataFromTool(startBlock, endBlock, mongo)
     getDataFromEtherScan(startBlock, endBlock, mongo)
+    getDataFromTool(startBlock, endBlock, mongo)
   }
 
   def getDataFromTool(startBlock: Long, endBlock: Long, mongo: DatabaseSettings): Unit = {
@@ -24,7 +24,6 @@ object CrossValidation {
     val myBlockchain1 = new Collection("ethValidation1", mongo)
     var currentBlockId:Long = startBlock // initialization of current block
     val weiIntoEth = BigInt("1000000000000000000")
-    var ind = BigInt(0)
 
     try {
       blockchain.start(startBlock).end(endBlock).foreach(block => {
@@ -57,7 +56,6 @@ object CrossValidation {
 
   def getDataFromEtherScan(startBlock: Long, endBlock: Long, mongo: DatabaseSettings): Unit = {
     val myBlockchain2 = new Collection("ethValidation2", mongo)
-    val currentBlockId = BigInt(0)
     val weiIntoEth = BigInt("1000000000000000000")
 
     println("Get blocks' info by using Etherscan API")
@@ -85,7 +83,7 @@ object CrossValidation {
                   val list = List(
                     ("txHash", tx.get("hash")),
                     ("date", DateConverter.getDateFromTimestamp(timestamp)),
-                    ("value", Numeric.decodeQuantity(tx.get("value").toString).doubleValue() / weiIntoEth.doubleValue()), // skip 0x
+                    ("value", Numeric.decodeQuantity(tx.get("value").toString).doubleValue() / weiIntoEth.doubleValue()),
                     ("hasContract", tx.get("hasContract"))
                   )
                   myBlockchain2.append(list)
