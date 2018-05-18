@@ -13,6 +13,7 @@ import scala.collection.mutable
   * @param index Index of the output (w.r.t. the transaction containing this output).
   * @param transOut Output script.
   */
+
 class LitecoinOutput(
                      val index: Int,
                      val value: Long,

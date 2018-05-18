@@ -19,6 +19,7 @@ import scala.collection.mutable.ListBuffer
   * @param isCoinbase True if the enclosing transaction is coninbase.
   * @param inScript Input script.
   */
+
 class LitecoinInput(
                     val redeemedTxHash: Sha256Hash,
                     val value: Long,

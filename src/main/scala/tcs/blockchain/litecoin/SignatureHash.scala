@@ -1,6 +1,6 @@
 package tcs.blockchain.litecoin
 
-object  SignatureHash extends Enumeration {
+object SignatureHash extends Enumeration {
   type SignatureHash = Value
   val ALL = Value(1)
   val NONE = Value(2)

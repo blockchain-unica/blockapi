@@ -1,6 +1,6 @@
-/*risultati da verificare*/
+/*To check*/
 
-year(t.timestamp),month(t.timestamp),day(t.timestamp),"count(distinct i.id)/count(distinct t.txid)","count(distinct o.id)/count(distinct t.txid)"
+year(t.timestamp),month(t.timestamp),day(t.timestamp),count(distinct i.id)/count(distinct t.txid),count(distinct o.id)/count(distinct t.txid)
 2011,10,8,1.0000,1.0000
 2011,10,12,1.0000,1.0000
 2011,10,13,1.0000,1.0000

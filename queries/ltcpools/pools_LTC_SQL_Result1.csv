@@ -1,4 +1,4 @@
-/*Per ora l'unico pool riconosciuto (in comune con BTC) è F2Pool*/
+/*Most pools hex codes are still to be implemented. The only one recognized by now is F2Pool*/
 
 Pool,Blocks
 F2Pool,105

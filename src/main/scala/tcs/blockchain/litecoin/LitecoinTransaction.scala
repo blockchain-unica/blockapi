@@ -17,6 +17,7 @@ import scala.collection.mutable.ListBuffer
   * @param inputs List of transaction inputs
   * @param outputs List of transaction outputs
   */
+
 class LitecoinTransaction(
                           override val hash: String, /*scrypt?*/
                           override val date: Date,

@@ -17,6 +17,7 @@ import scala.collection.mutable
   * @param size Size of the block
   * @param txs List of transactions appended to the block
   */
+
 class LitecoinBlock(
                     override val hash: String,
                     override val height: BigInt,

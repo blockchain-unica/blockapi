@@ -11,6 +11,7 @@ package tcs.blockchain.litecoin
   * @param network             Either Litecoin Main network or Litecoin Test network.
   * @param retrieveInputValues True for performing a "deep scan" of the blockchain and retrieve input values.
   */
+
 class LitecoinSettings(
                        val rpcUser: String,
                        val rpcPassword: String,

@@ -11,12 +11,12 @@ import tcs.utils.ConvertUtils
 
 import scala.collection.mutable
 
-
 /**
   * Defines a Litecoin blockchain given the Litecoin Core settings.
   *
   * @param settings Litecoin settings (e.g. Litecoin core network, user, password, etc.)
   */
+
 class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[LitecoinBlock] with Blockchain {
 
   private var starBlock = 1l
