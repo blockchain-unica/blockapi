@@ -12,6 +12,12 @@ import java.net.ServerSocket;
 import java.net.URL;
 import java.util.*;
 
+//TODO se non ci sono altre differenze refactor con BitcoinD
+
+/**This one could be omitted because it's almost identical to Bitcoind
+ * It's for testing without modifying BitcoindClientFactory
+ */
+
 public class LitecoindClientFactory {
 
 	public static ServerSocket blockSocket;

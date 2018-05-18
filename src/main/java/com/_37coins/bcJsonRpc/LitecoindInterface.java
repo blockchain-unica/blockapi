@@ -6,7 +6,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-
+/**Even if methods are (by now) the same of BitcoindInterface
+ * this one comes in handy for test purposes without modifying Bitcoind
+ * Maybe I will dismiss it soon
+ */
 public interface LitecoindInterface {
 	//Add a nrequired-to-sign multisignature address to the wallet. Each key is a bitcoin address or hex-encoded public key.
 	String addmultisigaddress(int nrequired, String keys);
