@@ -1,14 +1,6 @@
 db.getCollection('nonStandardTransactions').aggregate([
     {"$unwind": "$size"}, 
     {"$group":   {
-        "_id": null, 
-        "avg_size": { "$avg": "$size"}
-    }
-}])
-
-db.getCollection('nonStandardTransactions').aggregate([
-    {"$unwind": "$size"}, 
-    {"$group":   {
         "_id": null,
         "std_dev": { "$stdDevSamp": "$size"}
     }

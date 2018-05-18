@@ -1,0 +1,7 @@
+db.getCollection('nonStandardTransactions').aggregate([
+    {"$unwind": "$size"}, 
+    {"$group":   {
+        "_id": null, 
+        "avg_size": { "$avg": "$size"}
+    }
+}])

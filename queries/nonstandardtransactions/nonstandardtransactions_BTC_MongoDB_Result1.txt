@@ -1,0 +1,6 @@
+Analysis of the first ~260000 blocks.
+Non-standard transactions found: 282.
+
+Average size of non-standard scripts: 33.8643326039387
+
+Some of the non-standard scripts found have typos while others use non-standard operators (e.g., IF THEN ELSE).

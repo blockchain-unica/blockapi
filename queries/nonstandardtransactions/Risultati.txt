@@ -1,4 +1,0 @@
-Il test è stato eseguito su circa 260000 blocchi, dopodiché il programma ha restituito una ScriptException (“Push of data element that is larger than remaining data”). Lo script ha trovato ed aggiunto al DB 282 transazioni non standard, per cui:
-- la dimensione media degli script non standard è 33.8643326039387
-- la deviazione standard della dimensione degli script non standard è 101.771777580472
-Gli script non standard che sono stati trovati sono di vario tipo: alcuni sono evidentemente errori di battitura, per cui non vengono accettati, altri invece provano ad eseguire operazioni differenti rispetto a quelle permesse (e.g., IF THEN ELSE). 
