@@ -93,7 +93,8 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Fabio Carta](https://www.linkedin.com/in/fabio-carta-45781196/), [Francesca Malloci](https://www.linkedin.com/in/francescamalloci/), [Flavia Murru](https://www.linkedin.com/in/flavia-murru-269459159) - Duplicate Ethereum contracts
    * [Carlo Cabras](https://www.linkedin.com/in/carlocabras21/), [Federico Maria Cau](https://www.linkedin.com/in/federico-maria-cau-9178b114a/), [Mattia Samuel Mancosu](https://www.linkedin.com/in/mattia-samuel-mancosu/) - Balances of Ethereum addresses
    * [Andrea Demontis](), [Stefano Dessì](https://github.com/StefanoDessi) - Balances of Bitcoin addresses
-   * [Federica Gerina](), [Silvia Maria Massa](https://github.com/reasilvia), [Francesca Moi]() - State of the DAPPS
+   * [Federica Gerina](https://www.linkedin.com/in/federica-gerina-961765132/), [Silvia Maria Massa](https://www.linkedin.com/in/silvia-maria-massa-2072a6163/), [Francesca Moi](https://www.linkedin.com/in/francesca-moi-3582b9164/) - State of the DAPPS
+   * [Giuseppina Lai](https://github.com/giusylai), [Federica Muceli](), [Federico Spiga]() - UTXO set
      
      
      
