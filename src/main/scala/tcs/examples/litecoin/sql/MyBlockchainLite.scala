@@ -9,7 +9,7 @@ import tcs.utils.DateConverter.convertDate
 
 
 /**
-  * Created by Livio on 14/06/2017.
+  * Created by Giulia on 15/05/2018.
   */
 object MyBlockchainLite{
   def main(args: Array[String]): Unit ={
@@ -48,8 +48,8 @@ object MyBlockchainLite{
       mySQL)
 
 
-    blockchain.end(100000).foreach(block => {
-      block.litecoinTxs.foreach(tx => {
+    blockchain.end(1200000).foreach(block => {
+      block.txs.foreach(tx => {
 
         txTable.insert(Seq(tx.hash.toString, block.hash.toString, convertDate(block.date)))
 
@@ -58,7 +58,7 @@ object MyBlockchainLite{
         tx.outputs.foreach(out => { outTable.insert(Seq(tx.hash.toString, out.outScript.toString)) })
       })
 
-      if (block.height % 100 == 0 || block.height % 100 != 0)
+      if (block.height % 10000 == 0)
         println(block.height)
     })
 
