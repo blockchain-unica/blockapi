@@ -1,0 +1,12 @@
+# Controllo transazioni entro una determinata data
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX prop: <http://blockchain/properties#>
+SELECT ?txHash ?date
+WHERE {
+    ?in prop:isOutOf ?tx.
+    ?tx	prop:date	?date;
+        prop:txHash	?txHash
+
+    FILTER(?date > "2010-05-23T10:20:13Z"^^xsd:dateTime)
+}

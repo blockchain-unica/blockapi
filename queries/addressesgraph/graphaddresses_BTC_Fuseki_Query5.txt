@@ -1,0 +1,16 @@
+#From which addresses and how many bitcoins have been sent to an address
+PREFIX prop: <http://blockchain/properties#>
+SELECT DISTINCT ?address2 ?txHash ?value	?address
+WHERE {
+  ?addr	prop:addressProp	?address;
+        prop:receivedBy		?tx2.
+  ?tx2	prop:value	?value;
+       	prop:backAddr	?addr2;
+  		prop:tx_info	?tx_info.
+
+  ?tx_info	prop:txHash	?txHash.
+  ?addr2 prop:addressProp	?address2
+
+  FILTER regex(?address, "1L8B3q4FoNmmF9daBiuxw2XxZ1CaViKZ6F")
+}
+ORDER BY (?value)

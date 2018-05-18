@@ -1,0 +1,14 @@
+#To which addresses, an address have been sent bitcoins
+PREFIX prop: <http://blockchain/properties#>
+SELECT ?address ?value	?address2
+WHERE {
+  ?addr	prop:addressProp	?address;
+        prop:sentTo			?tx2.
+  ?tx2	prop:value			?value;
+		prop:forwardAddr	?addr2.
+
+  ?addr2 prop:addressProp	?address2
+
+  FILTER regex(?address, "12eQVBh2z8nkczbUV2k5GLRAkFo9QQ2Frm")
+}
+ORDER BY (?value)

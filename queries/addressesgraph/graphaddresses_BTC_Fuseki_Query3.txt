@@ -1,0 +1,12 @@
+# Given a transaction, it returns input addresses (forwardAddr)
+PREFIX prop: <http://blockchain/properties#>
+SELECT ?txHash ?address
+WHERE {
+	?tx	prop:forwardAddr	?forwardAddr;
+     	prop:tx_info		?tx_info.
+  	?tx_info	prop:txHash	?txHash.
+
+  	?forwardAddr	prop:addressProp	?address
+
+FILTER regex(?txHash, "b5f6e3b217fa7f6d58081b5d2a9a6607eebd889ed2c470191b2a45e0dcb98eb0")
+}

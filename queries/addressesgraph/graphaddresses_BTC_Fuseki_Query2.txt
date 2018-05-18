@@ -1,0 +1,9 @@
+# Addresses with depth less than n (backAddr)
+PREFIX prop: <http://blockchain/properties#>
+SELECT DISTINCT ?address	?depth
+WHERE {
+  ?tx	prop:backAddr	?backAddr.
+  ?backAddr	prop:depth	?depth;
+            prop:addressProp	?address.
+FILTER (?depth <= 2)
+}

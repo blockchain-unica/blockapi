@@ -1,0 +1,7 @@
+%permissions: 7.775590551181103%
+N: 1016
+N_Uses_Permissions: 79
+Search_starts_at: 4950000
+Search_stops_at: 4964630
+First_verified_contract_at: 4950017
+Last_verified_contract_at: 4964630

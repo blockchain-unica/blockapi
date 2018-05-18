@@ -1,0 +1,2 @@
+"_id", count
+contract SimpleStorage {\r\n    uint storedData;\r\n    function set(uint x) {\r\n        storedData = x;\r\n    }\r\n    function get() constant returns (uint retVal) {\r\n        return storedData;\r\n    }\r\n}, 35
