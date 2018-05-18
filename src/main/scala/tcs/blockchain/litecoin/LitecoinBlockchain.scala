@@ -11,21 +11,22 @@ import tcs.utils.ConvertUtils
 
 import scala.collection.mutable
 
-//TODO VERIFICARE LITECOINSERIALIZER. DOV'E E COME SISTEMARLO.
+
 /**
   * Defines a Litecoin blockchain given the Litecoin Core settings.
   *
-  * @param settings Litecoin Core settings (e.g. network, user, password, etc.)
+  * @param settings Litecoin settings (e.g. Litecoin core network, user, password, etc.)
   */
 class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[LitecoinBlock] with Blockchain {
 
   private var starBlock = 1l
   private var endBlock = 0l
+  private var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long] // Unspent Transaction Output Map
 
   // Connects to Litecoin Core
   val clientFactory =
     new LitecoindClientFactory(
-      new URL("http://" + settings.rpcHost + ":" + settings.rpcPort + "/" + settings.rpcPath),
+      new URL(settings.rpcProtocol + "://" + settings.rpcHost + ":" + settings.rpcPort + "/" + settings.rpcPath),
       settings.rpcUser,
       settings.rpcPassword);
 
@@ -38,9 +39,6 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
   }
 
   Context.getOrCreate(networkParameters)
-
-  // Unspent Transaction Output Map
-  var UTXOmap = mutable.HashMap.empty[(Sha256Hash, Long), Long]
 
 
   /**
@@ -68,6 +66,7 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
       println("Done")
     } catch {
       case e: HttpException => println("Error occurred:\n" + e.getMessage)
+        e.printStackTrace
     }
   }
 
@@ -76,9 +75,9 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     * Returns a block given its hash.
     *
     * @param hash Hash of the block
-    * @return BitcoinBlock representation of the block
+    * @return LitecoinBlock representation of the block
     */
-  def getBlock(hash: String): LitecoinBlock = {
+  override def getBlock(hash: String): LitecoinBlock = {
     val hex = client.getblock(hash, 0)
     val litecoinSerializer = new BitcoinSerializer(networkParameters, true)
     val jBlock = litecoinSerializer.makeBlock(ConvertUtils.hexToBytes(hex))
@@ -93,12 +92,12 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     * @param height Height of the block
     * @return LitecoinBlock representation of the block
     */
-  def getBlock(height: Long): LitecoinBlock = {
+  override def getBlock(height: Long): LitecoinBlock = {
     val blockHash = client.getblockhash(height)
 
     val hex = client.getblock(blockHash, 0)
-    val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
-    val jBlock = bitcoinSerializer.makeBlock(ConvertUtils.hexToBytes(hex))
+    val litecoinSerializer = new BitcoinSerializer(networkParameters, true)
+    val jBlock = litecoinSerializer.makeBlock(ConvertUtils.hexToBytes(hex))
 
     LitecoinBlock.factory(jBlock, height)
   }
@@ -110,7 +109,7 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     *
     * @param height  height of the block to retrieve
     * @param UTXOmap The Unspent Transaction Output map
-    * @return BitcoinBlock representation of the block
+    * @return LitecoinBlock representation of the block
     */
   private def getBlock(height: Long, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long]): LitecoinBlock = {
     val blockHash = client.getblockhash(height)
@@ -122,6 +121,20 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     LitecoinBlock.factory(jBlock, height, UTXOmap)
   }
 
+  /**
+    * Returns a transaction given its hash
+    *
+    * @param hash Hash of the transaction
+    * @return BitcoinTransaction representation of the transaction
+    */
+
+  def getTransaction(hash: String) : LitecoinTransaction= {
+    var hex = client.getrawtransaction(hash)
+    val litecoinSerializer = new BitcoinSerializer(networkParameters, true)
+    val jTx = litecoinSerializer.makeTransaction(ConvertUtils.hexToBytes(hex))
+
+    LitecoinTransaction.factory(jTx)
+  }
 
   /**
     * Sets the first block of the blockchain to visit.
@@ -129,12 +142,11 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     * @param height Height of the specified block
     * @return This
     */
-  def start(height: Long): LitecoinBlockchain = {
+ override def start(height: Long): LitecoinBlockchain = {
     starBlock = height
 
     return this
   }
-
 
   /**
     * Sets the last block of the blockchain to visit.
@@ -142,10 +154,9 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     * @param height Height of the specified block
     * @return This
     */
-  def end(height: Long): LitecoinBlockchain = {
+  override def end(height: Long): LitecoinBlockchain = {
     endBlock = height
     return this
   }
-
 
 }

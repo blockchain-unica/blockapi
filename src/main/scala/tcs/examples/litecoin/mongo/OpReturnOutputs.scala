@@ -1,24 +1,24 @@
 package tcs.examples.litecoin.mongo
 
 import tcs.blockchain.BlockchainLib
-import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
+import tcs.blockchain.litecoin.{LitecoinSettings, MainNet}
+import tcs.custom.litecoin.metadata.MetadataParser
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
-import tcs.custom.bitcoin.metadata.MetadataParser
 
 /**
-  * Created by Livio on 14/06/2017.
+  * Created by Giulia on 14/06/2017.
   */
-object OpReturnOutputs {
+object OpReturnOutputsLite {
   def main(args: Array[String]): Unit ={
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+    val blockchain = BlockchainLib.getLitecoinBlockchain(new LitecoinSettings("user", "password", "9332", MainNet))
     val mongo = new DatabaseSettings("myDatabase")
 
-    val opReturnOutputs = new Collection("opReturn", mongo)
+    val opReturnOutputs = new Collection("opReturnLite", mongo)
 
     blockchain.end(480000).foreach(block => {
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         tx.outputs.foreach(out => {
           if(out.isOpreturn()) {
             opReturnOutputs.append(List(

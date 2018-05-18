@@ -8,9 +8,8 @@ import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, MySQL}
 import tcs.utils.DateConverter.convertDate
 
-//TODO: MEGLIO DATABASE UNICO -> OPRETURN/OPRETURNLITE O UN DATABASE DIVERSO?
 /**
-  * Created by Livio on 13/09/2017.
+  * Created by Giulia on 15/05/2018.
   */
 object OpReturnOutputsLite {
   def main(args: Array[String]): Unit = {
@@ -33,11 +32,11 @@ object OpReturnOutputsLite {
       sql"""insert into opreturnoutputlite (transactionHash, txdate, protocol, metadata) values(?,?,?,?)""",
       mySQL)
 
-    blockchain.end(10000).foreach(block => {
+    blockchain.end(100000).foreach(block => {
 
       if (block.height % 10000 == 0) println("Block: " + block.height)
 
-      block.litecoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         tx.outputs.foreach(out => {
           if (out.isOpreturn()) {
             var protocol: String = MetadataParser.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.transOut.toString)

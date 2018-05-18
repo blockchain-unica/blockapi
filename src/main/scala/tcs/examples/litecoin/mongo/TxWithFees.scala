@@ -1,19 +1,19 @@
 package tcs.examples.litecoin.mongo
 
 import tcs.blockchain.BlockchainLib
-import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.custom.bitcoin.Exchange
+import tcs.blockchain.litecoin.{LitecoinSettings, MainNet}
+import tcs.custom.litecoin.Exchange
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 import tcs.utils.DateConverter
 
 /**
-  * Created by Livio on 16/06/2017.
+  * Created by Giulia on 16/06/2017.
   */
-object TxWithFees {
+object TxWithFeesLite {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, true))
+    val blockchain = BlockchainLib.getLitecoinBlockchain(new LitecoinSettings("user", "password", "9332", MainNet, true))
     val mongo = new DatabaseSettings("myDatabase")
 
     val txWithFees = new Collection("txWithFees", mongo)
@@ -22,7 +22,7 @@ object TxWithFees {
 
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         txWithFees.append(List(
           ("blockHash", block.hash),
           ("txHash", tx.hash),

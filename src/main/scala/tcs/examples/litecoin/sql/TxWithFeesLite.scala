@@ -10,7 +10,7 @@ import tcs.utils.DateConverter
 import tcs.utils.DateConverter.convertDate
 
 /**
-  * Created by Livio on 28/09/2017.
+  * Created by Giulia on 15/05/2018.
   */
 object TxWithFeesLite {
   def main(args: Array[String]): Unit = {
@@ -39,7 +39,7 @@ object TxWithFeesLite {
 
       if (block.height % 10 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
-      block.litecoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         txTable.insert(Seq(
           block.hash.toString,
           tx.hash.toString,

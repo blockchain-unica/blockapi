@@ -58,7 +58,7 @@ public class ConvertUtils{
         return xor;
     }
 
-    public static byte[] XORToBytes(byte[] first, byte[] second) throws XORDataException, StringNotHexException{
+    public static byte[] XORToBytes(byte[] first, byte[] second) throws XORDataException {
         if(first.length != second.length)throw new XORDataException(first.length +"\tand\t"+ second.length);
 
         byte[] result = new byte[(first.length + second.length)/2];

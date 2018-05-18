@@ -1,12 +1,14 @@
 package tcs.blockchain.litecoin
 
 import org.litecoinj.core.{ECKey, _}
+import org.litecoinj.crypto.TransactionSignature
 import org.litecoinj.params.{MainNetParams, TestNet3Params}
 import org.litecoinj.script.ScriptChunk
 import tcs.utils.ConvertUtils
-import org.litecoinj.core.{Sha256Hash, TransactionInput, TransactionOutput}
 
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
+
 /**
   * Defines a transaction input of the Litecoin blockchain.
   *
@@ -24,7 +26,8 @@ class LitecoinInput(
                     val isCoinbase: Boolean,
                     val inScript: LitecoinScript,
                     val sequenceNo: Long,
-                    val outPoint: TransactionOutPoint) {
+                    val outPoint: TransactionOutPoint
+                   ){
 
 
   /**
@@ -71,12 +74,60 @@ class LitecoinInput(
     key.toAddress(param)
   }
 
-
   private def getAddressFromP2PSHInput(chuncks: java.util.List[ScriptChunk], param: NetworkParameters) = {
     val redeemScriptBytes = chuncks.get(chuncks.size() - 1).data
     Address.fromP2SHHash(param, ConvertUtils.getRIPEMD160Digest(Sha256Hash.hash(redeemScriptBytes)))
   }
 
+  /**
+    *
+    * //@param
+    * @return List[SignatureHash] an list of enum value representing the specific hash type.
+    */
+  def getSignatureHashType(): List[SignatureHash.SignatureHash] ={
+
+    if(inScript==null){
+      List[SignatureHash.SignatureHash]()
+    }
+
+    else{
+
+      val hashTypelist=new ListBuffer[SignatureHash.SignatureHash]()
+      val signatures:List[Array[Byte]]=getSignatures()
+
+
+      signatures.foreach(sig=>{
+
+        val lastByteSignature:Int = sig.last & 0xff
+
+        val hashType= lastByteSignature match {
+
+          case  0x01  => hashTypelist+=SignatureHash.ALL
+          case  0x02  => hashTypelist+=SignatureHash.NONE
+          case  0x03  => hashTypelist+=SignatureHash.SINGLE
+          case  0x80  => hashTypelist+=SignatureHash.ANYONECANPAY
+          case  0x81  => hashTypelist+=SignatureHash.ANYONECANPAY_ALL
+          case  0x82  => hashTypelist+=SignatureHash.ANYONECANPAY_NONE
+          case  0x83  => hashTypelist+=SignatureHash.ANYONECANPAY_ALL
+          case   _    => hashTypelist+=SignatureHash.UNSET
+
+        }
+      })
+
+      hashTypelist.toList
+    }
+  }
+
+  private def getSignatures():List[Array[Byte]]={
+    val signature=new ListBuffer[Array[Byte]]()
+
+    inScript.getChunks.forEach(chunk => {
+      if(chunk.data != null && TransactionSignature.isEncodingCanonical(chunk.data))
+        signature+=chunk.data
+    })
+    signature.toList
+
+  }
 
   /**
     * Returns the Litecoin script
@@ -92,6 +143,9 @@ class LitecoinInput(
     * @return Input sequence number
     */
   def getSequenceNo: Long = sequenceNo
+
+  def getRedeemedTxHashAsString: String = redeemedTxHash.toString
+  def getRedeemedOutIndex: Int = redeemedOutIndex
 }
 
 
@@ -134,7 +188,7 @@ object LitecoinInput {
     * @param UTXOmap Unspent transaction outputs map.
     * @param blockHeight Height of the block including the enclosing transaction.
     * @param outputs List of outputs of the enclosing transaction.
-    * @return A new BitcoinInput.
+    * @return A new LitecoinInput.
     */
   def factory(input: TransactionInput, UTXOmap: mutable.HashMap[(Sha256Hash, Long), Long], blockHeight: Long, outputs: List[TransactionOutput]): LitecoinInput = {
     val value = UTXOmap.get((input.getOutpoint.getHash, input.getOutpoint.getIndex)) match {

@@ -21,7 +21,7 @@ object InputSequence {
     var inTot : Long = 0
 
     blockchain.end(bkTot).foreach(block => {
-      block.litecoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         txTot += 1
         tx.inputs.foreach(i =>{
           inTot += 1

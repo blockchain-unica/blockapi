@@ -35,7 +35,7 @@ $(document).ready(function() {
         function fixIFrame() {
             $('iframe').height($(window).height() )
         }
-        $('iframe').bind("load",fixIFrame)
+        $('iframe').bind("load",fixIFrame);
         $('iframe').bind("resize",fixIFrame)
     }
 
@@ -135,8 +135,7 @@ var Index = {};
             pack,
             '</a></li>'
         ].join('');
-    };
-
+    }
     function createListItem(template) {
         var inner = '';
 
@@ -182,7 +181,7 @@ var Index = {};
             html,
             '</ol></ol>'
         ].join('');
-    }
+    };
 
     ns.keys = function (obj) {
         var result = [];
@@ -191,7 +190,7 @@ var Index = {};
             result.push(key);
         }
         return result;
-    }
+    };
 
     var hiddenPackages = {};
 
@@ -211,7 +210,7 @@ var Index = {};
         $.each(subPackages(selected), function (index, element) {
             $(element).hide();
         });
-    }
+    };
 
     ns.showPackage = function (ol, state) {
         var selected = $('li.pack > .tplshow', ol).text();
@@ -403,7 +402,6 @@ function textFilter() {
             if (focusFilterState) {
                 if (pack == focusFilterState ||
                     pack.indexOf(focusFilterState + '.') == 0) {
-                    ;
                 } else {
                     continue;
                 }
@@ -433,7 +431,7 @@ function textFilter() {
 /* Configures the hide tool by adding the hide link to all packages. */
 function configureHideFilter() {
     $('#tpl li.pack a.packhide').click(function () {
-        var packhide = $(this)
+        var packhide = $(this);
         var action = packhide.text();
 
         var ol = $(this).parent().parent();

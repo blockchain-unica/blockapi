@@ -1,0 +1,5 @@
+/*Per ora l'unico pool riconosciuto (in comune con BTC) è F2Pool*/
+
+Pool,Blocks
+F2Pool,105
+Unknown,1199895

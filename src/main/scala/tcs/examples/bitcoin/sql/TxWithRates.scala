@@ -4,8 +4,8 @@ import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.custom.bitcoin.Exchange
-import tcs.db.{DatabaseSettings, MySQL}
 import tcs.db.sql.Table
+import tcs.db.{DatabaseSettings, MySQL}
 import tcs.utils.DateConverter
 import tcs.utils.DateConverter.convertDate
 
@@ -34,7 +34,7 @@ object TxWithRates {
       mySQL)
 
 
-    blockchain.end(473100).foreach(block => {
+    blockchain.start(50000).end(100000).foreach(block => {
 
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 

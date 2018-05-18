@@ -22,8 +22,8 @@ public class LitecoindClientFactory {
 	private static String OS = System.getProperty("os.name").toLowerCase();
 
 	private static String convertStream(java.io.InputStream is) {
-	    Scanner s = new Scanner(is).useDelimiter("\\A");
-	    return s.hasNext() ? s.next() : "";
+		java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+		return s.hasNext() ? s.next() : "";
 	}
 
 	private static boolean isWindows() {
@@ -44,10 +44,8 @@ public class LitecoindClientFactory {
 	 * @param url
 	 * @param username
 	 * @param password
-	 * @throws IOException
 	 */
-	public LitecoindClientFactory(URL url, String username, String password)
-			throws IOException {
+	public LitecoindClientFactory(URL url, String username, String password) {
 		String cred = Base64
 				.encodeBytes((username + ":" + password).getBytes());
 		Map<String, String> headers = new HashMap<>(1);

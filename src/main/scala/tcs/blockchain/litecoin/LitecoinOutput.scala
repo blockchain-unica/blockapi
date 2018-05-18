@@ -26,6 +26,8 @@ class LitecoinOutput(
     }
   }
 
+  def getValue : Long = value
+  def getIndex : Int = index
 
   /**
     * String representation of a LitecoinOutput.
@@ -88,6 +90,7 @@ class LitecoinOutput(
   }
 }
 
+
 /**
   * Factories for [[tcs.blockchain.litecoin.LitecoinOutput]] instances.
   */
@@ -134,5 +137,3 @@ object LitecoinOutput {
       })
   }
 }
-
-

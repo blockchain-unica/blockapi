@@ -10,7 +10,7 @@ import tcs.utils.DateConverter
 import tcs.utils.DateConverter.convertDate
 
 /**
-  * Created by Stefano on 02/11/2017.
+  * Created by Giulia on 15/05/2018.
   */
 object TxWithRatesLite {
   def main(args: Array[String]): Unit = {
@@ -34,11 +34,11 @@ object TxWithRatesLite {
       mySQL)
 
 
-    blockchain.start(500000).end(505000).foreach(block => {
+    blockchain.start(50000).end(100000).foreach(block => {
 
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
-      block.litecoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         txTable.insert(Seq(
           tx.hash.toString,
           convertDate(block.date),

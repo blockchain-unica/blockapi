@@ -96,7 +96,7 @@ diagrams.initPopup = function(id)
 	$(document).keyup(function(e) {
 		if (e.keyCode == 27) window.close();
 	});
-}
+};
 
 /**
  * Initializes highlighting for nodes and edges.

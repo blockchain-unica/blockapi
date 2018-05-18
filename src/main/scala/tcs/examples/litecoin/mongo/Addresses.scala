@@ -1,23 +1,23 @@
 package tcs.examples.litecoin.mongo
 
 import tcs.blockchain.BlockchainLib
-import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
+import tcs.blockchain.litecoin.{LitecoinSettings, MainNet}
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
 /**
-  * Created by Stefano on 03/07/2017.
+  * Created by Giulia on 15/05/2018.
   */
 object Addresses {
   def main(args: Array[String]): Unit ={
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+    val blockchain = BlockchainLib.getLitecoinBlockchain(new LitecoinSettings("user", "password", "9332", MainNet))
     val mongo = new DatabaseSettings("clustering")
 
-    val addresses = new Collection("addresses", mongo)
+    val addresses = new Collection("addresseslite", mongo)
 
     blockchain.foreach(block => {
-      block.bitcoinTxs.foreach(tx => {
+      block.txs.foreach(tx => {
         addresses.append(List(
           ("h", tx.hash),
           ("d", block.date.getTime),
