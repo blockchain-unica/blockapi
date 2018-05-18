@@ -58,6 +58,7 @@ object BlockchainURI{
   val OUTADDRESS = ResourceFactory.createProperty(properties + "address")
   val ISOPRETURN = ResourceFactory.createProperty(properties + "isOpReturn")
 
+
   //address
   val SENTBY = ResourceFactory.createProperty(properties + "sentBy")
   val RECEIVEDBY = ResourceFactory.createProperty(properties + "receivedBy")

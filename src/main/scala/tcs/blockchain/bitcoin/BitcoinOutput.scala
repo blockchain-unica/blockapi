@@ -137,5 +137,4 @@ object BitcoinOutput {
       })
   }
 
-
 }

@@ -298,3 +298,4 @@ object BitcoinTransaction {
     return new BitcoinTransaction(tx.getHash.toString, txDate, tx.getMessageSize, inputs, outputs, tx.getLockTime)
   }
 }
+

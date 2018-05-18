@@ -1,0 +1,14 @@
+.idea/*
+org/bitcoinj/core/annotations.xml
+project/target/**/*.class
+.idea/blockchain-api.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/uiDesigner.xml
+.idea/vcs.xml
+project/target/**
+target/**
+src/main/scala/tcs/custom/bitcoin/metadata/test/*
+/.vs
