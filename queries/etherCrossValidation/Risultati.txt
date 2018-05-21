@@ -1,0 +1,20 @@
+I test effettuati (inizialmente su poche centinaia di blocchi sino ad arrivare ad un range di 50k blocchi ed oltre
+600k transazioni) hanno evidenziato che non ci sono differenze tra le collection ethValidation1 ed ethValidation2
+create dallo script a partire dalla blockchain locale e interrogando le API di Etherscan rispettivamente.
+
+Occorre precisare che prima di eseguire le query e' opportuno aggiungere un index alla collection ethValidation2
+sul field txHash avendo cura di impostare il vincolo di unicita'.
+Questo velocizza notevolmente l'esecuzione delle query e permette di sincronizzare successivamente le transazioni
+mancanti avendo certezza che non ve ne siano duplicate.
+
+E' stato anche necessario aumentare il timeout delle query per dare al client il tempo sufficiente a concludere
+in presenza di range consistenti di blocchi.
+
+Durante i test, occasionalmente sono stati riscontrati errori di timeout nell'uso delle API di Etherscan.
+Quando ciò accade, le transazioni dei blocchi coinvolti non vengono aggiunte alla collection ethValidation2
+determinando una differenza.
+
+Tale problema può essere gestito analizzando i log di esecuzione e recuperando dagli stessi il numero ID dei blocchi coinvolti.
+Tali blocchi possono essere riprocessati tramite uno script che aggiunga alla collection le transazioni mancanti.
+
+Nelle nostre prove, a tale scopo, e' stata utilizzata una versione modificata dello script consegnato.
