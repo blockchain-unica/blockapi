@@ -40,8 +40,8 @@ object EthereumTokens {
             tokens.append(
               List(
                 ("contractAddress", tx.contract.address),
-                ("txhash",tx.contract.hashOriginatingTx),
-                ("date",tx.date),
+                ("txhash", tx.contract.hashOriginatingTx),
+                ("date", tx.date),
                 ("tokenName", tx.contract.getTokenName()),
                 ("tokenSymbol", tx.contract.getTokenSymbol()),
                 ("tokenDivisibility", tx.contract.getTokenDivisibility())

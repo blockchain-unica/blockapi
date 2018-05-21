@@ -36,18 +36,26 @@ case class EthereumContract(
 
   /**
     * This method checks if the contract is ERC20 compliant analyzing the bytecode
+    * Get a ERC20 standard token in Ethereum, it must implements the following functions:
+    * - totalSupply() public constant returns (uint);
+    * - balanceOf(address tokenOwner) public constant returns (uint balance);
+    * - allowance(address tokenOwner, address spender) public constant returns (uint remaining);
+    * - transfer(address to, uint tokens) public returns (bool success);
+    * - approve(address spender, uint tokens) public returns (bool success);
+    * - transferFrom(address from, address to, uint tokens) public returns (bool success);
+    *
     * source: https://ethereum.stackexchange.com/questions/38381/how-can-i-identify-that-transaction-is-erc20-token-creation-contract?answertab=oldest#tab-top
     *
     * @return true if the contract is ERC20 compliant, false otherwise
     */
 
   def isERC20Compliant(): Boolean = {
-    bytecode.contains("18160ddd") &&
-      bytecode.contains("70a08231") &&
-      bytecode.contains("dd62ed3e") &&
-      bytecode.contains("a9059cbb") &&
-      bytecode.contains("095ea7b3") &&
-      bytecode.contains("23b872dd")
+    bytecode.contains("18160ddd") &&    //checks totalSupply() declaration
+      bytecode.contains("70a08231") &&  //checks balanceOf(address) declaration
+      bytecode.contains("dd62ed3e") &&  //checks allowance(address,address) declaration
+      bytecode.contains("a9059cbb") &&  //checks transfer(address,uint256) declaration
+      bytecode.contains("095ea7b3") &&  //checks approve(address,uint256) declaration
+      bytecode.contains("23b872dd")     //checks transferFrom(address,address,uint256) declaration
   }
 
   /**
@@ -63,17 +71,17 @@ case class EthereumContract(
 
   def getTokenName(): String = {
 
-    try {
+    try {   //we don't know if someone wrote name in code
 
-      val name = new String(
+      val tokenName = new String(
         Hex.decodeHex(
-          StringUtils.substringBetween(bytecode, "81526020017f", "00").toCharArray
+          StringUtils.substringBetween(bytecode, "81526020017f", "81525081").toCharArray
         ), "UTF-8")
 
-      if (name == "address,bytes)"){
+      if (tokenName == "address,bytes)"){
         "Unknown"
       } else {
-        name
+        tokenName
       }
 
     } catch {
@@ -102,10 +110,10 @@ case class EthereumContract(
 
       val symbol = new String(
         Hex.decodeHex(
-          StringUtils.substringBetween(temp, "81526020017f", "00").toCharArray
+          StringUtils.substringBetween(temp, "81526020017f", "81525081").toCharArray
         ), "UTF-8")
 
-      if (name == "address,bytes)"){
+      if (symbol == "address,bytes)"){  //prevents errors during parsing variables
         "Unknown"
       } else {
         symbol
@@ -143,7 +151,7 @@ case class EthereumContract(
 
     } else {
 
-      val num = Integer.parseInt(stringa, 16)
+      val num = Integer.parseInt(stringa, 16)   //it converts from base 16 to base 10
 
       num.toString
 
