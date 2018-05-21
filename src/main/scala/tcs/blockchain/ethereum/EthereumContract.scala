@@ -61,6 +61,9 @@ case class EthereumContract(
   /**
     * This method checks if there is a token name in bytecode, if not returns "Unknown"
     *
+    * We must find some instruction in bytecode that loads in memory a string. The candidate opcode is PUSH32,
+    * 7f in Ethereum VM bytecode. The sequence between the first function call and return instructions is the name of the token
+    *
     * @return token's name
     *
     * @author Chessa Stefano Raimondo
@@ -74,7 +77,7 @@ case class EthereumContract(
     try {   //we don't know if someone wrote name in code
 
       val tokenName = new String(   //get the value of PUSH32 instruction in bytecode
-        Hex.decodeHex(
+        Hex.decodeHex(              //converts value from hex to string
           StringUtils.substringBetween(bytecode, "81526020017f", "81525081").toCharArray
         ), "UTF-8")
 
@@ -93,6 +96,10 @@ case class EthereumContract(
 
   /**
     * This method checks if there is a token symbol in bytecode, if not returns "Unknown"
+    *
+    * The approach is similar to getTokenName function: we must find some instruction in bytecode that loads in memory a string.
+    * The candidate opcode is PUSH32, 7f in Ethereum VM bytecode. The sequence from the PUSH32's load name contains the symbol of the token.
+    *
     *
     * @return token's symbol
     *
