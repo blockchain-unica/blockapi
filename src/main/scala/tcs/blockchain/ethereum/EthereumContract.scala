@@ -64,8 +64,11 @@ case class EthereumContract(
     * We must find some instruction in bytecode that loads in memory a string. The candidate opcode is PUSH32,
     * 7f in Ethereum VM bytecode. The sequence between the first function call and return instructions is the name of the token
     *
-    * @return token's name
+    * The string "8152602001" is a sequence of instructions described by a couple of four number in hexadecimal:
+    * the first one identifies opcode, the second one the value. This sequence preceded by 7f determines a string load
+    * "81525081" are instruction of string load succeed
     *
+    * @return token's name
     * @author Chessa Stefano Raimondo
     * @author Guria Marco
     * @author Manai Alessio
@@ -74,7 +77,7 @@ case class EthereumContract(
 
   def getTokenName(): String = {
 
-    try {   //we don't know if someone wrote name in code
+    try {   //we don't know if someone wrote name in contract code
 
       val tokenName = new String(   //get the value of PUSH32 instruction in bytecode
         Hex.decodeHex(              //converts value from hex to string
@@ -100,6 +103,9 @@ case class EthereumContract(
     * The approach is similar to getTokenName function: we must find some instruction in bytecode that loads in memory a string.
     * The candidate opcode is PUSH32, 7f in Ethereum VM bytecode. The sequence from the PUSH32's load name contains the symbol of the token.
     *
+    * The string "8152602001" is a sequence of instructions described by a couple of four number in hexadecimal:
+    * the first one identifies opcode, the second one the value. This sequence preceded by 7f determines a string load
+    * "81525081" are instruction of string load succeed
     *
     * @return token's symbol
     *
@@ -111,7 +117,7 @@ case class EthereumContract(
 
   def getTokenSymbol(): String = {
 
-    try { //we don't know if someone wrote symbol in code
+    try { //we don't know if someone wrote symbol in contract code
 
       val temp = StringUtils.substringAfter(bytecode, "81526020017f")   //check every bytecode from token name load in memory, if exists
 
@@ -119,12 +125,6 @@ case class EthereumContract(
         Hex.decodeHex(
           StringUtils.substringBetween(temp, "81526020017f", "81525081").toCharArray
         ), "UTF-8")
-
-      if (symbol == "address,bytes)"){  //prevents errors during parsing variables
-        "Unknown"
-      } else {
-        symbol
-      }
 
     } catch {
       case np : NullPointerException => "Unknown" //this happen when there's no name in bytecode
@@ -140,6 +140,9 @@ case class EthereumContract(
     * The idea is simple: in bytecode some uint8 load in memory. The challenge was find the uint8 (or PUSH1 instruction) that describes
     * token divisibility. The occurrence that found it was described in val pattern
     *
+    * 60 is the hexadecimal opcode for PUSH1; the previous sequence identifies a token divisibility load in memory
+    * Only token divisibility load in memory value is succeed by instruction "8156"
+    *
     * @return token's divisibility
     *
     * @author Chessa Stefano Raimondo
@@ -150,12 +153,12 @@ case class EthereumContract(
 
   def getTokenDivisibility(): String = {
 
-    val pattern = new Regex("565b60([0-9]|[a-f])([0-9]|[a-f])8156") //catch any value. The most used is 18, but uint8 load until 255
+    val pattern = new Regex("565b60([0-9]|[a-f])([0-9]|[a-f])8156") //catch any value until 255. The most used is 18
 
     val stringa = StringUtils.substringBetween((pattern findAllIn bytecode).mkString(",")
         , "565b60", "8156")   //get the value from store in VM
 
-    if (stringa == null){   //no token divisibility found? It happens
+    if (stringa == null){   //no token divisibility found?
 
       "Unknown"
 
