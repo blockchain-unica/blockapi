@@ -69,6 +69,7 @@ case class EthereumContract(
     * "81525081" are instruction of string load succeed
     *
     * @return token's name
+    *
     * @author Chessa Stefano Raimondo
     * @author Guria Marco
     * @author Manai Alessio
@@ -125,6 +126,8 @@ case class EthereumContract(
         Hex.decodeHex(
           StringUtils.substringBetween(temp, "81526020017f", "81525081").toCharArray
         ), "UTF-8")
+
+      symbol
 
     } catch {
       case np : NullPointerException => "Unknown" //this happen when there's no name in bytecode
