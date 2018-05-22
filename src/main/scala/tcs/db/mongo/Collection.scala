@@ -4,7 +4,7 @@ package tcs.mongo
 import com.mongodb.{MongoClient, MongoClientURI}
 import org.mongodb.scala.bson._
 import tcs.db.DatabaseSettings
-import tcs.utils.BsonConverter
+import tcs.utils.converter.BsonConverter
 
 /**
   * Created by stefano on 2/05/18.

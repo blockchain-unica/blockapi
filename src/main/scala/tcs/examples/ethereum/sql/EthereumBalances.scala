@@ -6,7 +6,7 @@ import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, PostgreSQL}
 import scalikejdbc._
 import tcs.blockchain.ethereum.EthereumSettings
-import tcs.custom.ethereum.PriceHistorical
+import tcs.externaldata.rates.EthereumRates
 
 object EthereumBalances {
     def main(args: Array[String]): Unit = {
@@ -32,7 +32,7 @@ object EthereumBalances {
                 println(block.height + ") n transactions inside: " + block.txs.length)
 
             block.txs.foreach(transaction => {
-                val rateInTransactionDate = PriceHistorical.getRate(transaction.date)
+                val rateInTransactionDate = EthereumRates.getRate(transaction.date)
 //                println(transaction.date + " - " + rateInTransactionDate)
                 val dollars = transaction.value.toDouble / weiInEth * rateInTransactionDate
 

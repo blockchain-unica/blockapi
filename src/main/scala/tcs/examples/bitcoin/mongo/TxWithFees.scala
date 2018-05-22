@@ -2,10 +2,10 @@ package tcs.examples.bitcoin.mongo
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.custom.bitcoin.Exchange
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
-import tcs.utils.DateConverter
+import tcs.utils.converter.DateConverter
+import tcs.externaldata.rates.BitcoinRates
 
 /**
   * Created by Livio on 16/06/2017.
@@ -28,7 +28,7 @@ object TxWithFees {
           ("txHash", tx.hash),
           ("date", block.date),
           ("fee", tx.getInputsSum() - tx.getOutputsSum()),
-          ("rate", Exchange.getRate(block.date))
+          ("rate", BitcoinRates.getRate(block.date))
         ))
       })
     })

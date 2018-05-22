@@ -7,7 +7,7 @@ import com.googlecode.jsonrpc4j.HttpException
 import org.bitcoinj.core._
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 import tcs.blockchain.Blockchain
-import tcs.utils.ConvertUtils
+import tcs.utils.converter.ConvertUtils
 
 import scala.collection.mutable
 import scala.collection.JavaConversions._

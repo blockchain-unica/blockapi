@@ -3,10 +3,10 @@ package tcs.examples.bitcoin.mongo
 import org.bitcoinj.script.Script.ScriptType
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.custom.bitcoin.Exchange
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
-import tcs.utils.DateConverter
+import tcs.utils.converter.DateConverter
+import tcs.externaldata.rates.BitcoinRates
 
 object TxWithUTXO {
   def main(args: Array[String]): Unit = {

@@ -2,9 +2,9 @@ package tcs.examples.bitcoin.mongo
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.custom.bitcoin.metadata.MetadataParser
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
+import tcs.externaldata.metadata.MetadataParser
 
 /**
   * Created by Livio on 14/06/2017.

@@ -3,10 +3,10 @@ package tcs.examples.bitcoin.sql
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.custom.bitcoin.Exchange
 import tcs.db.{DatabaseSettings, MySQL}
 import tcs.db.sql.Table
-import tcs.utils.DateConverter
+import tcs.utils.converter.DateConverter
+import tcs.externaldata.rates.BitcoinRates
 
 import scala.collection.mutable
 import scala.collection.mutable.Map
@@ -65,7 +65,7 @@ object BitcoinBalances
       // - Updating the map for each transaction
       block.txs.foreach(tx => {
         // - Get conversion rate using date of transaction
-        val conversionRate = Exchange.getRate(tx.date)
+        val conversionRate = BitcoinRates.getRate(tx.date)
 
         // - Updating the map for each input
         tx.inputs.foreach(in => {

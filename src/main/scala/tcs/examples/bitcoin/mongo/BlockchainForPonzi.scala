@@ -2,9 +2,9 @@ package tcs.examples.bitcoin.mongo
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.custom.bitcoin.Exchange
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
+import tcs.externaldata.rates.BitcoinRates
 
 object BlockchainForPonzi {
   def main(args: Array[String]): Unit = {
@@ -40,7 +40,7 @@ object BlockchainForPonzi {
           ,
           "blockheight" -> block.height
           ,
-          "rate" -> Exchange.getRate(block.date)
+          "rate" -> BitcoinRates.getRate(block.date)
         ))
 
       })
