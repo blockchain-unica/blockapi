@@ -47,6 +47,11 @@ case class EthereumContract(
     * source: https://ethereum.stackexchange.com/questions/38381/how-can-i-identify-that-transaction-is-erc20-token-creation-contract?answertab=oldest#tab-top
     *
     * @return true if the contract is ERC20 compliant, false otherwise
+    *
+    * @author Chessa Stefano Raimondo
+    * @author Guria Marco
+    * @author Manai Alessio
+    * @author Speroni Alessio
     */
 
   def isERC20Compliant(): Boolean = {
