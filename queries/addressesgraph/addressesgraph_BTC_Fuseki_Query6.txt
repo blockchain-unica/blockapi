@@ -1,4 +1,4 @@
-#To which addresses, an address have been sent bitcoins
+#To which addresses, an address have been sent bitcoin
 PREFIX prop: <http://blockchain/properties#>
 SELECT ?address ?value	?address2
 WHERE {

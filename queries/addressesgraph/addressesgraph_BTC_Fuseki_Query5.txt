@@ -1,4 +1,4 @@
-#From which addresses and how many bitcoins have been sent to an address
+#From which addresses and how many bitcoin have been sent to an address
 PREFIX prop: <http://blockchain/properties#>
 SELECT DISTINCT ?address2 ?txHash ?value	?address
 WHERE {
