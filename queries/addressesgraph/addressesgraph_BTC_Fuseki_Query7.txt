@@ -1,0 +1,19 @@
+#More addresses that sent bitcoin in the same transactions
+PREFIX prop: <http://blockchain/properties#>
+SELECT ?address	?txHash
+WHERE {
+		?addr	prop:sentTo	?tx;
+        		prop:addressProp	?address.
+  		?tx 	prop:tx_info	?tx_info.
+  		?tx_info	prop:txHash	?txHash
+  {
+    SELECT ?txHash
+	WHERE {
+    	?addr	prop:sentTo	?tx.
+  		?tx 	prop:tx_info	?tx_info.
+  		?tx_info	prop:txHash	?txHash
+    }
+    GROUP BY ?txHash
+    HAVING (count (DISTINCT ?addr) > 1)
+  }
+}

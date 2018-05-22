@@ -2,9 +2,9 @@ package tcs.examples.ethereum.mongo
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.ethereum.EthereumSettings
-import tcs.custom.ethereum.PriceHistorical
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
+import tcs.externaldata.rates.EthereumRates
 
 object TxWithRates {
   def main(args: Array[String]): Unit = {
@@ -29,7 +29,7 @@ object TxWithRates {
           ("to", to),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
           ("creates", creates),
-          ("rate", PriceHistorical.getRate(block.date))
+          ("rate", EthereumRates.getRate(block.date))
         )
         txWithRates.append(list)
       })

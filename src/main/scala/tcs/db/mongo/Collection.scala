@@ -1,20 +1,24 @@
 package tcs.mongo
 
+
+import com.mongodb.{MongoClient, MongoClientURI}
 import org.mongodb.scala.bson._
-import org.mongodb.scala.{Completed, MongoClient, Observer}
 import tcs.db.DatabaseSettings
-import tcs.utils.BsonConverter
+import tcs.db.mongo.BsonConverter
 
 /**
-  * Created by stefano on 13/06/17.
+  * Created by stefano on 2/05/18.
   */
 class Collection(val name: String, val settings: DatabaseSettings) {
 
-  private val mongoClient: MongoClient =
+  private val connectionString =
     if (settings.user.eq(""))
-      MongoClient("mongodb://" + settings.host + ":" + settings.port)
+      new MongoClientURI("mongodb://" + settings.host + ":" + settings.port)
     else
-      MongoClient("mongodb://" + settings.user + ":" + settings.psw + "@" + settings.host + ":" + settings.port)
+      new MongoClientURI("mongodb://" + settings.user + ":" + settings.psw + "@" + settings.host + ":" + settings.port)
+
+  private val mongoClient = new MongoClient(connectionString)
+
 
   private val database = mongoClient.getDatabase(settings.database)
   private val collection = database.getCollection(name)
@@ -29,32 +33,21 @@ class Collection(val name: String, val settings: DatabaseSettings) {
         case _ => (a._1, a._2)
       }
     }).map(BsonConverter.convertPair).reduce(_ ++ _)
-    collection.insertOne(doc).subscribe(new Observer[Completed] {
 
-      override def onNext(result: Completed): Unit = {}
+    insert(doc)
 
-      override def onError(e: Throwable): Unit = {}
+  }
 
-      override def onComplete(): Unit = {}
-
-    })
-
-    val d = Document("redeemedTxHash" -> 1)
+  def insert(doc: Document): Unit = {
+    //collection.insertOne(doc, (result: Void, t: Throwable) => {})
+    collection.insertOne(doc)
   }
 
   def close = {
     mongoClient.close()
   }
 
-  def append(x : Document) = collection.insertOne(x).subscribe(new Observer[Completed] {
-
-    override def onNext(result: Completed): Unit = {}
-
-    override def onError(e: Throwable): Unit = {}
-
-    override def onComplete(): Unit = {}
-
-  })
+  def append(x: Document) = insert(x)
 }
 
 

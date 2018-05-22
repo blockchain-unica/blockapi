@@ -1,0 +1,13 @@
+# Bitcoin (satoshis) sent to an address
+PREFIX prop: <http://blockchain/properties#>
+SELECT ?address ?txHash ?value
+WHERE {
+  ?addr	prop:addressProp	?address;
+        prop:receivedBy		?tx2.
+  ?tx2	prop:value	?value;
+  		prop:tx_info	?tx_info.
+
+  ?tx_info	prop:txHash	?txHash
+
+  FILTER regex(?address, "14wvVvEQHkbnB4aAECddBgPuC4Q4qGQWh7")
+}

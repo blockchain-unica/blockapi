@@ -3,11 +3,11 @@ package tcs.examples.bitcoin.sql
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.custom.bitcoin.Exchange
 import tcs.db.{DatabaseSettings, MySQL}
 import tcs.db.sql.Table
-import tcs.utils.DateConverter
-import tcs.utils.DateConverter.convertDate
+import tcs.utils.converter.DateConverter.convertDate
+import tcs.utils.converter.DateConverter
+import tcs.externaldata.rates.BitcoinRates
 
 /**
   * Created by Stefano on 02/11/2017.
@@ -43,7 +43,7 @@ object TxWithRates {
           tx.hash.toString,
           convertDate(block.date),
           tx.getOutputsSum(),
-          Exchange.getRate(block.date)))
+          BitcoinRates.getRate(block.date)))
       })
     })
 

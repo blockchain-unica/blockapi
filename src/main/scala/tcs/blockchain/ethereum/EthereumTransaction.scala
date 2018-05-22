@@ -8,8 +8,8 @@ import org.web3j.protocol.core.{DefaultBlockParameterName, Request}
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
 import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, TransactionReceipt}
 import tcs.blockchain.Transaction
-import tcs.utils.HttpRequester
-import tcs.utils.Etherscan.getSourceCodeFromEtherscan
+import tcs.externaldata.contracts.Etherscan.getSourceCodeFromEtherscan
+import tcs.utils.httprequester.HttpRequester
 
 
 /**

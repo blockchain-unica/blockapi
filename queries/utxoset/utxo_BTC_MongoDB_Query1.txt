@@ -1,0 +1,10 @@
+db.txWithUTXO.aggregate( [ 
+	{ $group: { 
+		_id: { scriptType : "$scriptType", 
+			date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },  
+		},  
+		count: { $sum : 1 } } 
+	},
+	{ $out: "txWithUTXO_filt"}
+] )
+
