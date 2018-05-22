@@ -145,7 +145,7 @@ case class EthereumContract(
   /**
     * This method finds token divisibility in bytecode, if not returns "Unknown"
     *
-    * The idea is simple: in bytecode some uint8 load in memory. The challenge was find the uint8 (or PUSH1 instruction) that describes
+    * The idea is simple: in bytecode there are some uint8 load in memory. The challenge was find the uint8 (or PUSH1 instruction) that describes
     * token divisibility. The occurrence that found it was described in val pattern
     *
     * 60 is the hexadecimal opcode for PUSH1; the previous sequence identifies a token divisibility load in memory
