@@ -8,7 +8,6 @@ import org.web3j.protocol.core.methods.response.EthBlock.{Block, TransactionObje
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 import tcs.blockchain.{Block => TCSBLock}
 import tcs.utils.converter.DateConverter.getDateFromTimestamp
-import tcs.externaldata.miningpools
 import tcs.externaldata.miningpools.MiningPools
 
 import scala.collection.JavaConverters._
