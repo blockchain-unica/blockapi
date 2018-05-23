@@ -56,7 +56,7 @@ public interface BitcoindInterface {
 	//Returns an object about the given transaction hash.
 	public Transaction gettransaction(String hash);
 	//Returns a raw transaction given its transaction hash
-	public String getrawtransaction(String hash);
+	public Object getrawtransaction(String hash, int verbose);
 	//Returns a decoded transaction given its transaction hex string
 	public Transaction decoderawtransaction(String rawTransaction);
 	//Returns Object that has account names as keys, account balances as values.

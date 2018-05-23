@@ -1,0 +1,9 @@
+# Number of coinbase txs, with their depth
+
+PREFIX prop: <http://blockchain/properties#>
+SELECT ?s ?txHash ?depth
+WHERE {
+	?s	prop:txHash ?txHash;
+	prop:depth ?depth
+ 	FILTER regex(?txHash, 'coinbase')
+}

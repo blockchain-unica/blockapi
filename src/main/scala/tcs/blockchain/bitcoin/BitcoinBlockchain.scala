@@ -1,6 +1,8 @@
 package tcs.blockchain.bitcoin
 
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 import com._37coins.bcJsonRpc.{BitcoindClientFactory, BitcoindInterface}
 import com.googlecode.jsonrpc4j.HttpException
@@ -128,13 +130,18 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
     * @param hash Hash of the transaction
     * @return BitcoinTransaction representation of the transaction
     */
-
   def getTransaction(hash: String) : BitcoinTransaction= {
-    var hex = client.getrawtransaction(hash)
+    var hex = client.getrawtransaction(hash, 0)
     val bitcoinSerializer = new BitcoinSerializer(networkParameters, true)
-    val jTx = bitcoinSerializer.makeTransaction(ConvertUtils.hexToBytes(hex))
+    val jTx = bitcoinSerializer.makeTransaction(ConvertUtils.hexToBytes(hex.toString))
 
-    BitcoinTransaction.factory(jTx)
+    var json = client.getrawtransaction(hash, 1)
+    var map = json.asInstanceOf[java.util.LinkedHashMap[String, Object]]
+
+    var date = new java.util.Date(map.get("blocktime").asInstanceOf[Integer] * 1000l)
+
+
+    BitcoinTransaction.factory(jTx, date)
   }
 
   /**
@@ -154,7 +161,6 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
     results.toList
   }
-
 
   /**
     * Sets the last block of the blockchain to visit.
@@ -181,5 +187,4 @@ class BitcoinBlockchain(settings: BitcoinSettings) extends Traversable[BitcoinBl
 
     return UTXOmap.keySet.map(couple => (couple._1.toString, couple._2))
   }
-
 }

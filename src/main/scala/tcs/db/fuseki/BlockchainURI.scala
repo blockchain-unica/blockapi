@@ -8,6 +8,7 @@ object BlockchainURI{
 
   val BLOCK = "http://blockchain/block/"
   val TX = "http://blockchain/tx/"
+  val TX_INFO = "http://blockchain/tx_info/"
   val IN = "http://blockchain/in/"
   val OUT = "http://blockchain/out/"
   val TX_REL = "http://blockchain/tx_rel/"
@@ -22,6 +23,7 @@ object BlockchainURI{
 
   //tx
   val TXHASH = ResourceFactory.createProperty(properties + "txHash")
+  val TXDATE = ResourceFactory.createProperty(properties + "date")
   val TXSIZE = ResourceFactory.createProperty(properties + "txSize")
   val INPUTS = ResourceFactory.createProperty(properties + "inputs")
   val OUTPUTS = ResourceFactory.createProperty(properties + "outputs")
@@ -33,8 +35,11 @@ object BlockchainURI{
   val ISOUTOF = ResourceFactory.createProperty(properties + "isOutOf")
   val IN_PROP = ResourceFactory.createProperty(properties + "in")
   val OUT_PROP = ResourceFactory.createProperty(properties + "out")
-  val TX_PROP = ResourceFactory.createProperty(properties + "tx")
+  val TX_PROP = ResourceFactory.createProperty(properties + "tx_info")
   val ISINOF = ResourceFactory.createProperty(properties + "isInOf")
+  val SENTTO = ResourceFactory.createProperty(properties + "sentTo")
+  val BACKADDR = ResourceFactory.createProperty(properties + "backAddr")
+  val FORWARDADDR = ResourceFactory.createProperty(properties + "forwardAddr")
 
   //input
   val REDEEMEDTXHASH = ResourceFactory.createProperty(properties + "redeemedTxHash")
@@ -51,11 +56,12 @@ object BlockchainURI{
   val TRANSOUT = ResourceFactory.createProperty(properties + "transOut")
   val OUTSCRIPT = ResourceFactory.createProperty(properties + "outScript")
   val OUTADDRESS = ResourceFactory.createProperty(properties + "address")
+  val ISOPRETURN = ResourceFactory.createProperty(properties + "isOpReturn")
+
 
   //address
   val SENTBY = ResourceFactory.createProperty(properties + "sentBy")
   val RECEIVEDBY = ResourceFactory.createProperty(properties + "receivedBy")
   val ADDRESSPROP = ResourceFactory.createProperty(properties + "addressProp")
   val OUTINFO = ResourceFactory.createProperty(properties + "outInfo")
-
 }

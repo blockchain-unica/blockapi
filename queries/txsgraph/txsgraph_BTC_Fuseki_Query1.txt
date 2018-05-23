@@ -1,0 +1,9 @@
+# Is TX1 descending from TX2?
+# TX2 is the root graph
+
+PREFIX prop: <http://blockchain/properties#>
+SELECT ?txHash
+WHERE {
+	?s	prop:txHash	?txHash.
+ 	FILTER regex(?txHash, 'bfe40dd3f09d2094b2ba9f35f41bb80995700b9a0ad29f92b0d9df80f8268d27')
+}

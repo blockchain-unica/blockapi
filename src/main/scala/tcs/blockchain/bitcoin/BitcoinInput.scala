@@ -29,7 +29,6 @@ class BitcoinInput(
                     val outPoint: TransactionOutPoint
                   ) {
 
-
   /**
     * String representation of a BitcoinInput.
     *
@@ -176,7 +175,6 @@ object BitcoinInput {
       input.getOutpoint
     )
   }
-
 
   /**
     * Factory for [[tcs.blockchain.bitcoin.BitcoinInput]] instances.
