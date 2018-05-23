@@ -26,6 +26,16 @@ object EthereumERC20Info {
   val database: MongoDatabase = mongoClient.getDatabase("EthereumTokens")
   val collection: MongoCollection[Document] = database.getCollection("EthereumTokens")
 
+  /**
+    * prendere i dati dal database
+    * creare hash con chiave id e value contractAddress
+    * scorro la blockchain e per ogni transazione
+    * if tx.to || tx.from isContained in hashset
+    * aggiorna il valore nella struttura
+    * salva solo alla fine nel db
+    * */
+
+
   def main(args: Array[String]): Unit = {
 
     blockchain.start(2100000).end(2355000).foreach(block => {
