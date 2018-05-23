@@ -18,6 +18,7 @@ More material is available in the [project page](http://blockchain.unica.it/proj
 The Scaladoc is uploaded on this repository in the [doc folder](https://github.com/bitbart/blockchain-analytics-api/tree/master/docs).
 
 ### Install prerequisites
+#### General prerequisites
 Prerequisites depends on the target analyses.
 Generally speaking the framework needs at least one blockchain client and one DBMS.
 
@@ -28,9 +29,14 @@ Generally speaking the framework needs at least one blockchain client and one DB
     * [MongoDB](https://www.mongodb.com/what-is-mongodb) (constructs a NoSQL view of the data)
     * [MySQL](https://www.mysql.com/) (constructs a SQL view of the data)
     * [PostgreSQL](https://www.postgresql.org/) (constructs a SQL view of the data)
+    * [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/index.html) (constructs a RDF view of the data)
 3. Either
     * use an IDE for executing a Scala SBT project (we used [IntelliJ IDEA](https://www.jetbrains.com/idea/)) or
     * use the command line in place of an IDE (Install [SBT](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html))
+
+
+#### Bitcoin prerequisites - Segwit 
+This instructions are needed only for performing analyses on Bitcoin. 
 
 Before building the project, execute the following commands:
 
@@ -42,7 +48,9 @@ mvn install -DskipTests
 cd core
 mvn install -DskipTests
 ```
-### ICO Analytics
+#### Ethereum prerequisites - ICO Analytics
+This instructions are needed only for performing analyses on Ethereum.
+
 In order to use the `ICO` class (created to retrieve ICOs data) you must require the respective API keys:
 1. [EtherScan](https://etherscan.io) 
     * It is sufficient to sign up and then go [here](https://etherscan.io/myapikey)
@@ -97,6 +105,6 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Carlo Cabras](https://www.linkedin.com/in/carlocabras21/), [Federico Maria Cau](https://www.linkedin.com/in/federico-maria-cau-9178b114a/), [Mattia Samuel Mancosu](https://www.linkedin.com/in/mattia-samuel-mancosu/) - Balances of Ethereum addresses
    * [Andrea Demontis](https://github.com/AndreaDemontis), [Stefano Dessì](https://github.com/StefanoDessi) - Balances of Bitcoin addresses
    * [Federica Gerina](https://www.linkedin.com/in/federica-gerina-961765132/), [Silvia Maria Massa](https://www.linkedin.com/in/silvia-maria-massa-2072a6163/), [Francesca Moi](https://www.linkedin.com/in/francesca-moi-3582b9164/) - State of the DAPPS
-   * [Giuseppina Lai](https://github.com/giusylai), [Federica Muceli](), [Federico Spiga]() - UTXO set
+   * [Giuseppina Lai](https://www.linkedin.com/in/giusy-lai-ba8175b1/), [Federica Muceli](), [Federico Spiga]() - UTXO set
 
      
