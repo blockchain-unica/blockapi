@@ -29,7 +29,7 @@ object CrossValidation {
       blockchain.start(startBlock).end(endBlock).foreach(block => {
         currentBlockId = block.height.longValue()
 
-        if (currentBlockId % 100 == 0) {
+        if (currentBlockId % 1000 == 0) {
           println("Current block -> " + currentBlockId)
         }
 
@@ -66,7 +66,7 @@ object CrossValidation {
           Etherscan.getBlock(("0x" + currentBlockId.toHexString))
         ).getOrElse(None)
 
-        if (currentBlockId % 100 == 0) {
+        if (currentBlockId % 1000 == 0) {
           println("Current block -> " + currentBlockId)
         }
 

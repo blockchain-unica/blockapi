@@ -1,20 +1,22 @@
-I test effettuati (inizialmente su poche centinaia di blocchi sino ad arrivare ad un range di 50k blocchi ed oltre
-600k transazioni) hanno evidenziato che non ci sono differenze tra le collection ethValidation1 ed ethValidation2
-create dallo script a partire dalla blockchain locale e interrogando le API di Etherscan rispettivamente.
+I test sono stati effettuati su un range fra le poche centinaia di blocchi sino a 50 mila blocchi (per un totale
+di oltre 600 mila transazioni). Non sono state riscontrate differenze fra le collection derivate tramite tool
+ed Etherscan.
 
-Occorre precisare che prima di eseguire le query e' opportuno aggiungere un index alla collection ethValidation2
-sul field txHash avendo cura di impostare il vincolo di unicita'.
-Questo velocizza notevolmente l'esecuzione delle query e permette di sincronizzare successivamente le transazioni
-mancanti avendo certezza che non ve ne siano duplicate.
+In presenza di problemi di connessione e/o timeout da parte delle richieste alle API di Etherscan,
+è possibile che alcuni blocchi non vengano restituiti: per arginare il problema si è pensato di ripetere le
+richieste sino ad un massimo di 5 volte.
+Gli id dei blocchi che non sono stati recuperati sono comunque segnalati in tempo reale: in questo modo
+è possibile rieseguire lo script solamente sui blocchi mancanti.
+E' necessario provvedere ad integrare tutti i blocchi mancanti prima di effettuare la Cross-Validazione sulle
+collection.
 
-E' stato anche necessario aumentare il timeout delle query per dare al client il tempo sufficiente a concludere
-in presenza di range consistenti di blocchi.
+Contestualmente alla creazione delle collection è consigliabile la creazione di un indice sull'identificatore
+delle transazioni (campo txHash), per rendere le ricerche più rapide.
+In caso di più esecuzioni dello script su range parzialmente sovrapposti, è necessario contrassegnare il campo txHash
+come chiave unica in modo da eliminare i duplicati:
+db.getCollection('ethValidation1').ensureIndex({'txHash' : 1}, {unique : true, dropDups : true})
+db.getCollection('ethValidation2').ensureIndex({'txHash' : 1}, {unique : true, dropDups : true})
+E' necessario inoltre aumentare il timeout delle query in caso di collection con un gran numero di transazioni.
 
-Durante i test, occasionalmente sono stati riscontrati errori di timeout nell'uso delle API di Etherscan.
-Quando ciò accade, le transazioni dei blocchi coinvolti non vengono aggiunte alla collection ethValidation2
-determinando una differenza.
-
-Tale problema può essere gestito analizzando i log di esecuzione e recuperando dagli stessi il numero ID dei blocchi coinvolti.
-Tali blocchi possono essere riprocessati tramite uno script che aggiunga alla collection le transazioni mancanti.
-
-Nelle nostre prove, a tale scopo, e' stata utilizzata una versione modificata dello script consegnato.
+Nelle query le differenze computate sono inserite in una nuova collection, che può essere eventualmente stampata per
+effettuare il debug.

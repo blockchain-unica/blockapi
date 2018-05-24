@@ -1,3 +1,4 @@
+/* Cross-validate hasContract value for each transaction */
 
 var differencesCount = 0;
 db.ethValidation1.find().forEach(function(doc1){

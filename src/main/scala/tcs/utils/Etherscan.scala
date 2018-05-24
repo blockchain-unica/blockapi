@@ -43,12 +43,13 @@ package object Etherscan {
 
   /**
     * @param blockAddress the block address
+    * @param retry number of attempt already done
     * @return map describing block fields
     */
   def getBlock(blockAddress: String, retry: Int = 0): util.Map[String,Any] = {
     waitForRequest()
     try {
-      //The json parser fails when it finds an empty array, so it is replaced by "Empty"
+      //The json parser fails when it finds an empty array, so it is replaced by the string "Empty"
       val content = HttpRequester.get("https://api.etherscan.io/api?module=proxy&action=eth_getBlockByNumber&tag=" +
         blockAddress +"&boolean=true&apikey==" + apiKey).replaceAll("\\Q[]\\E","\"Empty\"")
 
@@ -98,6 +99,11 @@ package object Etherscan {
     }
   }
 
+  /**
+    * @param transactionAddress the transaction address
+    * @param retry number of attempt already done
+    * @return true if transaction has contract
+    */
   def transactionHasContract(transactionAddress: String, retry: Int = 0): Boolean = {
     waitForRequest()
     try {
@@ -129,8 +135,8 @@ package object Etherscan {
     }
   }
 
+  //Busy waiting to not exceed api rate limit (5 request/sec)
   def waitForRequest() = {
-    // wait for some time - needed to not exceed api rate limit of 5 requests/sec
     Thread.sleep(200)
   }
 }
