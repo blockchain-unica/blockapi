@@ -10,10 +10,10 @@ Gli id dei blocchi che non sono stati recuperati sono comunque segnalati in temp
 E' necessario provvedere ad integrare tutti i blocchi mancanti prima di effettuare la Cross-Validazione sulle
 collection.
 
-Contestualmente alla creazione delle collection è consigliabile la creazione di un indice sull'identificatore
-delle transazioni (campo txHash), per rendere le ricerche più rapide.
-In caso di più esecuzioni dello script su range parzialmente sovrapposti, è necessario contrassegnare il campo txHash
-come chiave unica in modo da eliminare i duplicati:
+Prima di eseguire le query è consigliabile la creazione di un indice sull'identificatore delle transazioni
+(campo txHash), per rendere le ricerche più rapide.
+In caso di più esecuzioni dello script su range parzialmente sovrapposti, è necessario contrassegnare il campo
+txHash come chiave unica in modo da eliminare i duplicati:
 db.getCollection('ethValidation1').ensureIndex({'txHash' : 1}, {unique : true, dropDups : true})
 db.getCollection('ethValidation2').ensureIndex({'txHash' : 1}, {unique : true, dropDups : true})
 E' necessario inoltre aumentare il timeout delle query in caso di collection con un gran numero di transazioni.
