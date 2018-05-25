@@ -9,9 +9,7 @@ import tcs.externaldata.rates.LitecoinRates
 import tcs.utils.converter.DateConverter
 import tcs.utils.converter.DateConverter.convertDate
 
-/**
-  * Created by Stefano on 02/11/2017.
-  */
+
 object TxWithRatesLite {
   def main(args: Array[String]): Unit = {
 
@@ -23,14 +21,14 @@ object TxWithRatesLite {
 
     val txTable = new Table(
       sql"""
-      create table if not exists txrates(
+      create table if not exists txrateslite(
         id serial not null primary key,
         txHash varchar(256) not null,
         txdate TIMESTAMP not null,
         outputsum bigint,
         rate float
     )""",
-      sql"""insert into txrates (txHash, txdate, outputsum, rate) values(?,?,?,?)""",
+      sql"""insert into txrateslite (txHash, txdate, outputsum, rate) values(?,?,?,?)""",
       mySQL)
 
 
