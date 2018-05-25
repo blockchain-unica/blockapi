@@ -13,7 +13,7 @@ import org.mongodb.scala.model.Updates._
 
 
 
-/** For each contract, this script adds to database:
+/** For each contract, if exists, this script adds to database:
   * - balance
   * - number of transaction in
   * - number of transaction out
@@ -32,125 +32,125 @@ object EthereumERC20Info {
   val database: MongoDatabase = mongoClient.getDatabase("EthereumTokens")
   val collection: MongoCollection[Document] = database.getCollection("EthereumTokens")
 
-  /**
-    * prendere i dati dal database
-    * creare hashset contenenti i contractAddress
-    * scorro la blockchain e per ogni transazione
-    * if tx.to || tx.from isContained in hashset
-    * aggiorna il valore nella struttura
-    * salva solo alla fine nel db
-    * */
-
 
   def main(args: Array[String]): Unit = {
 
     var addressSet : HashSet[String] = HashSet()
 
-      for(x <- collection.find().projection(fields(include("contractAddress"), excludeId())).results()){
-      addressSet += StringUtils.substringBetween(x.toString(), "value='","'}))")
-    }
-      println(addressSet.size)
-      blockchain.start(2101639).end(2101647).foreach(block => {
+    /**it moves contract from collection to hashset*/
+    for(x <- collection.find().projection(
+      fields(include("contractAddress"), excludeId())).results()){
+        addressSet += StringUtils.substringBetween(x.toString(), "value='","'}))")
+      }
 
-        if(block.height%100 == 0){
-          println("Current Block " + block.height)
+    println(addressSet.size)
+
+    blockchain.start(2101639).end(2101647).foreach(block => {
+
+      if(block.height%100 == 0){
+        println("Current Block " + block.height)
+      }
+
+      /** for each transaction, check if exist an input or output transaction on a contract
+        * if exist, it updates balance and transactions into db
+        */
+
+      block.txs.foreach(tx => {
+
+        if (addressSet.contains(tx.to)){
+          incInputTransaction(tx)
         }
 
-        /**controllo le transazioni esterne**/
-        block.txs.foreach(tx => {
-
-          if (addressSet.contains(tx.to)){
-            incInputTransaction(tx)
-          }
-
-          if (addressSet.contains(tx.from)){
-            incOutputTransaction(tx)
-          }
-
-        })
-
-        /**controllo le transazioni interne**/
-        if (block.internalTransactions.nonEmpty){
-
-          block.internalTransactions.foreach(itx => {
-
-            if (addressSet.contains(itx.to)){
-              incInputInternalTransaction(itx)
-            }
-
-            if (addressSet.contains(itx.from)){
-              incOutputInternalTransaction(itx)
-            }
-
-          })
-
-        } else {
-          println("No internal transaction")  //testing code
+        if (addressSet.contains(tx.from)){
+          incOutputTransaction(tx)
         }
 
       })
 
-    }
+      /** for each internal transaction, check if exist an input or output transaction on a contract
+        * if exist, it updates balance and transactions into db
+        */
 
-    def incInputTransaction (tx : EthereumTransaction) : Unit = {
-      incTxIn(tx.to, tx.value)
-    }
+      if (block.internalTransactions.nonEmpty){
 
-    def incOutputTransaction (tx : EthereumTransaction) : Unit = {
-      incTxOut(tx.from, tx.value)
-    }
+        block.internalTransactions.foreach(itx => {
 
-    def incInputInternalTransaction (itx : EthereumInternalTransaction) : Unit = {
-      incTxIn(itx.to, itx.value)
-    }
+          if (addressSet.contains(itx.to)){
+            incInputInternalTransaction(itx)
+          }
 
-    def incOutputInternalTransaction (itx : EthereumInternalTransaction) : Unit = {
-      incTxOut(itx.from, itx.value)
-    }
+          if (addressSet.contains(itx.from)){
+            incOutputInternalTransaction(itx)
+          }
 
-    /**
-      * This function increments a number of input transaction receive from a contract
-      * @param address is the address of contract
-      */
-    def incTxIn (address :String, value :BigInt) : Unit ={
-
-      if(collection.find(and(equal("contractAddress", address), exists("txIn"))).results().nonEmpty)
-      {
-        collection.findOneAndUpdate(and(equal("contractAddress", address), exists("txIn")),inc("txIn",1)).results()
-
-      }else{
-        collection.findOneAndUpdate(equal("contractAddress", address), set("txIn",1)).results()
+        })
 
       }
-      //Incremento il bilancio. Fare la conversione perchè mongo da eccezione con i bigint
-      if(collection.find(and(equal("contractAddress", address), exists("balance"))).results().nonEmpty)
-      {
-        collection.findOneAndUpdate(and(equal("contractAddress", address), exists("balance")), inc("balance", value.toFloat)).results()
 
-      }else{
-        collection.findOneAndUpdate(equal("contractAddress", address), set("balance", value.toFloat)).results()
-      }
+    })
+
+  }
+
+  def incInputTransaction (tx : EthereumTransaction) : Unit = {
+    incTxIn(tx.to, tx.value)
+  }
+
+  def incOutputTransaction (tx : EthereumTransaction) : Unit = {
+    incTxOut(tx.from, tx.value)
+  }
+
+  def incInputInternalTransaction (itx : EthereumInternalTransaction) : Unit = {
+    incTxIn(itx.to, itx.value)
+  }
+
+  def incOutputInternalTransaction (itx : EthereumInternalTransaction) : Unit = {
+    incTxOut(itx.from, itx.value)
+  }
+
+  /**
+    * This function increments a number of input transaction receive from a contract
+    * @param address is the address of contract
+    */
+  def incTxIn (address :String, value :BigInt) : Unit ={
+
+    if(collection.find(and(equal("contractAddress", address), exists("txIn"))).results().nonEmpty) {
+
+      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("txIn")),inc("txIn",1)).results()
+
+    } else {
+
+      collection.findOneAndUpdate(equal("contractAddress", address), set("txIn",1)).results()
+
     }
 
-    /**
-      * This function increment the number of withdrawals from a contract
-      * @param address
-      */
-    def incTxOut (address :String, value : BigInt) : Unit = {
+    if(collection.find(and(equal("contractAddress", address), exists("balance"))).results().nonEmpty)
+    {
+      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("balance")), inc("balance", value.toFloat)).results()
 
-      if(collection.find(and(equal("contractAddress", address), exists("txOut"))).results().nonEmpty)
-      {
-        collection.findOneAndUpdate(and(equal("contractAddress", address), exists("txOut")),inc("txOut",1)).results()
+    }else{
+      collection.findOneAndUpdate(equal("contractAddress", address), set("balance", value.toFloat)).results()
+    }
+  }
 
-      }else{
-        collection.findOneAndUpdate(equal("contractAddress", address), set("txOut",1)).results()
+  /**
+    * This function increment the number of withdrawals from a contract
+    * @param address
+    */
+  def incTxOut (address :String, value : BigInt) : Unit = {
 
-      }
-      //decremento il bilancio
-      if(collection.find(and(equal("contractAddress", address), exists("balance"))).results().nonEmpty) {
-        collection.findOneAndUpdate(and(equal("contractAddress", address), exists("balance")), inc("balance", - value.toFloat)).results()
-      }
+    if(collection.find(and(equal("contractAddress", address), exists("txOut"))).results().nonEmpty)
+    {
+      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("txOut")),inc("txOut",1)).results()
 
-   }
+    }else{
+      collection.findOneAndUpdate(equal("contractAddress", address), set("txOut",1)).results()
+    }
+
+    //balance decrement
+    if(collection.find(and(equal("contractAddress", address), exists("balance"))).results().nonEmpty) {
+      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("balance")), inc("balance", - value.toFloat)).results()
+    }
+
+ }
 
 }
