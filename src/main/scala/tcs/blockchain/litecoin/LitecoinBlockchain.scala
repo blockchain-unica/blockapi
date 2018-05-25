@@ -10,6 +10,7 @@ import tcs.blockchain.Blockchain
 import tcs.utils.converter.ConvertUtils
 
 import scala.collection.mutable
+import scala.collection.JavaConversions._
 
 /**
   * Defines a Litecoin blockchain given the Litecoin Core settings.
@@ -125,15 +126,20 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     * Returns a transaction given its hash
     *
     * @param hash Hash of the transaction
-    * @return BitcoinTransaction representation of the transaction
+    * @return LitecoinTransaction representation of the transaction
     */
-
   def getTransaction(hash: String) : LitecoinTransaction= {
-    var hex = client.getrawtransaction(hash)
+    var hex = client.getrawtransaction(hash, 0)
     val litecoinSerializer = new BitcoinSerializer(networkParameters, true)
-    val jTx = litecoinSerializer.makeTransaction(ConvertUtils.hexToBytes(hex))
+    val jTx = litecoinSerializer.makeTransaction(ConvertUtils.hexToBytes(hex.toString))
 
-    LitecoinTransaction.factory(jTx)
+    var json = client.getrawtransaction(hash, 1)
+    var map = json.asInstanceOf[java.util.LinkedHashMap[String, Object]]
+
+    var date = new java.util.Date(map.get("blocktime").asInstanceOf[Integer] * 1000l)
+
+
+    LitecoinTransaction.factory(jTx, date)
   }
 
   /**
@@ -148,6 +154,12 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     return this
   }
 
+  def getMemPool(): List[String] ={
+    val results = client.getrawmempool()
+
+    results.toList
+  }
+
   /**
     * Sets the last block of the blockchain to visit.
     *
@@ -159,4 +171,18 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     return this
   }
 
+
+  /**
+    * Returns an UTXO set until block with given height.
+    *
+    * @param blockHeight
+    * @return
+    */
+  def getUTXOSetAt(blockHeight: Long): collection.Set[(String, Long)] = {
+    val block = getBlock(blockHeight, UTXOmap)
+
+    this.end(blockHeight).foreach(block => {})
+
+    return UTXOmap.keySet.map(couple => (couple._1.toString, couple._2))
+  }
 }

@@ -55,7 +55,7 @@ public interface LitecoindInterface {
 	//Returns an object about the given transaction hash.
     Transaction gettransaction(String hash);
 	//Returns a raw transaction given its transaction hash
-    String getrawtransaction(String hash);
+    String getrawtransaction(String hash, int verbose);
 	//Returns a decoded transaction given its transaction hex string
     Transaction decoderawtransaction(String rawTransaction);
 	//Returns Object that has account names as keys, account balances as values.
