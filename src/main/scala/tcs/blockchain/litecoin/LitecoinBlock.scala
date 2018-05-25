@@ -4,6 +4,7 @@ import java.util.Date
 
 import org.litecoinj.core.{Block, Sha256Hash}
 import tcs.blockchain.{Block => TCSBlock}
+import tcs.externaldata.miningpools.MiningPools
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -36,43 +37,17 @@ class LitecoinBlock(
     val stringTransactions: String = "[ " + txs.map(tx => tx.toString() + " ") + "]"
     return hash + " " + date + " " + size + " " + height + " " + stringTransactions
   }
-  //TODO: inserire i mining pools per litecoin
-  //https://bitmakler.net/mining_Litecoin-LTC__pools
-  //
 
-  override def getMiningPool(): String ={
-    val firstTransaction: LitecoinTransaction = txs.head
-    var pool: String = "Unknown"
-    //first implementation based on bitcoin
-    if(firstTransaction.inputs.head.isCoinbase) {
-      val programByte: Array[Byte] = firstTransaction.inputs.head.inScript.getProgram()
-      if(programByte != null) {
-        val hex: String = programByte.map("%02x".format(_)).mkString
-        if(hex != "") {
-          pool = getPoolByHexCode(hex)
-        }
-      }
-    }
-    return pool
+  /**
+    * Returns the name of the mining pool who mined the block.
+    *
+    * @return Mining pool
+    */
+  override def getMiningPool(): String = {
+    MiningPools.getLitecoinPool(txs.head)
   }
-
-  //TODO: mining pools by hex per litecoin (verificarli)
-  private def getPoolByHexCode(hex: String): String ={
-    //AntPool, F2Pool are LTC mining pools too.
-    //Trying to find pool codes for LTC.
-    if(hex.contains("416e74506f6f6c3")) return "AntPool"
-
-    if(hex.contains("777868")) return "F2Pool"
-    if(hex.contains("66326261636b7570")) return "F2Pool"
-    if(hex.contains("68663235")) return "F2Pool"
-    if(hex.contains("73796a756e303031")) return "F2Pool"
-    if(hex.contains("716c7339")) return "F2Pool"
-    if(hex.contains("687578696e6767616f7a68616f")) return "F2Pool"
-
-    return "Unknown"
-  }
-
 }
+
 
 /**
   * Factories for [[tcs.blockchain.litecoin.LitecoinBlock]] instances.
@@ -132,4 +107,3 @@ object LitecoinBlock {
     return new LitecoinBlock(block.getHash.toString, 0, block.getTime, block.getMessageSize, transactions)
   }
 }
-
