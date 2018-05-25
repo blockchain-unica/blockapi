@@ -13,7 +13,7 @@ collection.
 Prima di eseguire le query è consigliabile la creazione di un indice sull'identificatore delle transazioni
 (campo txHash), per rendere le ricerche più rapide.
 In caso di più esecuzioni dello script su range parzialmente sovrapposti, è necessario contrassegnare il campo
-txHash come chiave unica in modo da eliminare i duplicati:
+txHash come chiave unica in modo da prevenire o eliminare i duplicati:
 db.getCollection('ethValidation1').ensureIndex({'txHash' : 1}, {unique : true, dropDups : true})
 db.getCollection('ethValidation2').ensureIndex({'txHash' : 1}, {unique : true, dropDups : true})
 E' necessario inoltre aumentare il timeout delle query in caso di collection con un gran numero di transazioni.
