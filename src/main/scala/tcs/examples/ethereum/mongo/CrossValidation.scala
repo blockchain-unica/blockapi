@@ -11,8 +11,8 @@ import tcs.utils.{DateConverter, Etherscan}
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
-    val startBlock:Long = 2010000
-    val endBlock:Long =   2010500
+    val startBlock:Long = 2010600
+    val endBlock:Long =   2010700
     val mongo = new DatabaseSettings("myDatabase")
 
     getDataFromTool(startBlock, endBlock, mongo)
@@ -72,25 +72,27 @@ object CrossValidation {
 
         response match {
           case None => {}
-          case block: util.Map[String, Any] => {
+          case block: util.Map[_,_] => {
             val transactions = block.get("transactions")
             transactions match {
               case "Empty" => {}
-              case txs: util.ArrayList[util.Map[String, Any]] => {
+              case list => {
                 val timestamp = Numeric.decodeQuantity(block.get("timestamp").toString)
+                val txs = list.asInstanceOf[util.ArrayList[util.Map[String,Any]]]
 
-                txs.forEach((tx: util.Map[String, Any]) => {
-                  val list = List(
-                    ("txHash", tx.get("hash")),
-                    ("date", DateConverter.getDateFromTimestamp(timestamp)),
-                    ("value", Numeric.decodeQuantity(tx.get("value").toString).doubleValue() / weiIntoEth.doubleValue()),
-                    ("hasContract", tx.get("hasContract"))
-                  )
-                  myBlockchain2.append(list)
+                txs.forEach(tx => {
+                    val list = List(
+                      ("txHash", tx.get("hash")),
+                      ("date", DateConverter.getDateFromTimestamp(timestamp)),
+                      ("value", Numeric.decodeQuantity(tx.get("value").toString).doubleValue() / weiIntoEth.doubleValue()),
+                      ("hasContract", tx.get("hasContract"))
+                    )
+                    myBlockchain2.append(list)
                 })
               }
             }
           }
+          case _ => {}
         }
       } catch {
         case e: Exception => {

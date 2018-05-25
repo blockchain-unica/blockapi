@@ -9,7 +9,7 @@ import scalaj.http.Http
 import tcs.custom.ethereum.Utils
 
 package object Etherscan {
-  def apiKey = "apikey"
+  def apiKey = "8FEKR3YIIKP97NTT8XV3EGK1P8VJQ9W6TI"
   /**
     *
     * This method of fetching the contract's source code is NOT optimal, but until etherscan.io extends its API to
@@ -49,34 +49,30 @@ package object Etherscan {
   def getBlock(blockAddress: String, retry: Int = 0): util.Map[String,Any] = {
     waitForRequest()
     try {
-      //The json parser fails when it finds an empty array, so it is replaced by the string "Empty"
+      //The json parsedr fails when it finds an empty array, so it is replaced by the string "Empty"
       val content = HttpRequester.get("https://api.etherscan.io/api?module=proxy&action=eth_getBlockByNumber&tag=" +
         blockAddress +"&boolean=true&apikey==" + apiKey).replaceAll("\\Q[]\\E","\"Empty\"")
 
       val map = JsonParserFactory.getInstance.newJsonParser().parseJson(content)
-      val result = map.get("result").asInstanceOf[util.Map[String,Any]]
+      val block = map.get("result").asInstanceOf[util.Map[String,Any]]
 
-      result match {
-        case block:util.Map[String,Any] => {
-          val transactions = block.get("transactions")
-          transactions match {
-            case "Empty" => return block
-            case txs: util.ArrayList[util.Map[String, Any]] => {
-              txs.forEach((tx: util.Map[String, Any]) => {
-                if (tx.get("to") == "null" && transactionHasContract(tx.get("hash").toString)) {
-                  tx.put("hasContract", true)
-                }
-                else {
-                  tx.put("hasContract", false)
-                }
-                block.replace("transactions", txs)
-              })
-              return block
+      val transactions = block.get("transactions")
+      transactions match {
+        case "Empty" => {}
+        case list => {
+          val txs = list.asInstanceOf[util.ArrayList[util.Map[String, Any]]]
+          txs.forEach(tx => {
+            if (tx.get("to") == "null" && transactionHasContract(tx.get("hash").toString)) {
+              tx.put("hasContract", true)
             }
-          }
+            else {
+              tx.put("hasContract", false)
+            }
+            block.replace("transactions", txs)
+          })
         }
-        case _ => return null
       }
+      return block
     }
     catch {
       //Request error, retry until 5 times
