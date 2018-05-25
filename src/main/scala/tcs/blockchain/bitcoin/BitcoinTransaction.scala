@@ -1,9 +1,12 @@
 package tcs.blockchain.bitcoin
 
+import java.text.SimpleDateFormat
+
 import org.bitcoinj.core.{Sha256Hash, Transaction}
 import org.bitcoinj.script.Script.ScriptType
 import tcs.blockchain.{Transaction => TCSTransaction}
 import java.util.Date
+
 import scala.collection.mutable.ListBuffer
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -256,9 +259,8 @@ object BitcoinTransaction {
 
     // TODO: Test getMessageSize
     return new BitcoinTransaction(tx.getHash.toString, null, tx.getMessageSize, inputs, outputs, tx.getLockTime)
-
-
   }
+
   /**
     * Factory for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
     * Creates a new transaction given its BitcoinJ representation.
@@ -296,3 +298,4 @@ object BitcoinTransaction {
     return new BitcoinTransaction(tx.getHash.toString, txDate, tx.getMessageSize, inputs, outputs, tx.getLockTime)
   }
 }
+

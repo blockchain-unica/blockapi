@@ -1,0 +1,12 @@
+# Check transactions by a specific date
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX prop: <http://blockchain/properties#>
+SELECT ?txHash ?date
+WHERE {
+    ?in prop:isOutOf ?tx.
+    ?tx	prop:date	?date;
+        prop:txHash	?txHash
+
+    FILTER(?date > "2011-10-19T10:20:13Z"^^xsd:dateTime)
+}

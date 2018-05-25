@@ -136,4 +136,5 @@ object BitcoinOutput {
         case e: Exception => null
       })
   }
+
 }

@@ -5,7 +5,7 @@ import org.bitcoinj.core.{ECKey, _}
 import org.bitcoinj.crypto.TransactionSignature
 import org.bitcoinj.params.{MainNetParams, TestNet3Params}
 import org.bitcoinj.script.ScriptChunk
-import tcs.utils.ConvertUtils
+import tcs.utils.converter.ConvertUtils
 
 import scala.collection.mutable
 
@@ -28,7 +28,6 @@ class BitcoinInput(
                     val sequenceNo: Long,
                     val outPoint: TransactionOutPoint
                   ) {
-
 
   /**
     * String representation of a BitcoinInput.
@@ -176,7 +175,6 @@ object BitcoinInput {
       input.getOutpoint
     )
   }
-
 
   /**
     * Factory for [[tcs.blockchain.bitcoin.BitcoinInput]] instances.

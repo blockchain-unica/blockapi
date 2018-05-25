@@ -5,9 +5,9 @@ import java.util.Date
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.ethereum.EthereumSettings
-import tcs.custom.ethereum.ICO
 import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, PostgreSQL}
+import tcs.externaldata.ICOAPIs.ICO
 
 
 object ICOInfos {

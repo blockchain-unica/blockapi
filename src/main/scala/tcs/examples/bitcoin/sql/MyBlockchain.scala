@@ -5,7 +5,7 @@ import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, MySQL}
-import tcs.utils.DateConverter.convertDate
+import tcs.utils.converter.DateConverter.convertDate
 
 
 /**

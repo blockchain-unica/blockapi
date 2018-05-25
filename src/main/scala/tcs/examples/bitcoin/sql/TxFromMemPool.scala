@@ -3,13 +3,15 @@ package tcs.examples.bitcoin.sql
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.utils.DateConverter.convertDate
-import tcs.custom.bitcoin.Exchange
+import tcs.utils.converter.DateConverter.convertDate
 import tcs.db.{DatabaseSettings, MySQL}
 import tcs.db.sql.Table
-import tcs.utils.DateConverter
 import java.util.Calendar
 import java.io._
+
+import tcs.utils.converter.DateConverter
+import tcs.externaldata.rates.BitcoinRates
+
 import scala.collection.mutable.ListBuffer
 
 

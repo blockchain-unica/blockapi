@@ -1,0 +1,10 @@
+# Number of txs given their depth (forwardTxs)
+
+PREFIX prop: <http://blockchain/properties#>
+	SELECT (count(?s) as ?count)
+	WHERE {
+  		?in prop:isInOf ?s.
+		?s	prop:txHash	?txHash;
+  			prop:depth	?depth.
+  		FILTER(?depth = 3)
+}
