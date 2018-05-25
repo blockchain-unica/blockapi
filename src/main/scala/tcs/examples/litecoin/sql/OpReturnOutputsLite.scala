@@ -3,10 +3,10 @@ package tcs.examples.litecoin.sql
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.litecoin.{LitecoinSettings, MainNet}
-import tcs.custom.bitcoin.metadata.MetadataParser
+import tcs.externaldata.metadata.MetadataParser
 import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, MySQL}
-import tcs.utils.DateConverter.convertDate
+import tcs.utils.converter.DateConverter.convertDate
 
 /**
   * Created by Giulia on 15/05/2018.

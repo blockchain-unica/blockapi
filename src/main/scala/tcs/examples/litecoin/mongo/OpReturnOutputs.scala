@@ -2,7 +2,7 @@ package tcs.examples.litecoin.mongo
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.litecoin.{LitecoinSettings, MainNet}
-import tcs.custom.litecoin.metadata.MetadataParser
+import tcs.externaldata.metadata.MetadataParser
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 

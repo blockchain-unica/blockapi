@@ -4,7 +4,7 @@ import org.litecoinj.core.{ECKey, _}
 import org.litecoinj.crypto.TransactionSignature
 import org.litecoinj.params.{MainNetParams, TestNet3Params}
 import org.litecoinj.script.ScriptChunk
-import tcs.utils.ConvertUtils
+import tcs.utils.converter.ConvertUtils
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer

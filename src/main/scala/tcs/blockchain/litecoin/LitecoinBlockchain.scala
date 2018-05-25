@@ -7,7 +7,7 @@ import com.googlecode.jsonrpc4j.HttpException
 import org.litecoinj.core._
 import org.litecoinj.params.{MainNetParams, TestNet3Params}
 import tcs.blockchain.Blockchain
-import tcs.utils.ConvertUtils
+import tcs.utils.converter.ConvertUtils
 
 import scala.collection.mutable
 

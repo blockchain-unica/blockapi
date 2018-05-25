@@ -2,10 +2,10 @@ package tcs.examples.litecoin.mongo
 
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.litecoin.{LitecoinSettings, MainNet}
-import tcs.custom.litecoin.Exchange
+import tcs.externaldata.rates.LitecoinRates
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
-import tcs.utils.DateConverter
+import tcs.utils.converter.DateConverter
 
 /**
   * Created by Giulia on 16/06/2017.
@@ -28,7 +28,7 @@ object TxWithFeesLite {
           ("txHash", tx.hash),
           ("date", block.date),
           ("fee", tx.getInputsSum() - tx.getOutputsSum()),
-          ("rate", Exchange.getRate(block.date))
+          ("rate", LitecoinRates.getRate(block.date))
         ))
       })
     })

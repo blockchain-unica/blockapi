@@ -3,11 +3,11 @@ package tcs.examples.litecoin.sql
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.litecoin.{LitecoinSettings, MainNet}
-import tcs.custom.litecoin.Exchange
+import tcs.externaldata.rates.LitecoinRates
 import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, MySQL}
-import tcs.utils.DateConverter
-import tcs.utils.DateConverter.convertDate
+import tcs.utils.converter.DateConverter
+import tcs.utils.converter.DateConverter.convertDate
 
 /**
   * Created by Giulia on 15/05/2018.
@@ -35,7 +35,7 @@ object TxWithFeesLite {
       mySQL)
 
 
-    blockchain.start(0).end(10000).foreach(block => {
+    blockchain.start(150000).end(750000).foreach(block => {
 
       if (block.height % 10 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
@@ -45,7 +45,7 @@ object TxWithFeesLite {
           tx.hash.toString,
           convertDate(block.date),
           (tx.getInputsSum() - tx.getOutputsSum()),
-          Exchange.getRate(block.date)))
+          LitecoinRates.getRate(block.date)))
       })
     })
 

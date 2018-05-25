@@ -3,14 +3,14 @@ package tcs.examples.litecoin.sql
 import scalikejdbc._
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.litecoin.{LitecoinSettings, MainNet}
-import tcs.custom.litecoin.Exchange
 import tcs.db.sql.Table
 import tcs.db.{DatabaseSettings, MySQL}
-import tcs.utils.DateConverter
-import tcs.utils.DateConverter.convertDate
+import tcs.externaldata.rates.LitecoinRates
+import tcs.utils.converter.DateConverter
+import tcs.utils.converter.DateConverter.convertDate
 
 /**
-  * Created by Giulia on 15/05/2018.
+  * Created by Stefano on 02/11/2017.
   */
 object TxWithRatesLite {
   def main(args: Array[String]): Unit = {
@@ -23,18 +23,18 @@ object TxWithRatesLite {
 
     val txTable = new Table(
       sql"""
-      create table if not exists txrateslite(
+      create table if not exists txrates(
         id serial not null primary key,
         txHash varchar(256) not null,
         txdate TIMESTAMP not null,
         outputsum bigint,
         rate float
     )""",
-      sql"""insert into txrateslite (txHash, txdate, outputsum, rate) values(?,?,?,?)""",
+      sql"""insert into txrates (txHash, txdate, outputsum, rate) values(?,?,?,?)""",
       mySQL)
 
 
-    blockchain.start(50000).end(100000).foreach(block => {
+    blockchain.end(100000).foreach(block => {
 
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
@@ -43,7 +43,7 @@ object TxWithRatesLite {
           tx.hash.toString,
           convertDate(block.date),
           tx.getOutputsSum(),
-          Exchange.getRate(block.date)))
+          LitecoinRates.getRate(block.date)))
       })
     })
 
