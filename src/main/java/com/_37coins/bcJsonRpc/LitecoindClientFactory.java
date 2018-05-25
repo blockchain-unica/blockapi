@@ -39,25 +39,25 @@ public class LitecoindClientFactory {
 	private final JsonRpcHttpClient client;
 
 	/**
-	 *
-	 * for the listener to work litecoin has to be started like this:
-	 *
-	 * ./litecoind -blocknotify="echo '%s' | nc 127.0.0.1 4001"
-	 * -walletnotify="echo '%s' | nc 127.0.0.1 4002"
-	 * -alertnotify="echo '%s' | nc 127.0.0.1 4003"
-	 * -daemon
-	 *
-	 * @param url
-	 * @param username
-	 * @param password
-	 */
+ 	 *
+ 	 * for the listener to work litecoin has to be started like this:
+ 	 *
+ 	 * ./litecoind -blocknotify="echo '%s' | nc 127.0.0.1 4001"
+ 	 * -walletnotify="echo '%s' | nc 127.0.0.1 4002"
+ 	 * -alertnotify="echo '%s' | nc 127.0.0.1 4003"
+ 	 * -daemon
+ 	 *
+ 	 * @param url
+ 	 * @param username
+ 	 * @param password
+ 	 */
 	public LitecoindClientFactory(URL url, String username, String password) {
-		String cred = Base64
-				.encodeBytes((username + ":" + password).getBytes());
-		Map<String, String> headers = new HashMap<>(1);
-		headers.put("Authorization", "Basic " + cred);
-		client = new JsonRpcHttpClient(url, headers);
-	}
+			String cred = Base64
+					.encodeBytes((username + ":" + password).getBytes());
+			Map<String, String> headers = new HashMap<>(1);
+			headers.put("Authorization", "Basic " + cred);
+			client = new JsonRpcHttpClient(url, headers);
+		}
 
 	public LitecoindClientFactory(String path, final List<String> cmd) throws IOException{
 		if (isWindows()){
@@ -71,65 +71,66 @@ public class LitecoindClientFactory {
 		String[] uuid = UUID.randomUUID().toString().split("-");
 		String user = uuid[0]+uuid[2];
 		String pw = uuid[4]+uuid[3]+uuid[1];
-		//prepare command
+				//prepare command
 		List<String> l = new ArrayList<String>();
-		for (String s: cmd){
-			if (s.contains("notify")){
-				LOG.warn(s + " ommited from cmd due to possible collision");
-			}else{
-				l.add(s);
-			}
-		}
-		l.add("-rpcuser="+user);
-		l.add("-rpcpassword="+pw);
-		l.add("-checklevel=2");
-		l.add("-blocknotify=\"echo '%s' | nc 127.0.0.1 "+blockSocket.getLocalPort()+"\"");
-		l.add("-walletnotify=\"echo '%s' | nc 127.0.0.1 "+walletSocket.getLocalPort()+"\"");
-		l.add("-alertnotify=\"echo '%s' | nc 127.0.0.1 "+alertSocket.getLocalPort()+"\"");
-		l.add("-daemon");
-		l.add("-server");
-		l.add("-txindex");
-		//execute command
-		ProcessBuilder pb = new ProcessBuilder(l);
-		pb.directory(new File(path));
-		Process p = pb.start();
-		try {
-			p.waitFor();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			throw new RuntimeException(convertStream(p.getErrorStream()));
-		}
-		//start client
-		String cred = Base64.encodeBytes((user + ":" + pw).getBytes());
-		Map<String, String> headers = new HashMap<>(1);
-		headers.put("Authorization", "Basic " + cred);
-		client = new JsonRpcHttpClient(new URL("http://localhost:9332/"), headers);
-		//wait for node startup
-		boolean success =false;
-		for (int i = 10; i > 0; i--){
-			try{
-				ProxyUtil.createClientProxy(BitcoindInterface.class.getClassLoader(),
-						LitecoindInterface.class, client).getinfo();
-				success = true;
-			}catch(Exception e){
+			for (String s: cmd){
+					if (s.contains("notify")){
+							LOG.warn(s + " ommited from cmd due to possible collision");
+						}else{
+							l.add(s);
+						}
+					}
+				l.add("-rpcuser="+user);
+				l.add("-rpcpassword="+pw);
+				l.add("-checklevel=2");
+				l.add("-blocknotify=\"echo '%s' | nc 127.0.0.1 "+blockSocket.getLocalPort()+"\"");
+				l.add("-walletnotify=\"echo '%s' | nc 127.0.0.1 "+walletSocket.getLocalPort()+"\"");
+				l.add("-alertnotify=\"echo '%s' | nc 127.0.0.1 "+alertSocket.getLocalPort()+"\"");
+				l.add("-daemon");
+				l.add("-server");
+				l.add("-txindex");
+				//execute command
+				ProcessBuilder pb = new ProcessBuilder(l);
+				pb.directory(new File(path));
+				Process p = pb.start();
 				try {
-					LOG.info("server not yet available, waiting another "+i+" secords.");
-					Thread.sleep(1000);
-				} catch (InterruptedException e1) {}
+					p.waitFor();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					throw new RuntimeException(convertStream(p.getErrorStream()));
+				}
+				//start client
+				String cred = Base64.encodeBytes((user + ":" + pw).getBytes());
+				Map<String, String> headers = new HashMap<>(1);
+				headers.put("Authorization", "Basic " + cred);
+				client = new JsonRpcHttpClient(new URL("http://localhost:9332/"), headers);
+				//wait for node startup
+				boolean success =false;
+				for (int i = 10; i > 0; i--){
+					try{
+						ProxyUtil.createClientProxy(BitcoindInterface.class.getClassLoader(),
+								LitecoindInterface.class, client).getinfo();
+						success = true;
+					}catch(Exception e){
+						try {
+							LOG.info("server not yet available, waiting another "+i+" secords.");
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {}
+					}
+					if (success){
+						break;
+					}
+				}
+				if (!success){
+					throw new IOException("could not connect to litecoind");
+				}
 			}
-			if (success){
-				break;
-			}
-		}
-		if (!success){
-			throw new IOException("could not connect to litecoind");
-		}
-	}
-	
-	public LitecoindInterface getClient() {
-		return ProxyUtil.createClientProxy(
-				LitecoindInterface.class.getClassLoader(),
-				LitecoindInterface.class, client);
-	}
 
-}
+			public LitecoindInterface getClient() {
+				return ProxyUtil.createClientProxy(
+						LitecoindInterface.class.getClassLoader(),
+						LitecoindInterface.class, client);
+			}
+
+		}
+

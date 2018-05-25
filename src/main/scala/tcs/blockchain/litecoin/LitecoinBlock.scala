@@ -59,7 +59,7 @@ class LitecoinBlock(
   //TODO: mining pools by hex per litecoin (verificarli)
   private def getPoolByHexCode(hex: String): String ={
     //AntPool, F2Pool are LTC mining pools too.
-    //Trying to find pool codes for LTC
+    //Trying to find pool codes for LTC.
     if(hex.contains("416e74506f6f6c3")) return "AntPool"
 
     if(hex.contains("777868")) return "F2Pool"

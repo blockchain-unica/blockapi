@@ -8,9 +8,7 @@ import tcs.db.{DatabaseSettings, MySQL}
 import tcs.utils.DateConverter.convertDate
 
 
-/**
-  * Created by Giulia on 15/05/2018.
-  */
+
 object MyBlockchainLite{
   def main(args: Array[String]): Unit ={
 
