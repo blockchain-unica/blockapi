@@ -9,8 +9,7 @@ import tcs.externaldata.rates.LitecoinRates
 
 import scala.collection.mutable
 
-object LitecoinBalances
-{
+object LitecoinBalances {
   /**
     * Definition of custom type for balance, data retrieved for each address:
     *
@@ -24,7 +23,7 @@ object LitecoinBalances
   type balance = (Double, Double, Double, BigInt, BigInt)
 
   def main(args: Array[String]): Unit = {
-    // - Litecoind settings, retrieveInputValues set as true
+    // Litecoind settings, retrieveInputValues set as true
     var litecoindSett = new LitecoinSettings("user", "password", "9332", MainNet, true)
 
     // - MySQL database settings
@@ -130,8 +129,7 @@ object LitecoinBalances
 
 
     // Add each entry of the map into the table
-    for(balanceInfo <- balances.toSeq)
-    {
+    for(balanceInfo <- balances.toSeq){
       outTable.insert(
         balanceInfo._1 ::     //address
         balanceInfo._2._1 ::  //input value
