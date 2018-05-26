@@ -45,7 +45,7 @@ object EthereumERC20Info {
 
     println(addressSet.size)
 
-    blockchain.start(2101639).end(2101647).foreach(block => {
+    blockchain.start(2100000).end(2355000).foreach(block => {
 
       if(block.height%100 == 0){
         println("Current Block " + block.height)
