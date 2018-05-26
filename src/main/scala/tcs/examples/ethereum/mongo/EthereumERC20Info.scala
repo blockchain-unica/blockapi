@@ -113,6 +113,7 @@ object EthereumERC20Info {
 
   /**
     * This function increments a number of input transaction receive from a contract
+    * Also it updates the balance value of contract
     * @param address is the address of contract
     */
   def incTxIn (address :String, value :BigInt) : Unit ={
@@ -129,6 +130,7 @@ object EthereumERC20Info {
 
     }
 
+    //balance increment
     if(collection.find(and(equal("contractAddress", address),
       exists("balance"))).results().nonEmpty) {
 
@@ -144,6 +146,7 @@ object EthereumERC20Info {
 
   /**
     * This function increment the number of withdrawals from a contract
+    * Also it updates the balance value of contract
     * @param address
     */
   def incTxOut (address :String, value : BigInt) : Unit = {
