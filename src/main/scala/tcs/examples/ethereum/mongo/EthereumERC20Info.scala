@@ -91,18 +91,22 @@ object EthereumERC20Info {
 
   }
 
+  /***this function increments number of transaction in by one, checking transactions*/
   def incInputTransaction (tx : EthereumTransaction) : Unit = {
     incTxIn(tx.to, tx.value)
   }
 
+  /***increments number of transaction out by one, checking transactions*/
   def incOutputTransaction (tx : EthereumTransaction) : Unit = {
     incTxOut(tx.from, tx.value)
   }
 
+  /***increments number of transaction in by one, checking internal transactions*/
   def incInputInternalTransaction (itx : EthereumInternalTransaction) : Unit = {
     incTxIn(itx.to, itx.value)
   }
 
+  /***it increments number of transaction out by one, checking internal transactions*/
   def incOutputInternalTransaction (itx : EthereumInternalTransaction) : Unit = {
     incTxOut(itx.from, itx.value)
   }
@@ -113,9 +117,11 @@ object EthereumERC20Info {
     */
   def incTxIn (address :String, value :BigInt) : Unit ={
 
-    if(collection.find(and(equal("contractAddress", address), exists("txIn"))).results().nonEmpty) {
+    if(collection.find(and(equal("contractAddress", address),
+      exists("txIn"))).results().nonEmpty) {
 
-      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("txIn")),inc("txIn",1)).results()
+      collection.findOneAndUpdate(and(equal("contractAddress", address),
+        exists("txIn")),inc("txIn",1)).results()
 
     } else {
 
@@ -123,12 +129,16 @@ object EthereumERC20Info {
 
     }
 
-    if(collection.find(and(equal("contractAddress", address), exists("balance"))).results().nonEmpty)
-    {
-      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("balance")), inc("balance", value.toFloat)).results()
+    if(collection.find(and(equal("contractAddress", address),
+      exists("balance"))).results().nonEmpty) {
 
-    }else{
-      collection.findOneAndUpdate(equal("contractAddress", address), set("balance", value.toFloat)).results()
+      collection.findOneAndUpdate(and(equal("contractAddress", address),
+        exists("balance")), inc("balance", value.toFloat)).results()
+
+    } else {
+
+      collection.findOneAndUpdate(equal("contractAddress", address),
+        set("balance", value.toFloat)).results()
     }
   }
 
@@ -138,17 +148,22 @@ object EthereumERC20Info {
     */
   def incTxOut (address :String, value : BigInt) : Unit = {
 
-    if(collection.find(and(equal("contractAddress", address), exists("txOut"))).results().nonEmpty)
-    {
-      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("txOut")),inc("txOut",1)).results()
+    if(collection.find(and(equal("contractAddress", address),
+      exists("txOut"))).results().nonEmpty) {
 
-    }else{
+      collection.findOneAndUpdate(and(equal("contractAddress", address),
+        exists("txOut")),inc("txOut",1)).results()
+
+    } else {
       collection.findOneAndUpdate(equal("contractAddress", address), set("txOut",1)).results()
     }
 
     //balance decrement
-    if(collection.find(and(equal("contractAddress", address), exists("balance"))).results().nonEmpty) {
-      collection.findOneAndUpdate(and(equal("contractAddress", address), exists("balance")), inc("balance", - value.toFloat)).results()
+    if(collection.find(and(equal("contractAddress", address),
+      exists("balance"))).results().nonEmpty) {
+
+      collection.findOneAndUpdate(and(equal("contractAddress", address),
+        exists("balance")), inc("balance", - value.toFloat)).results()
     }
 
  }
