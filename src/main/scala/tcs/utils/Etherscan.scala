@@ -9,7 +9,7 @@ import scalaj.http.Http
 import tcs.custom.ethereum.Utils
 
 package object Etherscan {
-  def apiKey = "8FEKR3YIIKP97NTT8XV3EGK1P8VJQ9W6TI"
+  def apiKey = "apikey"
   /**
     *
     * This method of fetching the contract's source code is NOT optimal, but until etherscan.io extends its API to
