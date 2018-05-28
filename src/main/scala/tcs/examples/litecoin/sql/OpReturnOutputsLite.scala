@@ -32,6 +32,9 @@ object OpReturnOutputsLite {
       sql"""insert into opreturnoutputlite (transactionHash, txdate, protocol, metadata) values(?,?,?,?)""",
       mySQL)
 
+    //OP_RETURN has been included in Litecoin since 0.9 release
+    //Blocks before 2014 will return null on every row
+    
     blockchain.start(500000).end(1200000).foreach(block => {
 
       if (block.height % 10000 == 0) println("Block: " + block.height)

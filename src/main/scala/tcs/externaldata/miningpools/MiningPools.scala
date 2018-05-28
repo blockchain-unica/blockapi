@@ -81,12 +81,17 @@ object MiningPools {
       if (programByte != null) {
         val hex: String = programByte.map("%02x".format(_)).mkString
         if (hex != "") {
-          /** Antpool and F2Pool mine LTC too.
-            * Currently searching for others LTC pools.
+          /** Antpool, ViaBTC and F2Pool mine LTC too.
+            * Currently searching for others LTC pools hex sign
             * Will add them soon.
+            * LTCTOP and LitecoinPool found by coinbase hex
             */
         }
+        if (hex.contains("4c54432e544f50")) return Pools.LTCTOP
+        if (hex.contains("566961425443")) return Pools.VIABTC
+        if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
         if (hex.contains("416e74506f6f6c3")) return Pools.ANTPOOL
+
         // F2Pool does not have a unique identifier
         if (hex.contains("777868") ||
           hex.contains("66326261636b7570") ||
