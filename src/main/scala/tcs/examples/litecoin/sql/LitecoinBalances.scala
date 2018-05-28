@@ -30,11 +30,11 @@ object LitecoinBalances {
     val mySQL = new DatabaseSettings("litecoinBalances", MySQL, "user", "password")
 
     // - Conversion rate from satoshi to litecoin
-    val satoshiToLTC = 0.00000001
+    val litoshiToLTC = 0.00000001
 
     // - Slice of blockchain to analyse
     val startingBlock = 0
-    val endingBlock = 1200000
+    val endingBlock = 100000
 
     // - Get blockchain slice
     var litecoinBlockchain = BlockchainLib.getLitecoinBlockchain(litecoindSett)
@@ -59,11 +59,11 @@ object LitecoinBalances {
     // - Updating the map for each block
     litecoinBlockchain.start(startingBlock).end(endingBlock).foreach(block => {
 
+      if (block.height % 10000 == 0)
+        println(block.height)
       // - Updating the map for each transaction
       block.txs.foreach(tx => {
 
-        if (block.height % 10000 == 0)
-          println(block.height)
         // - Get conversion rate using date of transaction
         val conversionRate = LitecoinRates.getRate(tx.date)
 
@@ -81,7 +81,7 @@ object LitecoinBalances {
             val balanceOfAddress = balances(addr)
 
             // - Calculate the value in dollars
-            val valueInDollars = in.value.toDouble * satoshiToLTC * conversionRate
+            val valueInDollars = in.value.toDouble * litoshiToLTC * conversionRate
 
             /* - Update the map's entry for the address, the value in dollars gets added to the total output and
              * - subtracted to the current balance, the output transactions counter is also incremented
@@ -100,7 +100,8 @@ object LitecoinBalances {
         tx.outputs.foreach(out => {
           if (out.getAddress(MainNet).isDefined) { // checks if None
             // - Get address of input
-            val addr = out.getAddress(MainNet).get.toBase58
+            val
+            addr = out.getAddress(MainNet).get.toBase58
 
             // - Add the address to the map if it's not already there
             if (!balances.contains(addr))
@@ -110,7 +111,7 @@ object LitecoinBalances {
             val data = balances(addr)
 
             // - Calculate the value in dollars
-            val valueInDollars = out.value.toDouble * satoshiToLTC * conversionRate
+            val valueInDollars = out.value.toDouble * litoshiToLTC * conversionRate
 
             /* - Update the map's entry for the address, the value in dollars gets added to the total input
              * - and to the total balance, the input transactions counter is also incremented

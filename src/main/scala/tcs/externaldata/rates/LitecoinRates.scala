@@ -38,7 +38,7 @@ object LitecoinRates {
 
   private def getPriceHistorical(time: Date): Double = {
 //TODO CHECK DATA ENDPOINT
-    val url = new URL("https://min-api.cryptocompare.com/data/pricehistorical?fsym=LTC&tsyms=USD&ts=" + time.getTime.toString.dropRight(3) + "&markets=Coinbase")
+    val url = new URL("https://min-api.cryptocompare.com/data/pricehistorical?fsym=LTC&tsyms=USD&ts=" + time.getTime.toString.dropRight(3))
     val connection = url.openConnection().asInstanceOf[HttpURLConnection]
     connection.setRequestMethod("GET")
     val br = new BufferedReader(new InputStreamReader(connection.getInputStream))

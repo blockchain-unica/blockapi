@@ -32,7 +32,7 @@ object TxWithRatesLite {
       mySQL)
 
 
-    blockchain.end(100000).foreach(block => {
+    blockchain.start(500000).end(1200000).foreach(block => {
 
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
