@@ -13,6 +13,7 @@ var title = $(document).attr('title');
 
 var lastHash = "";
 
+
 $(document).ready(function() {
     $('body').layout({
         west__size: '20%',

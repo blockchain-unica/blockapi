@@ -466,3 +466,4 @@ function windowTitle()
       // used on the local file system.
     }
 }
+

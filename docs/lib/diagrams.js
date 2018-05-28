@@ -322,3 +322,4 @@ diagrams.removeClass = function(svgElem, oldClass) {
 	svgElem.attr("class", classes);
 };
 
+
