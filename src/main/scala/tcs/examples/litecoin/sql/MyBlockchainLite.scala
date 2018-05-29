@@ -45,6 +45,10 @@ object MyBlockchainLite{
       sql"""insert into output(transactionHash, outputScript) values (?, ?)""",
       mySQL)
 
+    /** There's an issue in bitcoinj/litecoinj's Message.java that doesn't allow
+      * blocks after 481.823 in Bitcoin Blockchain and 1.200.000 in
+      * Litecoin Blockchain to be examined.
+      */
 
     blockchain.end(1200000).foreach(block => {
       block.txs.foreach(tx => {

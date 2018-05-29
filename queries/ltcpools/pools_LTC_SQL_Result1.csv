@@ -1,5 +1,7 @@
-/*Most pools hex codes are still to be implemented. The only one recognized by now is F2Pool*/
-
+/**Range 800.000-1.200.000**/
 Pool,Blocks
+BW.COM,19526
 F2Pool,105
-Unknown,1199895
+LitecoinPool.org,1355
+LTC.TOP,846
+Unknown,378169

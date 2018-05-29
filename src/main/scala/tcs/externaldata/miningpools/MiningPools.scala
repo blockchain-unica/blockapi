@@ -71,9 +71,12 @@ object MiningPools {
     return Pools.UNKNOWN
   }
 
-  //TODO: mining pools by hex per litecoin (verificarli)
-  //https://bitmakler.net/mining_Litecoin-LTC__pools
-
+  /** Antpool, BTCChina, ViaBTC, BW and F2Pool mine LTC too.
+    * Currently searching for others LTC pools hex sign
+    * Will add them soon.
+    * LTCTOP, LitecoinPool, BW and some F2Pool identifiers
+    * found by coinbase hex
+    */
   def getLitecoinPool(transaction: LitecoinTransaction): String = {
 
     if (transaction.inputs.head.isCoinbase) {
@@ -81,29 +84,32 @@ object MiningPools {
       if (programByte != null) {
         val hex: String = programByte.map("%02x".format(_)).mkString
         if (hex != "") {
-          /** Antpool, ViaBTC and F2Pool mine LTC too.
-            * Currently searching for others LTC pools hex sign
-            * Will add them soon.
-            * LTCTOP and LitecoinPool found by coinbase hex
-            */
-        }
-        if (hex.contains("4c54432e544f50")) return Pools.LTCTOP
-        if (hex.contains("566961425443")) return Pools.VIABTC
-        if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
-        if (hex.contains("416e74506f6f6c3")) return Pools.ANTPOOL
 
-        // F2Pool does not have a unique identifier
-        if (hex.contains("777868") ||
-          hex.contains("66326261636b7570") ||
-          hex.contains("68663235") ||
-          hex.contains("73796a756e303031") ||
-          hex.contains("716c7339") ||
-          hex.contains("687578696e6767616f7a68616f")
-        ) return Pools.F2POOL
+          if (hex.contains("42544343")) return Pools.BTCCPOOL
+          if (hex.contains("4c54432e544f50")) return Pools.LTCTOP
+          if (hex.contains("566961425443")) return Pools.VIABTC
+          if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
+          if (hex.contains("416e74506f6f6c3")) return Pools.ANTPOOL
+          if (hex.contains("42570a665704") ||
+            hex.contains("2f42572f") ||
+            hex.contains("425720506f6f6c")) return Pools.BW
+          // F2Pool does not have a unique identifier
+          // Found some more F2Pool identifiers for Litecoin
+          if (hex.contains("777868") ||
+            hex.contains("66326261636b7570") ||
+            hex.contains("68663235") ||
+            hex.contains("73796a756e303031") ||
+            hex.contains("716c7339") ||
+            hex.contains("687578696e6767616f7a68616f") ||
+            hex.contains("6c6a6831393737") ||
+            hex.contains("7773686a66") ||
+            hex.contains("6c69616e74616e6731") ||
+            hex.contains("6c717931")
+          ) return Pools.F2POOL
+        }
       }
     }
     return Pools.UNKNOWN
   }
 
 }
-

@@ -8,9 +8,6 @@ import tcs.db.{DatabaseSettings, MySQL}
 import tcs.utils.converter.DateConverter.convertDate
 
 
-/**
-  * Created by Giulia on 15/05/2018.
-  */
 object LitecoinPools{
   def main(args: Array[String]): Unit ={
 
@@ -27,9 +24,10 @@ object LitecoinPools{
       mySQL)
 
 
-    blockchain.end(1200000).foreach(block => {
+    blockchain.start(800000).end(1200000).foreach(block => {
         txTable.insert(Seq(block.hash.toString(), convertDate(block.date), block.getMiningPool()))
-        println("Done working on block @ height " + block.height)
+        if(block.height%100000==0)
+          println("Done working on block @ height " + block.height)
     })
 
     txTable.close
