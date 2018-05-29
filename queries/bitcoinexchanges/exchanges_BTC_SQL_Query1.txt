@@ -1,0 +1,8 @@
+select LEFT(CAST (txdate AS varchar), 10) as date_format, CAST(CAST(sum(outputsum)*usdrate AS FLOAT) AS bigint) as usdrateSum,
+	CAST(CAST(sum(outputsum)*eurrate AS FLOAT) AS bigint) as eurateSum, 
+	CAST(CAST(sum(outputsum)*gbprate AS FLOAT) AS bigint) as gbprateSum,
+	CAST(CAST(sum(outputsum)*jpyrate AS FLOAT) AS bigint) as jpyrateSum,
+	CAST(CAST(sum(outputsum)*cnyrate AS FLOAT) AS bigint) as cnyrateSum
+from txrates 
+where (eurrate >0) and (gbprate > 0) and (jpyrate >0) and (cnyrate >0)
+group by LEFT(CAST (txdate AS varchar), 10), usdrate, eurrate, gbprate, jpyrate, cnyrate; 
