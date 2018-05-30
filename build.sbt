@@ -47,4 +47,6 @@ libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.2"
 
 libraryDependencies += "org.apache.jena" % "apache-jena-libs" % "3.7.0"
 
+libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7"
+
 
