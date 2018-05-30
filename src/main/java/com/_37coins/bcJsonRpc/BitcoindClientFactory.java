@@ -44,10 +44,8 @@ public class BitcoindClientFactory {
 	 * @param url
 	 * @param username
 	 * @param password
-	 * @throws IOException
 	 */
-	public BitcoindClientFactory(URL url, String username, String password)
-			throws IOException {
+	public BitcoindClientFactory(URL url, String username, String password) {
 		String cred = Base64
 				.encodeBytes((username + ":" + password).getBytes());
 		Map<String, String> headers = new HashMap<>(1);

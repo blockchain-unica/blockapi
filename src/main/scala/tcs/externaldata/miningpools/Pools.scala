@@ -34,6 +34,9 @@ object Pools {
 
   val KANOPOOL = "KanoPool"
 
+  val LTCTOP = "LTC.TOP"
+  val LITECOINPOOL = "LitecoinPool.org"
+
   val NANOPOOL = "Nanopool"
 
   val PANDAPOOL = "PandaPool"

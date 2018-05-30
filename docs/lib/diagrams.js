@@ -96,7 +96,7 @@ diagrams.initPopup = function(id)
 	$(document).keyup(function(e) {
 		if (e.keyCode == 27) window.close();
 	});
-}
+};
 
 /**
  * Initializes highlighting for nodes and edges.
@@ -321,4 +321,5 @@ diagrams.removeClass = function(svgElem, oldClass) {
 	classes = $.grep(classes.split(/\s+/), function(n, i) { return n != oldClass; }).join(' ');
 	svgElem.attr("class", classes);
 };
+
 

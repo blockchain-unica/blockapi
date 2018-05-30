@@ -232,7 +232,9 @@ $(document).ready(function(){
     // Set parent window title
     windowTitle();
 
-    if ($("#order > ol > li.group").length == 1) { orderGroup(); };
+    if ($("#order > ol > li.group").length == 1) {
+        orderGroup();
+    }
 });
 
 function orderAlpha() {
@@ -243,8 +245,7 @@ function orderAlpha() {
     $("#template > div.conversion").hide();
     $("#mbrsel > div[id=ancestors]").show();
     filter();
-};
-
+}
 function orderInherit() {
     $("#order > ol > li.inherit").removeClass("out").addClass("in");
     $("#order > ol > li.alpha").removeClass("in").addClass("out");
@@ -253,8 +254,7 @@ function orderInherit() {
     $("#template > div.conversion").show();
     $("#mbrsel > div[id=ancestors]").hide();
     filter();
-};
-
+}
 function orderGroup() {
     $("#order > ol > li.group").removeClass("out").addClass("in");
     $("#order > ol > li.alpha").removeClass("in").addClass("out");
@@ -263,8 +263,7 @@ function orderGroup() {
     $("#template > div.conversion").hide();
     $("#mbrsel > div[id=ancestors]").show();
     filter();
-};
-
+}
 /** Prepares the DOM for inheritance-based display. To do so it will:
   *  - hide all statically-generated parents headings;
   *  - copy all members from the value and type members lists (flat members) to corresponding lists nested below the
@@ -273,8 +272,8 @@ function orderGroup() {
   *    or on inheritance-grouped members. */
 function initInherit() {
     // inheritParents is a map from fully-qualified names to the DOM node of parent headings.
-    var inheritParents = new Object();
-    var groupParents = new Object();
+    var inheritParents = {};
+    var groupParents = {};
     $("#inheritedMembers > div.parent").each(function(){
         inheritParents[$(this).attr("name")] = $(this);
     });
@@ -302,7 +301,7 @@ function initInherit() {
             clone[0].mbrText = this.mbrText;
             types.append(clone);
         }
-        var group = mbr.attr("group")
+        var group = mbr.attr("group");
         var groupParent = groupParents[group];
         if (groupParent != undefined) {
             var types = $("> .types > ol", groupParent);
@@ -333,7 +332,7 @@ function initInherit() {
             clone[0].mbrText = this.mbrText;
             values.append(clone);
         }
-        var group = mbr.attr("group")
+        var group = mbr.attr("group");
         var groupParent = groupParents[group];
         if (groupParent != undefined) {
             var values = $("> .values > ol", groupParent);
@@ -347,16 +346,21 @@ function initInherit() {
         }
     });
     $("#inheritedMembers > div.parent").each(function() {
-        if ($("> div.members", this).length == 0) { $(this).remove(); };
+        if ($("> div.members", this).length == 0) {
+            $(this).remove();
+        }
     });
     $("#inheritedMembers > div.conversion").each(function() {
-        if ($("> div.members", this).length == 0) { $(this).remove(); };
+        if ($("> div.members", this).length == 0) {
+            $(this).remove();
+        }
     });
     $("#groupedMembers > div.group").each(function() {
-        if ($("> div.members", this).length == 0) { $(this).remove(); };
+        if ($("> div.members", this).length == 0) {
+            $(this).remove();
+        }
     });
-};
-
+}
 /* filter used to take boolean scrollToMember */
 function filter() {
     var query = $.trim($("#textfilter input").val()).toLowerCase();
@@ -429,13 +433,13 @@ function filter() {
               mbr.hide();
               return;
             }
-          };
-          for (var i = 0; i < hiddenSuperclassesImplicits.length; i++) {
+          }
+            for (var i = 0; i < hiddenSuperclassesImplicits.length; i++) {
             if (hiddenSuperclassesImplicits[i] == owner) {
               mbr.hide();
               return;
             }
-          };
+          }
         }
         if (query && !(queryRegExp.test(name) || queryRegExp.test(this.mbrText))) {
           mbr.hide();
@@ -449,11 +453,9 @@ function filter() {
         members.show();
       else
         members.hide();
-    };
-
+    }
     return false;
-};
-
+}
 function windowTitle()
 {
     try {
@@ -463,4 +465,5 @@ function windowTitle()
       // Chrome doesn't allow settings the parent's title when
       // used on the local file system.
     }
-};
+}
+
