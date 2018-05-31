@@ -3,9 +3,9 @@ package tcs.examples.bitcoin.mongo
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.DatabaseSettings
+import tcs.externaldata.rates.BitcoinRates
 import tcs.mongo.Collection
 import tcs.utils.converter.DateConverter
-import tcs.externaldata.rates.BitcoinRates
 
 /**
   * Created by Livio on 13/06/2017.
@@ -15,11 +15,11 @@ object TxWithRates {
   def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mongo = new DatabaseSettings("myDatabase")
+    val mongo = new DatabaseSettings("myDatabase1")
 
     val txWithRates = new Collection("txWithRates", mongo)
 
-    blockchain.end(473100).foreach(block => {
+    blockchain.start(400000).end(473100).foreach(block => {
 
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 

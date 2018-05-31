@@ -12,10 +12,10 @@ object MyBlockchain {
     val fuseki = new DatabaseSettings("myBlockchain", Fuseki)
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, true))
-    val modell : GraphModel = new GraphModel(fuseki)
-    blockchain.start(1).end(276089).foreach(block => {
+    val model : GraphModel = new GraphModel(fuseki)
+    blockchain.start(1).end(3).foreach(block => {
 
-      modell.addStatements(BlockchainURI.BLOCK + block.height.toString,
+      model.addStatements(BlockchainURI.BLOCK + block.height.toString,
         List(
           (BlockchainURI.SIZE, block.size.toString()),
           (BlockchainURI.HEIGHT, block.height.toString())
@@ -23,7 +23,7 @@ object MyBlockchain {
       )
 
       block.txs.foreach(tx => {
-        modell.addStatements(
+        model.addStatements(
           BlockchainURI.TX + tx.hash.toString,
           List(
             (BlockchainURI.TXHASH, tx.hash.toString),
@@ -35,7 +35,7 @@ object MyBlockchain {
         )
 
         tx.inputs.foreach(in => {
-          modell.addStatements(
+          model.addStatements(
             BlockchainURI.IN + in.redeemedTxHash.toString + "/" + in.sequenceNo.toString,
             List(
               (BlockchainURI.REDEEMEDTXHASH, in.redeemedTxHash.toString),
@@ -51,7 +51,7 @@ object MyBlockchain {
         })
 
         tx.outputs.foreach(out => {
-          modell.addStatements(
+          model.addStatements(
             BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
             List(
               (BlockchainURI.INDEX, out.index.toString),
@@ -68,7 +68,7 @@ object MyBlockchain {
         println(block.height)
       }
     })
-    modell.commit()
+    model.commit()
 
   }
 }
