@@ -35,8 +35,8 @@ Generally speaking the framework needs at least one blockchain client and one DB
     * use the command line in place of an IDE (Install [SBT](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html))
 
 
-#### Bitcoin prerequisites - Segwit 
-This instructions are needed only for performing analyses on Bitcoin. 
+#### Bitcoin prerequisites
+This step is required to sucessfully compile the project.
 
 Before building the project, execute the following commands:
 
@@ -48,6 +48,19 @@ mvn install -DskipTests
 cd core
 mvn install -DskipTests
 ```
+#### Litecoin prerequisites
+This step is required to sucessfully compile the project.
+
+Before building the project, execute the following commands:
+
+```bash
+git clone https://github.com/litecoinj-unica/litecoinj.git
+cd litecoinj
+mvn install -DskipTests
+cd core
+mvn install -DskipTests
+```
+
 #### Ethereum prerequisites - ICO Analytics
 This instructions are needed only for performing analyses on Ethereum.
 
