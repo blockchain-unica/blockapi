@@ -3,8 +3,8 @@ package tcs.examples.bitcoin.mongo
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.DatabaseSettings
-import tcs.mongo.Collection
 import tcs.externaldata.metadata.MetadataParser
+import tcs.mongo.Collection
 
 /**
   * Created by Livio on 14/06/2017.
@@ -12,8 +12,8 @@ import tcs.externaldata.metadata.MetadataParser
 object OpReturnOutputs {
   def main(args: Array[String]): Unit ={
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("bitcoin", "L4mbWnzC35BNrmTJ", "80", "co2.unica.it", MainNet))
-    //val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+    //val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("bitcoin", "L4mbWnzC35BNrmTJ", "80", "co2.unica.it", MainNet))
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
 
     val mongo = new DatabaseSettings("myDatabase1")
 

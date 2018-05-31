@@ -3,8 +3,8 @@ package tcs.examples.bitcoin.mongo
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.DatabaseSettings
-import tcs.mongo.Collection
 import tcs.externaldata.rates.BitcoinRates
+import tcs.mongo.Collection
 
 object BlockchainForPonzi {
   def main(args: Array[String]): Unit = {
@@ -14,14 +14,17 @@ object BlockchainForPonzi {
 
     val myBlockchain = new Collection("transaction", mongo)
 
-    blockchain.end(515000).foreach(block => {
+    val startTime = System.currentTimeMillis() / 1000
+
+
+    blockchain.start(492575).end(515000).foreach(block => {
 
       if (block.height % 10000 == 0) println("Block: " + block.height)
 
       block.txs.foreach(tx => {
+
         myBlockchain.append(List(
           "txid" -> tx.hash.toString,
-          "blockhash" -> block.hash.toString,
           "time" -> block.date.getTime,
 
           if (tx.inputs.head.redeemedOutIndex != -1) {
@@ -38,14 +41,20 @@ object BlockchainForPonzi {
                 List(o.getAddress(MainNet).getOrElse("").toString)
             ))
           ,
-          "blockheight" -> block.height
-          ,
           "rate" -> BitcoinRates.getRate(block.date)
         ))
+
+
 
       })
     })
 
+
     myBlockchain.close
+    println("Done")
+
+    val totalTime = System.currentTimeMillis() / 1000 - startTime
+
+    println("Total time: " + totalTime)
   }
 }
