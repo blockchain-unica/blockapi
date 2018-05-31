@@ -31,11 +31,14 @@ object Pools {
   val F2POOL2 = "f2pool_2"
 
   val GBMINERS = "GBMiners"
+  val GIVEMECOINS = "Give-Me-Coins.com"
 
   val KANOPOOL = "KanoPool"
 
   val LTCTOP = "LTC.TOP"
   val LITECOINPOOL = "LitecoinPool.org"
+
+  val MPH = "Mining Pool Hub"
 
   val NANOPOOL = "Nanopool"
 
@@ -56,4 +59,6 @@ object Pools {
   val WATERHOLE = "waterhole"
 
   val XNPOOL = "xnpool.cn"
+
+  val ZPOOL = "zpool.ca"
 }

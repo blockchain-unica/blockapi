@@ -45,12 +45,8 @@ object MyBlockchainLite{
       sql"""insert into output(transactionHash, outputScript) values (?, ?)""",
       mySQL)
 
-    /** There's an issue in bitcoinj/litecoinj's Message.java that doesn't allow
-      * blocks after 481.823 in Bitcoin Blockchain and 1.200.000 in
-      * Litecoin Blockchain to be examined.
-      */
 
-    blockchain.end(1200000).foreach(block => {
+    blockchain.foreach(block => {
       block.txs.foreach(tx => {
 
         txTable.insert(Seq(tx.hash.toString, block.hash.toString, convertDate(block.date)))
@@ -60,7 +56,13 @@ object MyBlockchainLite{
         tx.outputs.foreach(out => { outTable.insert(Seq(tx.hash.toString, out.outScript.toString)) })
       })
 
-      if (block.height % 10000 == 0)
+      /**Litecoin blockchain is made by 1.5M blocks that are a lot smaller than BTC ones.
+        * It works fast enough to keep track of progress every 10000 blocks for values <= 1000000
+        * when it slows down noticeably and it's better to track progress every 1000 blocks.
+        */
+
+      if ( ((block.height <= 1000000) && (block.height% 10000 == 0)) ||
+         (block.height% 1000 == 0) )
         println(block.height)
     })
 

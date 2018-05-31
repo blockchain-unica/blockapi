@@ -6,9 +6,7 @@ import tcs.externaldata.metadata.MetadataParser
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
-/**
-  * Created by Giulia on 14/06/2017.
-  */
+
 object OpReturnOutputsLite {
   def main(args: Array[String]): Unit ={
 

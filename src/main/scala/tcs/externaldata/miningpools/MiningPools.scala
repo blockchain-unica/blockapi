@@ -72,10 +72,8 @@ object MiningPools {
   }
 
   /** Antpool, BTCChina, ViaBTC, BW and F2Pool mine LTC too.
-    * Currently searching for others LTC pools hex sign
-    * Will add them soon.
     * LTCTOP, LitecoinPool, BW and some F2Pool identifiers
-    * found by coinbase hex
+    * found
     */
   def getLitecoinPool(transaction: LitecoinTransaction): String = {
 
@@ -93,6 +91,9 @@ object MiningPools {
           if (hex.contains("42570a665704") ||
             hex.contains("2f42572f") ||
             hex.contains("425720506f6f6c")) return Pools.BW
+          if (hex.contains("2e7a706f6f6c2e6361")) return Pools.ZPOOL
+          if (hex.contains("2f6d70682f")) return Pools.MPH
+          if (hex.contains("474956452d4d452d434f494e532e636f6d")) return Pools.GIVEMECOINS
           // F2Pool does not have a unique identifier
           // Found some more F2Pool identifiers for Litecoin
           if (hex.contains("777868") ||

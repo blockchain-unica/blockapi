@@ -24,9 +24,9 @@ object LitecoinPools{
       mySQL)
 
 
-    blockchain.start(800000).end(1200000).foreach(block => {
+    blockchain.foreach(block => {
         txTable.insert(Seq(block.hash.toString(), convertDate(block.date), block.getMiningPool()))
-        if(block.height%100000==0)
+        if(block.height % 10000 == 0)
           println("Done working on block @ height " + block.height)
     })
 
