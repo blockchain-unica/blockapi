@@ -11,6 +11,8 @@ resolvers ++= Seq(
   Resolver.sonatypeRepo("snapshots")
 )
 
+libraryDependencies += "net.liftweb" %% "lift-json" % "3.0.1"
+
 libraryDependencies += "net.ruippeixotog" %% "scala-scraper" % "2.0.0"
 
 libraryDependencies += "org.web3j" % "core" % "3.2.0"
