@@ -47,4 +47,4 @@ libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.2"
 
 libraryDependencies += "org.apache.jena" % "apache-jena-libs" % "3.7.0"
 
-
+libraryDependencies += "org.litecoinj" % "litecoinj-core" % "0.15-SNAPSHOT"
