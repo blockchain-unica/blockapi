@@ -14,8 +14,8 @@ import tcs.utils.converter.DateConverter.convertDate
 object MyBlockchain{
   def main(args: Array[String]): Unit ={
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mySQL = new DatabaseSettings("myblockchain", MySQL, "user", "password")
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("alice", "8ak1gI25KFTvjovL3gAM967mies3E=", "8332", MainNet))
+    val mySQL = new DatabaseSettings("myblockchain", MySQL, "alice", "Djanni74!")
 
     val startTime = System.currentTimeMillis()/1000
 
