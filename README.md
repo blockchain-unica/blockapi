@@ -1,3 +1,4 @@
+
 # BlockAPI: Blockchain analytics API
 A Scala framework for the development of general-purpose analytics on blockchains, maintained by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu) and [Stefano Lande](http://tcs.unica.it/members/stefano-lande) of the [Blockchain@Unica Lab](http://blockchain.unica.it) at the University of Cagliari.
 
@@ -7,8 +8,8 @@ The workflow consists in two steps:
 1. construct a view of the blockchain and save it in a database;
 2. analyse the view by using the query language of the database.
 
-The blockchains currently supported are Bitcoin and Ethereum.
-The DBMS currently supported are MongoDB and MySQL.
+The blockchains currently supported are Bitcoin, Litecoin, and  Ethereum.
+The DBMS currently supported are MongoDB, MySQL, PostgreSQL, and Fuseki.
 
 The library is dicussed in [A general framework for blockchain analytics](https://www.researchgate.net/publication/321415812_A_general_framework_for_blockchain_analytics),
 in proceeding of the [SERIAL workshop 2017](https://serial17.ibr.cs.tu-bs.de/).
@@ -25,6 +26,7 @@ Generally speaking the framework needs at least one blockchain client and one DB
 1. Blockchain clients:
     * [Bitcoin Core](https://bitcoin.org/en/bitcoin-core/) (extracts data from Bitcoin)
     * [Parity](https://parity.io/) (extracts data from Ethereum)
+    * [Litecoin Core](https://litecoin.org/#download) (extracts data from Litecoin)
 2. DBMS:
     * [MongoDB](https://www.mongodb.com/what-is-mongodb) (constructs a NoSQL view of the data)
     * [MySQL](https://www.mysql.com/) (constructs a SQL view of the data)
@@ -34,12 +36,11 @@ Generally speaking the framework needs at least one blockchain client and one DB
     * use an IDE for executing a Scala SBT project (we used [IntelliJ IDEA](https://www.jetbrains.com/idea/)) or
     * use the command line in place of an IDE (Install [SBT](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html))
 
-
-#### Bitcoin prerequisites
+#### Required libraries
 This step is required to sucessfully compile the project.
-
 Before building the project, execute the following commands:
 
+##### Bitcoinj 
 ```bash
 git clone https://github.com/bitbart/bitcoinj.git
 cd bitcoinj
@@ -48,11 +49,7 @@ mvn install -DskipTests
 cd core
 mvn install -DskipTests
 ```
-#### Litecoin prerequisites
-This step is required to sucessfully compile the project.
-
-Before building the project, execute the following commands:
-
+##### Litecoinj
 ```bash
 git clone https://github.com/litecoinj-unica/litecoinj.git
 cd litecoinj
@@ -61,8 +58,10 @@ cd core
 mvn install -DskipTests
 ```
 
-#### Ethereum prerequisites - ICO Analytics
-This instructions are needed only for performing analyses on Ethereum.
+#### Analysis dependent prerequisites 
+
+##### ICO Analytics
+This instructions are needed only for performing analyses on ICO on Ethereum.
 
 In order to use the `ICO` class (created to retrieve ICOs data) you must require the respective API keys:
 1. [EtherScan](https://etherscan.io) 
@@ -101,12 +100,17 @@ Our framework will build the selected database. Then you can query it for perfor
 For each available Scala script, we provide some default [queries along with the resulting csv files](https://github.com/bitbart/blockchain-analytics-api/tree/master/queries).
 
 ### Acknowledgments
-The authors thank the following students of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions: 
+The authors thank the following developers of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions. 
 
-   * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei) - Improvements on software architecture
+Members of Blockchain@Unica lab:
+   * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei), [Sergio Serusi](https://sites.google.com/site/tcsunica/members/sergio-serusi) - Improvements on software architecture and testing
+   
+Interns at Blockchain@Unica lab:
    * [Daniele Stefano Ferru](https://github.com/ferruvich) - Introduction of Ethereum blockchain, analysis of ICOs
    * [Davide Curcio](https://github.com/davidecurcio) - Fuseki Database
    * [Antonio Sanna](https://github.com/TonioMeepo) - Bitcoin mempool
+   
+Students of the Cybersecurity course:
    * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Empty blocks on Ethereum
    * [Giacomo Corrias](https://www.linkedin.com/in/giacomo-corrias-a730b7160/), [Francesco Pisu](https://www.linkedin.com/in/francesco-pisu-b07a3b13a/) - Empty blocks on Bitcoin
    * [Giancarlo Lelli](https://www.linkedin.com/in/giancarlolelli/) - Bitcoin pools
