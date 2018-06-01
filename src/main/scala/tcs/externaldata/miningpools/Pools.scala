@@ -6,6 +6,7 @@ object Pools {
 
   val ANTPOOL = "AntPool"
 
+  val BATPOOL = "BatPool"
   val BITCLUBNETWORK  = "Bitclub Network"
   val BITCLUBPOOL = "bitclubpool"
   val BITCOINCOM = "Bitcoin.com"
@@ -50,6 +51,7 @@ object Pools {
   val SPARKPOOL = "Sparkpool"
   val SLUSHPOOL = "SlushPool"
 
+  val TBDICE = "TBDice"
   val TWETH = "TwethPool"
 
   val UNKNOWN = "Unknown"

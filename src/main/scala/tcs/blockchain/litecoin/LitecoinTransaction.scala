@@ -19,7 +19,7 @@ import scala.collection.mutable.ListBuffer
   */
 
 class LitecoinTransaction(
-                          override val hash: String, /*scrypt?*/
+                          override val hash: String,
                           override val date: Date,
 
                           val txSize: Int,

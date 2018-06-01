@@ -34,7 +34,7 @@ object LitecoinBalances {
 
     // - Slice of blockchain to analyse
     val startingBlock = 0
-    val endingBlock = 100000
+    val endingBlock = 500000
 
     // - Get blockchain slice
     var litecoinBlockchain = BlockchainLib.getLitecoinBlockchain(litecoindSett)

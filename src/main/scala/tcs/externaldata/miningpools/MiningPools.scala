@@ -82,19 +82,21 @@ object MiningPools {
       if (programByte != null) {
         val hex: String = programByte.map("%02x".format(_)).mkString
         if (hex != "") {
-
+          if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
+          if (hex.contains("416e74506f6f6c3")) return Pools.ANTPOOL
           if (hex.contains("42544343")) return Pools.BTCCPOOL
           if (hex.contains("4c54432e544f50")) return Pools.LTCTOP
           if (hex.contains("566961425443")) return Pools.VIABTC
-          if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
-          if (hex.contains("416e74506f6f6c3")) return Pools.ANTPOOL
+          if (hex.contains("2e7a706f6f6c2e6361")) return Pools.ZPOOL
+          if (hex.contains("2f6d70682f")) return Pools.MPH
+          if (hex.contains("544244696365")) return Pools.TBDICE
+          if (hex.contains("474956452d4d452d434f494e532e636f6d")) return Pools.GIVEMECOINS
+          if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
+          if (hex.contains("424154504f4f4c")) return Pools.BATPOOL
+
           if (hex.contains("42570a665704") ||
             hex.contains("2f42572f") ||
             hex.contains("425720506f6f6c")) return Pools.BW
-          if (hex.contains("2e7a706f6f6c2e6361")) return Pools.ZPOOL
-          if (hex.contains("2f6d70682f")) return Pools.MPH
-          if (hex.contains("474956452d4d452d434f494e532e636f6d")) return Pools.GIVEMECOINS
-          if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
           // F2Pool does not have a unique identifier
           // Found some more F2Pool identifiers for Litecoin
           if (hex.contains("777868") ||
