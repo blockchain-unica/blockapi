@@ -104,9 +104,11 @@ The authors thank the following students of the Department of Mathematics and Co
    * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei), [Sergio Serusi](https://sites.google.com/site/tcsunica/members/sergio-serusi) - Improvements on software architecture and testing
    
    
+   
    * [Daniele Stefano Ferru](https://github.com/ferruvich) - Introduction of Ethereum blockchain, analysis of ICOs
    * [Davide Curcio](https://github.com/davidecurcio) - Fuseki Database
    * [Antonio Sanna](https://github.com/TonioMeepo) - Bitcoin mempool
+   
    
    
    * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Empty blocks on Ethereum
