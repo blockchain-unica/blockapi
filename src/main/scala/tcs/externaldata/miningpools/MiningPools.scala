@@ -94,6 +94,7 @@ object MiningPools {
           if (hex.contains("2e7a706f6f6c2e6361")) return Pools.ZPOOL
           if (hex.contains("2f6d70682f")) return Pools.MPH
           if (hex.contains("474956452d4d452d434f494e532e636f6d")) return Pools.GIVEMECOINS
+          if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
           // F2Pool does not have a unique identifier
           // Found some more F2Pool identifiers for Litecoin
           if (hex.contains("777868") ||
@@ -107,6 +108,19 @@ object MiningPools {
             hex.contains("6c69616e74616e6731") ||
             hex.contains("6c717931")
           ) return Pools.F2POOL
+
+          /**ProHashing signs his blocks with a random string of 10 characters 0-9 or A-Z (only capital)
+            * Therefore identifiers are virtually infinite, so I identify them with a pattern
+            * The regex catches succesfully all ProHashing blocks but I'm improving it to avoid collisions
+            * Collision risk is minimized by calling the regex only after excluding
+            * the block has been mined by all the other pools I know
+            * A collision in blocks before 2016 happened to be another 10 char signature,
+            * CoinMinePW
+            */
+
+          //if it isn't a generic nodeStratum signature
+          if((!hex.contains("6e6f64655374726174756d")) && hex.matches(".*2f[a-f||0-9]{20}2f"))  return Pools.PROHASHING
+          //then if it matches this regex it's a block mined by PH
         }
       }
     }
