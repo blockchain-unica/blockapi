@@ -1,3 +1,4 @@
+
 # BlockAPI: Blockchain analytics API
 A Scala framework for the development of general-purpose analytics on blockchains, maintained by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu) and [Stefano Lande](http://tcs.unica.it/members/stefano-lande) of the [Blockchain@Unica Lab](http://blockchain.unica.it) at the University of Cagliari.
 
@@ -99,18 +100,17 @@ Our framework will build the selected database. Then you can query it for perfor
 For each available Scala script, we provide some default [queries along with the resulting csv files](https://github.com/bitbart/blockchain-analytics-api/tree/master/queries).
 
 ### Acknowledgments
-The authors thank the following students of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions: 
+The authors thank the following developers of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions. 
 
+Members of Blockchain@Unica lab:
    * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei), [Sergio Serusi](https://sites.google.com/site/tcsunica/members/sergio-serusi) - Improvements on software architecture and testing
    
-   
-   
+Interns at Blockchain@Unica lab:
    * [Daniele Stefano Ferru](https://github.com/ferruvich) - Introduction of Ethereum blockchain, analysis of ICOs
    * [Davide Curcio](https://github.com/davidecurcio) - Fuseki Database
    * [Antonio Sanna](https://github.com/TonioMeepo) - Bitcoin mempool
    
-   
-   
+Students of the Cybersecurity course:
    * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Empty blocks on Ethereum
    * [Giacomo Corrias](https://www.linkedin.com/in/giacomo-corrias-a730b7160/), [Francesco Pisu](https://www.linkedin.com/in/francesco-pisu-b07a3b13a/) - Empty blocks on Bitcoin
    * [Giancarlo Lelli](https://www.linkedin.com/in/giancarlolelli/) - Bitcoin pools
