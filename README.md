@@ -57,8 +57,10 @@ cd core
 mvn install -DskipTests
 ```
 
-#### Ethereum prerequisites - ICO Analytics
-This instructions are needed only for performing analyses on Ethereum.
+#### Analysis dependent prerequisites 
+
+##### ICO Analytics
+This instructions are needed only for performing analyses on ICO on Ethereum.
 
 In order to use the `ICO` class (created to retrieve ICOs data) you must require the respective API keys:
 1. [EtherScan](https://etherscan.io) 
