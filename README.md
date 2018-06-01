@@ -101,10 +101,14 @@ For each available Scala script, we provide some default [queries along with the
 ### Acknowledgments
 The authors thank the following students of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions: 
 
-   * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei) - Improvements on software architecture
+   * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei), [Sergio Serusi](https://sites.google.com/site/tcsunica/members/sergio-serusi) - Improvements on software architecture and testing
+   
+   
    * [Daniele Stefano Ferru](https://github.com/ferruvich) - Introduction of Ethereum blockchain, analysis of ICOs
    * [Davide Curcio](https://github.com/davidecurcio) - Fuseki Database
    * [Antonio Sanna](https://github.com/TonioMeepo) - Bitcoin mempool
+   
+   
    * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Empty blocks on Ethereum
    * [Giacomo Corrias](https://www.linkedin.com/in/giacomo-corrias-a730b7160/), [Francesco Pisu](https://www.linkedin.com/in/francesco-pisu-b07a3b13a/) - Empty blocks on Bitcoin
    * [Giancarlo Lelli](https://www.linkedin.com/in/giancarlolelli/) - Bitcoin pools
