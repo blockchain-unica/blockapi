@@ -7,8 +7,8 @@ The workflow consists in two steps:
 1. construct a view of the blockchain and save it in a database;
 2. analyse the view by using the query language of the database.
 
-The blockchains currently supported are Bitcoin and Ethereum.
-The DBMS currently supported are MongoDB and MySQL.
+The blockchains currently supported are Bitcoin, Litecoin, and  Ethereum.
+The DBMS currently supported are MongoDB, MySQL, PostgreSQL, and Fuseki.
 
 The library is dicussed in [A general framework for blockchain analytics](https://www.researchgate.net/publication/321415812_A_general_framework_for_blockchain_analytics),
 in proceeding of the [SERIAL workshop 2017](https://serial17.ibr.cs.tu-bs.de/).
