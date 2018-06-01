@@ -20,6 +20,7 @@ object Pools {
   val BTCTOP = "BTC.TOP"
   val BW = "BW.COM"
 
+  val CLEVERMINING = "CleverMining"
   val COINMINE = "CoinMine"
   val COINOTRON2 = "Coinotron_2"
   val CONNECTED = "ConnectedBTC"

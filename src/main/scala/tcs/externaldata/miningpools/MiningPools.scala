@@ -83,7 +83,7 @@ object MiningPools {
         val hex: String = programByte.map("%02x".format(_)).mkString
         if (hex != "") {
           if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
-          if (hex.contains("416e74506f6f6c3")) return Pools.ANTPOOL
+          if (hex.contains("416e74506f6f6c")) return Pools.ANTPOOL
           if (hex.contains("42544343")) return Pools.BTCCPOOL
           if (hex.contains("4c54432e544f50")) return Pools.LTCTOP
           if (hex.contains("566961425443")) return Pools.VIABTC
@@ -110,6 +110,15 @@ object MiningPools {
             hex.contains("6c69616e74616e6731") ||
             hex.contains("6c717931")
           ) return Pools.F2POOL
+
+
+          /**CleverMining seem to have used /CMxxxxxxxx/ as signature in the past (around 2014)
+            * es: CMeu000000 or CMus123456, that seems to follow the pattern CM[country][6 digits]
+            * Not being fully sure about [country] field I used a wide regex
+            * for catching all blocks signed /CM.../
+            */
+
+          if(hex.matches(".*2f434d.{16}2f.*")) return Pools.CLEVERMINING
 
           /**ProHashing signs his blocks with a random string of 10 characters 0-9 or A-Z (only capital)
             * Therefore identifiers are virtually infinite, so I identify them with a pattern
