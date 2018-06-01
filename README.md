@@ -25,6 +25,7 @@ Generally speaking the framework needs at least one blockchain client and one DB
 1. Blockchain clients:
     * [Bitcoin Core](https://bitcoin.org/en/bitcoin-core/) (extracts data from Bitcoin)
     * [Parity](https://parity.io/) (extracts data from Ethereum)
+    * [Litecoin Core](https://litecoin.org/#download) (extracts data from Litecoin)
 2. DBMS:
     * [MongoDB](https://www.mongodb.com/what-is-mongodb) (constructs a NoSQL view of the data)
     * [MySQL](https://www.mysql.com/) (constructs a SQL view of the data)
@@ -34,12 +35,11 @@ Generally speaking the framework needs at least one blockchain client and one DB
     * use an IDE for executing a Scala SBT project (we used [IntelliJ IDEA](https://www.jetbrains.com/idea/)) or
     * use the command line in place of an IDE (Install [SBT](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html))
 
-
-#### Bitcoin prerequisites
+#### Required libraries
 This step is required to sucessfully compile the project.
-
 Before building the project, execute the following commands:
 
+##### Bitcoinj 
 ```bash
 git clone https://github.com/bitbart/bitcoinj.git
 cd bitcoinj
@@ -48,11 +48,7 @@ mvn install -DskipTests
 cd core
 mvn install -DskipTests
 ```
-#### Litecoin prerequisites
-This step is required to sucessfully compile the project.
-
-Before building the project, execute the following commands:
-
+##### Litecoinj
 ```bash
 git clone https://github.com/litecoinj-unica/litecoinj.git
 cd litecoinj
