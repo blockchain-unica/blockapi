@@ -106,6 +106,7 @@ Members of Blockchain@Unica lab:
    * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei), [Sergio Serusi](https://sites.google.com/site/tcsunica/members/sergio-serusi) - Improvements on software architecture and testing
    
 Interns at Blockchain@Unica lab:
+   * [Giulia Argiolas](https://github.com/giuliamorgen) - Introduction of Litecoin blockchain
    * [Daniele Stefano Ferru](https://github.com/ferruvich) - Introduction of Ethereum blockchain, analysis of ICOs
    * [Davide Curcio](https://github.com/davidecurcio) - Fuseki Database
    * [Antonio Sanna](https://github.com/TonioMeepo) - Bitcoin mempool
@@ -123,5 +124,5 @@ Students of the Cybersecurity course:
    * [Andrea Demontis](https://github.com/AndreaDemontis), [Stefano Dessì](https://github.com/StefanoDessi) - Balances of Bitcoin addresses
    * [Federica Gerina](https://www.linkedin.com/in/federica-gerina-961765132/), [Silvia Maria Massa](https://www.linkedin.com/in/silvia-maria-massa-2072a6163/), [Francesca Moi](https://www.linkedin.com/in/francesca-moi-3582b9164/) - State of the DAPPS
    * [Giuseppina Lai](https://www.linkedin.com/in/giusy-lai-ba8175b1/), [Federica Muceli](), [Federico Spiga]() - UTXO set
-
-     
+   
+   
