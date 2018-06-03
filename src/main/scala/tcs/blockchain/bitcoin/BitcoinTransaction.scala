@@ -36,10 +36,12 @@ class BitcoinTransaction(
                           val lock_time: Long) extends TCSTransaction{
 
   /**
-    * Returns the 'Relayed By'field representing the ip address of the node
+    * Returns the 'Relayed By' field representing the ip address of the node
     * from which the explorer received the transaction
-    * Api from Blockcypher (http://www.blockcypher.com)
-    * @return 'relayed by' value
+    * Blockcypher APIs and Token are used (http://www.blockcypher.com)
+    * Documentation (https://www.blockcypher.com/dev/dash/)
+    *
+    * @return 'relayed by' value (string)
     */
   def getIP(): String = {
 
@@ -70,7 +72,7 @@ class BitcoinTransaction(
 
     var jsearch = (jValue \\ "relayed_by").children
 
-    // if 'relayed_by' field is not present return 0 (string)
+    // if 'relayed_by' field is not present return "0" (string)
     if (jsearch.isEmpty == true) {
       return "0"
     }

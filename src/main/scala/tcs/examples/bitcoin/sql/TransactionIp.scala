@@ -32,7 +32,7 @@ object TransactionIp {
 
     val testIP = new IP()
     var i = 1
-    blockchain.start(394987).end(394987).foreach(block => {
+    blockchain.start(421000).end(421000).foreach(block => {
       block.txs.foreach(tx => {
 
         val ip = tx.getIP()
@@ -41,20 +41,16 @@ object TransactionIp {
         // insert into table transaction
         txTable.insert(Seq(tx.hash.toString, convertDate(block.date), ip, country))
 
+        // Timesleep necessary to observe the free Blockcypher plan (see https://www.blockcypher.com/dev/faq/)
         Thread.sleep(20000)
 
-//        val url = "https://api.blockcypher.com/v1/btc/main/txs/f854aebae95150b379cc1187d848d58225f3c4157fe992bcd166f58bd5063449"
-//
-//        println(httprequester.HttpRequester.get(url))
         println(i)
         i+=1
         println(ip)
         println(country)
         println("-----------")
-//        Thread.sleep(22000)
 
       }) // end txs
-
     }) // end block
 
     txTable.close
