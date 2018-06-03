@@ -11,11 +11,11 @@ import tcs.utils._
 /**
   * Created by Livio on 14/06/2017.
   */
-object TransactionIp {
+object Test {
   def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("alice", "8ak1gI25KFTvjovL3gAM967mies3E=", "8332", MainNet))
-    val mySQL = new DatabaseSettings("transactionip", MySQL, "alice", "Djanni74!")
+    val mySQL = new DatabaseSettings("offline", MySQL, "alice", "Djanni74!")
 
     val startTime = System.currentTimeMillis() / 1000
 
@@ -35,25 +35,27 @@ object TransactionIp {
     blockchain.start(421000).end(421000).foreach(block => {
       block.txs.foreach(tx => {
 
-        val ip = tx.getIP()
-        val country = testIP.getCountry(ip)
 
         // insert into table transaction
-        txTable.insert(Seq(tx.hash.toString, convertDate(block.date), ip, country))
+       // txTable.insert(Seq(tx.hash.toString, convertDate(block.date), ip, country))
 
-        // Timesleep necessary to observe the free Blockcypher plan (see https://www.blockcypher.com/dev/faq/)
-        Thread.sleep(20000)
+        //Thread.sleep(20000)
 
+        //        val url = "https://api.blockcypher.com/v1/btc/main/txs/f854aebae95150b379cc1187d848d58225f3c4157fe992bcd166f58bd5063449"
+        //
+        //        println(httprequester.HttpRequester.get(url))
+    println("inizio")
+    val country = testIP.getCountry("172.31.52.25") // questo mi da geoip vuoto
         println(i)
         i+=1
-        println(ip)
         println(country)
         println("-----------")
 
       }) // end txs
+
     }) // end block
 
-    txTable.close
+    //txTable.close
 
     val totalTime = System.currentTimeMillis() / 1000 - startTime
 
