@@ -39,6 +39,7 @@ class BitcoinTransaction(
     * Returns the 'Relayed By' field representing the ip address of the node
     * from which the explorer received the transaction
     * Blockcypher APIs and Token are used (http://www.blockcypher.com)
+    * The net.liftweb.json libraries are used to parse the data
     * Documentation (https://www.blockcypher.com/dev/dash/)
     *
     * @return 'relayed by' value (string)

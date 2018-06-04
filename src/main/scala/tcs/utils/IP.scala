@@ -10,7 +10,7 @@ class IP {
 
   /**
     * This method receives as input an ip address (string) and returns the name of the country of origin (string)
-    * The APIs of GeoIP are used (https://geoip.nekudo.com/) are used for geolocation
+    * The APIs of GeoIP are used (https://geoip.nekudo.com/) for geolocation
     * The net.liftweb.json libraries are used to parse the data
     * GeoIP can not always associate a country with a specific IP address:
     * in this case, the code handles the MappingException exception
