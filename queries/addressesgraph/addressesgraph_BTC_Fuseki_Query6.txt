@@ -1,11 +1,14 @@
-#To which addresses, an address have been sent bitcoin
+#To which addresses, an address sent bitcoin
 PREFIX prop: <http://blockchain/properties#>
-SELECT ?address ?value	?address2
+SELECT ?address ?value	?address2	?date
 WHERE {
   ?addr	prop:addressProp	?address;
         prop:sentTo			?tx2.
   ?tx2	prop:value			?value;
-		prop:forwardAddr	?addr2.
+       	prop:tx_info		?tx_info;
+        prop:forwardAddr	?addr2.
+
+  ?tx_info	prop:date		?date.
 
   ?addr2 prop:addressProp	?address2
 
