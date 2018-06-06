@@ -11,9 +11,25 @@ import scala.collection.mutable
 import scala.util.control.Breaks._
 import scala.collection.mutable.ArrayBuffer
 
+/**
+  * Creates an rdf graph that represents a graph of transactions. If you decide to create a graph with "Back" direction,
+  * the code starts from a transaction, makes a research about backward transactions, and store transaction data into
+  * the database. Instead if you decide to create a graph with "Forward" direction, the code starts from a transaction,
+  * makes a research about forward transactions, and store transaction data into the database. You can also create both
+  * graphs with setting "Both"
+  *
+  * @param tx_hash Transaction hash
+  * @param depth   Max depth of the graph
+  * @param startBlock First block in the graph creation
+  * @param endBlock Last block in the graph creation
+  * @param network Either Bitcoin Main network or Bitcoin Test network.
+  */
+
 class TxsGraph(
                 val tx_hash: String = "",
                 val depth: Int = 4,
+                val startBlock: Long = 1l,
+                val endBlock: Long = 300000l,
                 val network: Network = MainNet
               ) {
 
@@ -24,9 +40,6 @@ class TxsGraph(
   val model: GraphModel = new GraphModel(fuseki)
 
   var fst_model: Boolean = true
-
-  var startBlock: Long = 1l
-  var endBlock: Long = 300000l
 
   def startTxsGraph(side: Direction = Both): Unit = {
     if (side.equals(Back))
@@ -47,6 +60,12 @@ class TxsGraph(
     model.datasetQuery(query)
   }
 
+  /**
+    * Given a transaction, it stores the transaction and their inputs data into the model. Then load into a queue the
+    * transaction hash and the output index informations contain in the input of the transaction. Next, the algorithm
+    * dequeue the element from the queue, search the relative transaction with the function getTransaction(), and load
+    * the transaction and their output addresses into the model. The algorithm runs until the queue is empty.
+    */
   private def backTransactions(): Unit = {
 
     var queue: mutable.Queue[(String, Int, String, Int)] = mutable.Queue()
@@ -162,6 +181,15 @@ class TxsGraph(
     model.commit()
   }
 
+  /**
+    * Given a transaction, it stores the transaction and their outputs data into the model, then stores the
+    * transaction hash, the depth of the transaction relative to the graph, and the output index into a list.
+    * Subsequently the algorithm search in each input, of each transaction, of each forward block, if there's a match to
+    * the transaction hash and output index contained into the input, and the information inside the list. If there's,
+    * the new transaction and their outputs data are loaded into the model. The algorithm run as long as the list is
+    * empty (this happens when all transactions, with a depth less or equal to max depth, have been finded), or if the
+    * final block has been reached.
+    */
   private def forwardTransactions(): Unit = {
 
     var transactionList: ArrayBuffer[(String, Set[Int], List[Int])] = ArrayBuffer()
@@ -334,16 +362,6 @@ class TxsGraph(
     }
     model.commit()
     transactionList.clear()
-  }
-  
-  def start(start: Long): TxsGraph = {
-    startBlock = start
-    this
-  }
-
-  def end(end: Long): TxsGraph = {
-    endBlock = end
-    this
   }
 }
 
