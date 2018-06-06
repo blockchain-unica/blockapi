@@ -16,7 +16,7 @@ import scala.collection.mutable.ArrayBuffer
   * the code starts from a transaction, makes a research about backward transactions, and store transaction data into
   * the database. Instead if you decide to create a graph with "Forward" direction, the code starts from a transaction,
   * makes a research about forward transactions, and store transaction data into the database. You can also create both
-  * graphs with setting "Both"
+  * graphs with settings "Both"
   *
   * @param tx_hash Transaction hash
   * @param depth   Max depth of the graph

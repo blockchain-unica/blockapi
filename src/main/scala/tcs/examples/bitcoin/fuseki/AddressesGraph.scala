@@ -15,7 +15,7 @@ import scala.util.control.Breaks._
   * direction, the code starts from a transaction, makes a backward research of addresses that receive bitcoin from
   * other addresses, and store data into the database. Instead if you decide to create a graph with "Forward" direction,
   * the code starts form a transaction, makes a forward research of addresses that sent bitcoin to other addresses,
-  * and store data into the database. You can also create both graphs with setting "Both".
+  * and store data into the database. You can also create both graphs with settings "Both".
   *
   * @param tx_hash Transaction hash
   * @param depth   Max depth of the graph
