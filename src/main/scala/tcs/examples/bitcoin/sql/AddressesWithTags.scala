@@ -16,7 +16,7 @@ object AddressesWithTags {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mySQL = new DatabaseSettings("outwithtags", MySQL, "user", "password")
-    val tags = new Tag("src/main/scala/tcs/custom/bitcoin/tagsList.txt")
+    val tags = Tag.getTagsFromFile("src/main/scala/tcs/custom/bitcoin/tagsList.txt")
 
     val startTime = System.currentTimeMillis() / 1000
 
@@ -38,9 +38,9 @@ object AddressesWithTags {
         tx.outputs.foreach(out => {
           out.getAddress(MainNet) match {
             case Some(add) =>
-              tags.getValue(add) match {
+              tags.get(add.toString) match {
                 case Some(tag) => {
-                  outTable.insert(Seq(tx.hash.toString, convertDate(block.date), out.value, add.toString, tags.getValue(add)))
+                  outTable.insert(Seq(tx.hash.toString, convertDate(block.date), out.value, add.toString, tags.get(add.toString)))
                 }
                 case None =>
               }

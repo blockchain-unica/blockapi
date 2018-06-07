@@ -4,58 +4,63 @@ import org.bitcoinj.core.Address
 
 import scala.collection.mutable
 import scala.io.Source
-
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.dsl.DSL.{validator, _}
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
+
 import scala.collection.mutable.ListBuffer
 import java.io._
 
 /**
   * Created by Livio on 19/06/2017.
   */
-class Tag(val fileName: String){
-  var map = mutable.TreeMap.empty[String, String]
+object Tag{
 
-  val bufferedSource = Source.fromFile(fileName)
-  for (line <- bufferedSource.getLines) {
-    var strings : Array[String] = line.toString.split(", ")
-    map += (strings(0) -> strings(1))
+  // TODO: Update in order to support blockchaininfoTags.txt file
+  def getTagsFromFile(fileName: String): mutable.TreeMap[String, String] = {
+    var map = mutable.TreeMap.empty[String, String]
+
+    val bufferedSource = Source.fromFile(fileName)
+    for (line <- bufferedSource.getLines) {
+      var strings: Array[String] = line.toString.split(", ")
+      map += (strings(0) -> strings(1))
+    }
+
+    bufferedSource.close
+    return map
   }
 
-  bufferedSource.close
 
-  def getValue(address: Address): Option[String] = {
-    return map.get(address.toString)
-  }
-   
-  def getTags() : Unit = {
+  def getTagsFromBlockchainInfo() : Unit = {
 
     val browser = JsoupBrowser ()
 
     var setDimension = 0
-    var categoria = 1
-    val writer = new BufferedWriter (new FileWriter ("tags.txt"))
+    var category = 1
+    var results = 50  // Each page has 50 results
+    val writer = new BufferedWriter (new FileWriter ("src/main/scala/tcs/externaldata/tags/blockchaininfoTags.txt"))
 
     do {
 
-      categoria += categoria
-      println ("FILTER = " + categoria)
-      var offset = 0 //Imposto offset
+      category += category
+      println ("FILTER = " + category)
+      var offset = 0    // Offset for browsing between pages
 
       do {
 
-        setDimension = 0 //Reset dimensione set caricato
-
+        var setDimension = 0 // Reset dimension
         println ("OFFSET = " + offset)
-        val URL = "https://blockchain.info/it/tags?filter=" + categoria + "&offset=" + offset
+
+        val URL = "https://blockchain.info/it/tags?filter=" + category + "&offset=" + offset
         val htmlPage = browser.get (URL)
         
-        //Estrapolazione Address e Link dalla pagina html
+        // Parsing html page: extract Address e Link
         val rawAddressLinks = htmlPage >> elementList ("td") >?> texts ("a")
-        //Estrapolazione Tag dalla pagina html
+
+        // Parsing html page: extract Tag
         val rawTags = htmlPage >> elementList ("td") >?> texts ("span")
-        //Estrapolazione Verified dalla pagina html
+
+        // Parsing html page: extract Verified
         val rawVerified = htmlPage >> elementList ("td") >?> attr ("src") ("img")
 
         var address = new ListBuffer[String] ()
@@ -63,11 +68,11 @@ class Tag(val fileName: String){
         var tags = new ListBuffer[String] ()
         var verified = new ListBuffer[String] ()
 
-        //Popolamento lista Address e lista Link
+        // Populate Address and Link lists
         for (innerlist <- rawAddressLinks) {
           for (a <- innerlist) {
             for (value <- a) {
-              if (value.isEmpty) { //se non è presente un link viene inserita la stringa empty
+              if (value.isEmpty) { // Insert either URL or "empty"
                 links += "empty"
               }
               else {
@@ -83,9 +88,9 @@ class Tag(val fileName: String){
             }
           }
         }
-        setDimension = address.length //Memorizzo dimensione set caricato
+        setDimension = address.length // Store set size
 
-        //Popolamento lista Tag
+        // Populate Tag list
         for (innerlist <- rawTags) {
           for (value <- innerlist) {
             for (a <- value) {
@@ -94,7 +99,7 @@ class Tag(val fileName: String){
           }
         }
 
-        //Popolamento lista Verified
+        // Populate Verified list
         for (innerlist <- rawVerified) {
           for (value <- innerlist) {
             if (value.toString.contains("red_cross") ) {
@@ -108,28 +113,27 @@ class Tag(val fileName: String){
           }
         }
 
-        //Impostazione categoria caricata
-        val category = categoria match {
+        // Set name of the current category
+        val categoryName = category match {
           case 2 => "BitcoinTalk Profiles"
           case 4 => "Bitcoin-OTC Profiles"
           case 8 => "Submitted Links"
           case 16 => "Signed Messages"
-          case 32 => "Unknow Category"
-          case _ => "Invalid Category: " + categoria
+          case _ => "Invalid Category: " + category
         }
 
-        //Effettuo scrittura su file
+        // Storing results in the target file
         for (a <- 0 to address.length - 1) {
-          writer.write (address (a) + "," + category + "," + tags (a) + "," + verified (a) + "," + links (a) + "\n")
+          writer.write (address (a) + "," + categoryName + "," + tags (a) + "," + verified (a) + "," + links (a) + "\n")
          }
 
-        //Incremento l'offset per il caricare il prossimo set
-        offset = offset + 50
-      } while (setDimension >= 50) // Il ciclo viene eseguito fino a quando vi sono dei dati estratti
-    } while (categoria <= 16) // Effettuo il caricamento per ogni categoria
-    writer.close () // Chiusura Buffer
+        // Increment offset for loading the next set
+        offset = offset + results
+      } while (setDimension >= results)
+    } while (category <= 16) // Move between categories
+    writer.close ()
 
-    println ("Procedura completata")
+    println ("Procedure completed")
   }
  
 }
