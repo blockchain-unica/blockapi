@@ -126,3 +126,4 @@ Students of the Cybersecurity course:
    * [Giuseppina Lai](https://www.linkedin.com/in/giusy-lai-ba8175b1/), [Federica Muceli](), [Federico Spiga]() - UTXO set
    * [Alessandro Bonini](https://www.linkedin.com/in/alessandro-bonini/), [Alberto Pes](https://www.linkedin.com/in/alberto-pes-32478070/), [Maurizio Porcu](https://www.linkedin.com/in/maurizioporcu/) - Blockchain.info tags
    * [Stefano Raimondo Chessa](), [Marco Guria](), [Alessio Manai](), [Alessio Speroni]() - Ethereum tokens
+   * [Paolo Orrù](), [Elisa Pau]() - Cross validation Ethereum
