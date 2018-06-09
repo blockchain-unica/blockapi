@@ -3,10 +3,7 @@ package tcs.utils
 import java.util
 
 import com.codesnippets4all.json.parsers.JsonParserFactory
-import com.codesnippets4all.json.config.handlers.ValidationConfigType
-
-import scalaj.http.Http
-import tcs.custom.ethereum.Utils
+import tcs.utils.httprequester.HttpRequester
 
 package object Etherscan {
   def apiKey = "apikey"

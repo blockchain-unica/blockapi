@@ -7,7 +7,8 @@ import tcs.blockchain.BlockchainLib
 import tcs.blockchain.ethereum.EthereumSettings
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
-import tcs.utils.{DateConverter, Etherscan}
+import tcs.utils.converter.DateConverter
+import tcs.utils.Etherscan
 
 object CrossValidation {
   def main(args: Array[String]): Unit = {
