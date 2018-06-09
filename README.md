@@ -125,5 +125,5 @@ Students of the Cybersecurity course:
    * [Federica Gerina](https://www.linkedin.com/in/federica-gerina-961765132/), [Silvia Maria Massa](https://www.linkedin.com/in/silvia-maria-massa-2072a6163/), [Francesca Moi](https://www.linkedin.com/in/francesca-moi-3582b9164/) - State of the DAPPS
    * [Giuseppina Lai](https://www.linkedin.com/in/giusy-lai-ba8175b1/), [Federica Muceli](), [Federico Spiga]() - UTXO set
    * [Alessandro Bonini](https://www.linkedin.com/in/alessandro-bonini/), [Alberto Pes](https://www.linkedin.com/in/alberto-pes-32478070/), [Maurizio Porcu](https://www.linkedin.com/in/maurizioporcu/) - Blockchain.info tags
-   * [Stefano Raimondo Chessa](), [Marco Guria](), [Alessio Manai](), [Alessio Speroni]() - Ethereum tokens
+   * [Stefano Raimondo Chessa](https://github.com/StefanoChessa), [Marco Guria](https://github.com/marcoguria), [Alessio Manai](https://www.linkedin.com/in/alessiomanai/), [Alessio Speroni](https://www.linkedin.com/in/alessiosperoni) - Ethereum tokens
    * [Paolo Orrù](), [Elisa Pau]() - Cross validation Ethereum
