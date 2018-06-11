@@ -2,6 +2,7 @@ package tcs.externaldata.miningpools
 
 object Pools {
 
+  val _50BTC = "50BTC.com"
   val _58COIN = "58coin"
 
   val ANTPOOL = "AntPool"
