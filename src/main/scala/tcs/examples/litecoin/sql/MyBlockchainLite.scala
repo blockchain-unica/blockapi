@@ -56,13 +56,8 @@ object MyBlockchainLite{
         tx.outputs.foreach(out => { outTable.insert(Seq(tx.hash.toString, out.outScript.toString)) })
       })
 
-      /**Litecoin blockchain is made by 1.5M blocks that are a lot smaller than BTC ones.
-        * It works fast enough to keep track of progress every 10000 blocks for values <= 1000000
-        * when it slows down noticeably and it's better to track progress every 1000 blocks.
-        */
 
-      if ( ((block.height <= 1000000) && (block.height% 10000 == 0)) ||
-         (block.height% 1000 == 0) )
+      if (block.height% 10000 == 0)
         println(block.height)
     })
 
