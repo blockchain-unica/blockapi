@@ -6,6 +6,8 @@ import tcs.custom.Tag
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
+import scala.collection.mutable
+
 /**
   * Created by Livio on 19/06/2017.
   */
@@ -16,7 +18,7 @@ object AddressesWithTags {
     val mongo = new DatabaseSettings("myDatabase")
 
     val outWithTags = new Collection("outWithTags", mongo)
-    val tags = new Tag("src/main/scala/tcs/custom/bitcoin/tagsList.txt")
+    var tags = Tag.getTagsFromFile("src/main/scala/tcs/custom/bitcoin/tagsList.txt")
 
     blockchain.foreach(block => {
 
@@ -28,7 +30,7 @@ object AddressesWithTags {
         tx.outputs.foreach(out => {
           out.getAddress(MainNet) match {
             case Some(add) =>
-              tags.getValue(add) match {
+              tags.get(add.toString) match {
                 case Some(tag) =>
                   outWithTags.append(List(
                     ("txHash", tx.hash),
