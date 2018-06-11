@@ -26,7 +26,7 @@ object EmptyBlocksLite {
       mySQL)
 
 
-    blockchain.start(800000).end(1200000).foreach(block => {
+    blockchain.start(1200001).foreach(block => {
       if (block.height % 10000 == 0) {
         println(block.height)
       }
