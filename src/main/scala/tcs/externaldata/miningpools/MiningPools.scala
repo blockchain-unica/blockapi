@@ -35,7 +35,6 @@ object MiningPools {
           if (hex.contains("3538636f696e2e636f6d")) return Pools._58COIN
           if (hex.contains("706f6f6c2e626974636f696e2e636f6d")) return Pools.BITCOINCOM
           if (hex.contains("436f6e6e656374425443202d20486f6d6520666f72204d696e657273")) return Pools.CONNECTED
-
           // F2Pool does not have a unique identifier
           if (hex.contains("777868") ||
             hex.contains("66326261636b7570") ||
@@ -103,6 +102,7 @@ object MiningPools {
 
     if (transaction.inputs.head.isCoinbase) {
       val programByte: Array[Byte] = transaction.inputs.head.inScript.getProgram()
+
       if (programByte != null) {
         val hex: String = programByte.map("%02x".format(_)).mkString
         if (hex != "") {
@@ -117,7 +117,7 @@ object MiningPools {
           if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
           if (hex.contains("424154504f4f4c")) return Pools.BATPOOL
 
-          if (hex.matches(".*4d696e656420627920416e74506f6f6c.*")) return Pools.ANTPOOL
+          if (hex.contains("4d696e656420627920416e74506f6f6c20") || hex.matches(".*4d696e656420627920416e74506f6f6c.*")) return Pools.ANTPOOL
           if (hex.contains("42570a665704") ||
             hex.contains("2f42572f") ||
             hex.contains("425720506f6f6c")) return Pools.BW
@@ -131,7 +131,7 @@ object MiningPools {
             * useless operations and minimize collision risk
             */
 
-          if(hex.matches(".*2f434d.{16}2f.*")) return Pools.CLEVERMINING
+          if(hex.matches(".*2f434d.{12,22}2f.*")) return Pools.CLEVERMINING
 
           //PROHASHING SIGNATURE FOR REALLY OLD BLOCKS
           //SEPARATED DUE TO AVOID REGEX EXECUTION ON EVERY TRY
