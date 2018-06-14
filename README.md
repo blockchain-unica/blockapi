@@ -127,3 +127,4 @@ Students of the Cybersecurity course:
    * [Alessandro Bonini](https://www.linkedin.com/in/alessandro-bonini/), [Alberto Pes](https://www.linkedin.com/in/alberto-pes-32478070/), [Maurizio Porcu](https://www.linkedin.com/in/maurizioporcu/) - Blockchain.info tags
    * [Stefano Raimondo Chessa](https://github.com/StefanoChessa), [Marco Guria](https://github.com/marcoguria), [Alessio Manai](https://www.linkedin.com/in/alessiomanai/), [Alessio Speroni](https://www.linkedin.com/in/alessiosperoni) - Ethereum tokens
    * [Paolo Orrù](https://it.linkedin.com/in/paoloorru), [Elisa Pau](linkedin.com/in/elisa-pau-52699b107) - Cross validation Ethereum
+   * [Stefano Danese](), [Giuseppe Bellisano](), [Emanuela Ripoli]() - Bitcoin transactions ip-geolocalization
