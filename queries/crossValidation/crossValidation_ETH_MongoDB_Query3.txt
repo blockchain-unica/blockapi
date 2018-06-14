@@ -1,0 +1,21 @@
+/* Cross-validate output values for each transaction */
+
+var differencesCount = 0;
+db.ethValidation1.find().forEach(function(doc1){
+    var doc2 = db.ethValidation2.findOne({txHash: doc1.txHash, value: doc1.value});
+
+    /* If any difference is found it's inserted into the collection ethValidationDifferences */
+    if (!(doc2)) {
+            var doc3 = {'txHash': doc1.txHash, "expectedValue": doc1.value};
+            db.ethValidationDifferences.insert(doc3);
+            differencesCount += 1;
+    }
+});
+
+print("Check for differences in OUTPUT VALUE");
+
+if (differencesCount > 0) {
+    print("Found differences between the collections: " + differencesCount + " docs differs");
+} else {
+    print("No difference found");
+}
