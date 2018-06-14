@@ -1,7 +1,7 @@
 package tcs.utils.converter
 
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.{Calendar, Date}
 
 /**
   * Created by Livio on 26/09/2017.
@@ -22,6 +22,11 @@ object DateConverter {
     val df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     val stringDate = df.format(ts)
     return df.parse(stringDate)
+  }
 
+  def getCalendarFromDate(date : Date) : Calendar = {
+    val c = Calendar.getInstance
+    c.setTime(date)
+    c
   }
 }
