@@ -128,3 +128,4 @@ Students of the Cybersecurity course:
    * [Stefano Raimondo Chessa](https://github.com/StefanoChessa), [Marco Guria](https://github.com/marcoguria), [Alessio Manai](https://www.linkedin.com/in/alessiomanai/), [Alessio Speroni](https://www.linkedin.com/in/alessiosperoni) - Ethereum tokens
    * [Paolo Orrù](https://it.linkedin.com/in/paoloorru), [Elisa Pau](linkedin.com/in/elisa-pau-52699b107) - Cross validation Ethereum
    * [Stefano Danese](), [Giuseppe Bellisano](), [Emanuela Ripoli]() - Bitcoin transactions ip-geolocalization
+   * [Riccardo Casu](), [Carlo Cuccu](), [Vittoria Frau](www.linkedin.com/in/vittoria-frau) - Bitcoin exchange rates 
