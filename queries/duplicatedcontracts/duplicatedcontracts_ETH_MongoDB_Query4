@@ -1,3 +1,0 @@
-//source code duplicated the largest number of times
-
-db.getCollection('duplicatedContracts').aggregate([{$project: { count: { $size:"$address" }}}, { "$sort": { "count": -1} }, { "$limit" : 1 } ])

@@ -10,6 +10,13 @@ import java.util.Date
 import scala.collection.mutable.ListBuffer
 import scala.collection.JavaConverters._
 import scala.collection.mutable
+import scala.util.matching.Regex
+
+/**
+  * imported libreries for project number 15 TransactionIp
+  */
+import net.liftweb.json._
+import scala.io.Source._
 
 /**
   * Defines a transaction of the Bitcoin blockchain.
@@ -28,7 +35,84 @@ class BitcoinTransaction(
                           val outputs: List[BitcoinOutput],
                           val lock_time: Long) extends TCSTransaction{
 
+  /**
+    * Returns the 'Relayed By' field representing the ip address of the node
+    * from which the explorer received the transaction
+    * Blockcypher APIs and Token are used (http://www.blockcypher.com)
+    * The net.liftweb.json libraries are used to parse the data
+    * Documentation (https://www.blockcypher.com/dev/dash/)
+    *
+    * @return 'relayed by' value (string)
+    */
+  def getIP(): String = {
 
+    // Almost all resources exist under a given blockchain, and follow this pattern
+    val url = "https://api.blockcypher.com/"          // url
+    val protocol = "v1/"                              // blockcypher API version
+    val coin = "btc/"                                 // coin
+    val chain = "main/"                               // chain
+    val txs = "txs/"                                  // transactions
+    val userToken = "?token=97128b966b9246f28e4dd2bf316065d6"// personal token for free plan (see https://www.blockcypher.com/dev/faq/)
+
+    // bitcoincypher complete url
+    val urlComplete: String = url + protocol + coin + chain + txs + hash.mkString + userToken
+
+    // json object
+    val jsonFromUrl = fromURL(urlComplete).mkString
+
+    // case class for json blockcypher
+    case class root(block_hash: String, block_height: Number, block_index: Number, hash: String, addresses: Array[String], total: Number, fees: Number, size: Number,preference: String,
+                    relayed_by: String, confirmed: String, received: String, ver: Number, double_spend: Boolean, vin_sz: Number, vout_sz: Number, confirmations: Number,
+                    confidence: Number, inpunts: Array[Object], outputs: Array[Object])
+
+    // val format
+    implicit val formats = DefaultFormats
+
+    // json object parsing
+    val jValue = parse(jsonFromUrl)
+
+    var jsearch = (jValue \\ "relayed_by").children
+
+    // if 'relayed_by' field is not present return "0" (string)
+    if (jsearch.isEmpty == true) {
+      return "0"
+    }
+    else {
+      var jsearch = (jValue \ "relayed_by").extract[String]
+
+      /** blockcypher returns a json object composed of url + socket
+        * the regex used below are used to have only the ipv4 or ipv6 type (without the socket number) and validate it
+        */
+
+      // pattern IPV4 to extract IPV4 from a string
+      val patternIPv4 = new Regex("(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])")
+
+      // pattern IPV6 to extract IPV6 from a string
+      val patternIPv6 = new Regex("(?<![:.\\w])(?:(?:(?:[A-Fa-f0-9]{1,4}:){6}|(?=(?:[A-Fa-f0-9]{0,4}:){0,6}(?:[0-9]{1,3}\\.){3}[0-9]{1,3}(?![:.\\w]))(([0-9A-Fa-f]{1,4}:){0,5}|:)((:[0-9a-fA-F]{1,4}){1,5}:|:)|::(?:[A-Fa-f0-9]{1,4}:){5})(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])|(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}|(?=(?:[A-Fa-f0-9]{0,4}:){0,7}[A-Fa-f0-9]{0,4}(?![:.\\w]))(([0-9a-fA-F]{1,4}:){1,7}|:)((:[0-9a-fA-F]{1,4}){1,7}|:)|(?:[A-Fa-f0-9]{1,4}:){7}:|:(:[A-Fa-f0-9]{1,4}){7})(?![.\\w])")
+
+      // search for ipv4 address in json
+      val ipv4 = (patternIPv4 findFirstIn jsearch)
+
+      // if ipv4 address does not exist
+      if (ipv4 == None) {
+
+        // check if jsearch is an ipv6
+        val ipv6 = (patternIPv6 findFirstIn jsearch)
+
+        // if even the ipv6 address does not exist, it returns "0" (string)
+        if (ipv6 == None) {
+          return "0"
+        }
+
+        // returns ipv6
+        else {
+          return ipv6.mkString
+        }
+      }
+      // returns ipv4
+      return ipv4.mkString
+    }
+  }
   /**
     * Returns the sum of all the input values.
     * If a "deep scan" was not performed, each input value is set to 0.

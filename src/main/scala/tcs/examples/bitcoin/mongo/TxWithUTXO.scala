@@ -1,12 +1,10 @@
 package tcs.examples.bitcoin.mongo
 
-import org.bitcoinj.script.Script.ScriptType
 import tcs.blockchain.BlockchainLib
 import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 import tcs.utils.converter.DateConverter
-import tcs.externaldata.rates.BitcoinRates
 
 object TxWithUTXO {
   def main(args: Array[String]): Unit = {
@@ -17,7 +15,6 @@ object TxWithUTXO {
     val txWithUTXO = new Collection("txWithUTXO", mongo)
 
     val utxoSet = blockchain.getUTXOSetAt(100000)
-//    println("\n\nUTXO: " + utxoSet.size)
 
     blockchain.end(100000).foreach(block => {
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)

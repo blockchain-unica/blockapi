@@ -1,0 +1,7 @@
+/* Check if collections have the same number of docs */
+
+if(db.ethValidation1.count() !== db.ethValidation2.count()){
+    print("Warning: Collections have a different number of docs");
+} else {
+    print("Collections have the same number of docs");
+}

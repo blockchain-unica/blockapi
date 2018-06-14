@@ -1,0 +1,2 @@
+//Total number of distinct source code
+db.getCollection('duplicatedContracts').find({}).count()

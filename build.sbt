@@ -11,6 +11,8 @@ resolvers ++= Seq(
   Resolver.sonatypeRepo("snapshots")
 )
 
+libraryDependencies += "net.liftweb" %% "lift-json" % "3.0.1"
+
 libraryDependencies += "net.ruippeixotog" %% "scala-scraper" % "2.0.0"
 
 libraryDependencies += "org.web3j" % "core" % "3.2.0"
@@ -49,4 +51,4 @@ libraryDependencies += "org.apache.jena" % "apache-jena-libs" % "3.7.0"
 
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7"
 
-
+libraryDependencies += "org.litecoinj" % "litecoinj-core" % "0.15-SNAPSHOT"
