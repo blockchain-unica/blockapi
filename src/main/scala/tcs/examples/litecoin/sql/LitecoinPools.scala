@@ -14,6 +14,8 @@ object LitecoinPools{
     val blockchain = BlockchainLib.getLitecoinBlockchain(new LitecoinSettings("user", "password", "9332", MainNet))
     val mySQL = new DatabaseSettings("myblockchainlite", MySQL, "root", "password")
 
+    val startTime = System.currentTimeMillis()/1000
+
     val txTable = new Table(sql"""
       create table if not exists ltcpools(
         blockHash varchar(256) not null,
@@ -24,12 +26,18 @@ object LitecoinPools{
       mySQL)
 
 
-    blockchain.start(800000).end(1200000).foreach(block => {
+    blockchain.start(600000).foreach(block => {
         txTable.insert(Seq(block.hash.toString(), convertDate(block.date), block.getMiningPool()))
-        if(block.height%100000==0)
+        if(block.height % 10000 == 0)
           println("Done working on block @ height " + block.height)
     })
 
     txTable.close
+
+    val totalTime = System.currentTimeMillis() / 1000 - startTime
+
+    println("Total time: " + totalTime)
+    println("Computational time: " + (totalTime - Table.getWriteTime))
+    println("Database time: " + Table.getWriteTime)
   }
 }

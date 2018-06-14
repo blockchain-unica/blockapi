@@ -2,10 +2,12 @@ package tcs.externaldata.miningpools
 
 object Pools {
 
+  val _50BTC = "50BTC.com"
   val _58COIN = "58coin"
 
   val ANTPOOL = "AntPool"
 
+  val BATPOOL = "BatPool"
   val BITCLUBNETWORK  = "Bitclub Network"
   val BITCLUBPOOL = "bitclubpool"
   val BITCOINCOM = "Bitcoin.com"
@@ -19,6 +21,8 @@ object Pools {
   val BTCTOP = "BTC.TOP"
   val BW = "BW.COM"
 
+  val CLEVERMINING = "CleverMining"
+  val COINMINE = "CoinMine"
   val COINOTRON2 = "Coinotron_2"
   val CONNECTED = "ConnectedBTC"
 
@@ -31,20 +35,25 @@ object Pools {
   val F2POOL2 = "f2pool_2"
 
   val GBMINERS = "GBMiners"
+  val GIVEMECOINS = "Give-Me-Coins.com"
 
   val KANOPOOL = "KanoPool"
 
   val LTCTOP = "LTC.TOP"
   val LITECOINPOOL = "LitecoinPool.org"
 
+  val MPH = "Mining Pool Hub"
+
   val NANOPOOL = "Nanopool"
 
   val PANDAPOOL = "PandaPool"
   val PPLNS = "EthereumPPLNS"
+  val PROHASHING = "ProHashing.com"
 
   val SPARKPOOL = "Sparkpool"
   val SLUSHPOOL = "SlushPool"
 
+  val TBDICE = "TBDice"
   val TWETH = "TwethPool"
 
   val UNKNOWN = "Unknown"
@@ -56,4 +65,6 @@ object Pools {
   val WATERHOLE = "waterhole"
 
   val XNPOOL = "xnpool.cn"
+
+  val ZPOOL = "zpool.ca"
 }

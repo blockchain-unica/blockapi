@@ -5,9 +5,7 @@ import tcs.blockchain.litecoin.{LitecoinSettings, MainNet}
 import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 
-/**
-  * Created by Giulia on 15/05/18.
-  */
+
 object MyBlockchainLite {
   def main(args: Array[String]): Unit = {
 
