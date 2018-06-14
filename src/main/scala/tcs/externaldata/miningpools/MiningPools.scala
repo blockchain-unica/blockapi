@@ -14,6 +14,7 @@ object MiningPools {
         if (hex != "") {
           // Known pool codes listed on blockchain.info
           // See https://github.com/blockchain/Blockchain-Known-Pools/blob/master/pools.json for more
+          if (hex.contains("35304254432e636f6d")) return Pools._50BTC
           if (hex.contains("416e74506f6f6c3")) return Pools.ANTPOOL
           if (hex.contains("42697446757279")) return Pools.BITFURY
           if (hex.contains("736c757368")) return Pools.SLUSHPOOL
@@ -24,23 +25,45 @@ object MiningPools {
           if (hex.contains("426974436c7562204e6574776f726b")) return Pools.BITCLUBNETWORK
           if (hex.contains("67626d696e657273")) return Pools.GBMINERS
           if (hex.contains("42697466757279")) return Pools.BITFURY
-          if (hex.contains("4269744d696e746572")) return Pools.BITMINTER
+          if (hex.contains("4269744d696e746572"))  return Pools.BITMINTER
           if (hex.contains("4b616e6f")) return Pools.KANOPOOL
           if (hex.contains("426974636f696e2d5275737369612e7275")) return Pools.BITCOINRUSSIA
           if (hex.contains("426974636f696e2d496e646961")) return Pools.BITCOININDIA
-          if (hex.contains("425720506f6f6c")) return Pools.BW
+          if (hex.contains("42570a665704") ||
+            hex.contains("2f42572f") ||
+            hex.contains("425720506f6f6c")) return Pools.BW
           if (hex.contains("3538636f696e2e636f6d")) return Pools._58COIN
           if (hex.contains("706f6f6c2e626974636f696e2e636f6d")) return Pools.BITCOINCOM
           if (hex.contains("436f6e6e656374425443202d20486f6d6520666f72204d696e657273")) return Pools.CONNECTED
-
           // F2Pool does not have a unique identifier
           if (hex.contains("777868") ||
             hex.contains("66326261636b7570") ||
             hex.contains("68663235") ||
             hex.contains("73796a756e303031") ||
             hex.contains("716c7339") ||
-            hex.contains("687578696e6767616f7a68616f")
+            hex.contains("687578696e6767616f7a68616f") ||
+            //general pattern for F2POOL
+            ( hex.contains("f09f90") && hex.contains("4d696e656420627920") )
           ) return Pools.F2POOL
+
+          if (hex.contains("566961425443")) return Pools.VIABTC
+          if (hex.contains("2e7a706f6f6c2e6361")) return Pools.ZPOOL
+          if (hex.contains("2f6d70682f")) return Pools.MPH
+          if (hex.contains("544244696365")) return Pools.TBDICE
+          if (hex.contains("474956452d4d452d434f494e532e636f6d")) return Pools.GIVEMECOINS
+          if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
+          if (hex.contains("424154504f4f4c")) return Pools.BATPOOL
+
+          /**Searching for most complex pattern after every other known pattern due to avoid
+            * useless operations and minimize collision risk
+            */
+
+          if(hex.matches(".*2f434d.{16}2f.*")) return Pools.CLEVERMINING
+          if(hex.matches(".*4d696e656420627920416e74506f6f6c.*")) return Pools.ANTPOOL
+          if(hex.contains("2f50726f68617368696e672f")) return Pools.PROHASHING
+          //if it isn't a generic nodeStratum signature
+          if((!hex.contains("6e6f64655374726174756d")) && hex.matches(".*2f[a-f||0-9]{20}2f"))  return Pools.PROHASHING
+          //then if it matches this regex it's a block mined by PH
         }
       }
     }
@@ -72,40 +95,50 @@ object MiningPools {
   }
 
   /** Antpool, BTCChina, ViaBTC, BW and F2Pool mine LTC too.
-    * Currently searching for others LTC pools hex sign
-    * Will add them soon.
     * LTCTOP, LitecoinPool, BW and some F2Pool identifiers
-    * found by coinbase hex
+    * found
     */
   def getLitecoinPool(transaction: LitecoinTransaction): String = {
 
     if (transaction.inputs.head.isCoinbase) {
       val programByte: Array[Byte] = transaction.inputs.head.inScript.getProgram()
+
       if (programByte != null) {
         val hex: String = programByte.map("%02x".format(_)).mkString
         if (hex != "") {
-
+          if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
           if (hex.contains("42544343")) return Pools.BTCCPOOL
           if (hex.contains("4c54432e544f50")) return Pools.LTCTOP
           if (hex.contains("566961425443")) return Pools.VIABTC
-          if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
-          if (hex.contains("416e74506f6f6c3")) return Pools.ANTPOOL
+          if (hex.contains("2e7a706f6f6c2e6361")) return Pools.ZPOOL
+          if (hex.contains("2f6d70682f")) return Pools.MPH
+          if (hex.contains("544244696365")) return Pools.TBDICE
+          if (hex.contains("474956452d4d452d434f494e532e636f6d")) return Pools.GIVEMECOINS
+          if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
+          if (hex.contains("424154504f4f4c")) return Pools.BATPOOL
+
+          if (hex.contains("4d696e656420627920416e74506f6f6c20") || hex.matches(".*4d696e656420627920416e74506f6f6c.*")) return Pools.ANTPOOL
           if (hex.contains("42570a665704") ||
             hex.contains("2f42572f") ||
             hex.contains("425720506f6f6c")) return Pools.BW
           // F2Pool does not have a unique identifier
-          // Found some more F2Pool identifiers for Litecoin
-          if (hex.contains("777868") ||
-            hex.contains("66326261636b7570") ||
-            hex.contains("68663235") ||
-            hex.contains("73796a756e303031") ||
-            hex.contains("716c7339") ||
-            hex.contains("687578696e6767616f7a68616f") ||
-            hex.contains("6c6a6831393737") ||
-            hex.contains("7773686a66") ||
-            hex.contains("6c69616e74616e6731") ||
-            hex.contains("6c717931")
+          // Found a pattern for F2Pool
+          if (( hex.contains("f09f90") && hex.contains("4d696e656420627920") )
           ) return Pools.F2POOL
+
+
+          /**Searching for most complex pattern after every other known pattern due to avoid
+            * useless operations and minimize collision risk
+            */
+
+          if(hex.matches(".*2f434d.{12,22}2f.*")) return Pools.CLEVERMINING
+
+          //PROHASHING SIGNATURE FOR REALLY OLD BLOCKS
+          //SEPARATED DUE TO AVOID REGEX EXECUTION ON EVERY TRY
+          if(hex.contains("2f50726f68617368696e672f")) return Pools.PROHASHING
+          //if it isn't a generic nodeStratum signature
+          if((!hex.contains("6e6f64655374726174756d")) && hex.matches(".*2f[a-f||0-9]{20}2f"))  return Pools.PROHASHING
+          //then if it matches this regex it's a block mined by PH
         }
       }
     }

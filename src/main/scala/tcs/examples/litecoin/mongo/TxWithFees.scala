@@ -7,16 +7,14 @@ import tcs.db.DatabaseSettings
 import tcs.mongo.Collection
 import tcs.utils.converter.DateConverter
 
-/**
-  * Created by Giulia on 16/06/2017.
-  */
+
 object TxWithFeesLite {
   def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainLib.getLitecoinBlockchain(new LitecoinSettings("user", "password", "9332", MainNet, true))
     val mongo = new DatabaseSettings("myDatabase")
 
-    val txWithFees = new Collection("txWithFees", mongo)
+    val txWithFees = new Collection("txWithFeesLite", mongo)
 
     blockchain.end(473100).foreach(block => {
 

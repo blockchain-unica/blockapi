@@ -19,7 +19,7 @@ import scala.collection.mutable.ListBuffer
   */
 
 class LitecoinTransaction(
-                          override val hash: String, /*scrypt?*/
+                          override val hash: String,
                           override val date: Date,
 
                           val txSize: Int,
@@ -263,9 +263,9 @@ object LitecoinTransaction {
 
   }
   /**
-    * Factory for [[tcs.blockchain.bitcoin.BitcoinTransaction]] instances.
-    * Creates a new transaction given its BitcoinJ representation.
-    * Values of each appended BitcoinInput will be set to 0.
+    * Factory for [[tcs.blockchain.litecoin.LitecoinTransaction]] instances.
+    * Creates a new transaction given its LitecoinJ representation.
+    * Values of each appended LitecoinInput will be set to 0.
     *
     * @param tx LitecoinJ representation of the transaction
     * @param txDate Date in which the containing block has been published
@@ -281,7 +281,7 @@ object LitecoinTransaction {
 
   /**
     * Factory for [[tcs.blockchain.litecoin.LitecoinTransaction]] instances.
-    * Creates a new transaction given its BitcoinJ representation.
+    * Creates a new transaction given its LitecoinJ representation.
     * Values of each appended LitecoinInput will be set to the correct value
     * by exploiting the UTXO map provided.
     *

@@ -157,7 +157,7 @@ object LitecoinInput {
 
   /**
     * Factory for [[tcs.blockchain.litecoin.LitecoinInput]] instances.
-    * Creates a new input given its BitcoinJ representation.
+    * Creates a new input given its LitecoinJ representation.
     * The value will be set to 0.
     *
     * @param input LitecoinJ representation of the input.
