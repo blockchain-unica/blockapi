@@ -13,6 +13,7 @@ object BlockchainURI{
   val OUT = "http://blockchain/out/"
   val TX_REL = "http://blockchain/tx_rel/"
   val ADDRESS = "http://blockchain/address/"
+  val OPRETURN = "http://blockchain/opreturn/"
 
   //block
   val ISBLOCKOF = ResourceFactory.createProperty(properties + "isBlockOf")
@@ -40,6 +41,8 @@ object BlockchainURI{
   val SENTTO = ResourceFactory.createProperty(properties + "sentTo")
   val BACKADDR = ResourceFactory.createProperty(properties + "backAddr")
   val FORWARDADDR = ResourceFactory.createProperty(properties + "forwardAddr")
+  val OPRETURN_PROP = ResourceFactory.createProperty(properties + "opReturn")
+  val NEXTOPRETURN = ResourceFactory.createProperty(properties + "nextOpReturn")
 
   //input
   val REDEEMEDTXHASH = ResourceFactory.createProperty(properties + "redeemedTxHash")
@@ -58,10 +61,14 @@ object BlockchainURI{
   val OUTADDRESS = ResourceFactory.createProperty(properties + "address")
   val ISOPRETURN = ResourceFactory.createProperty(properties + "isOpReturn")
 
-
   //address
   val SENTBY = ResourceFactory.createProperty(properties + "sentBy")
   val RECEIVEDBY = ResourceFactory.createProperty(properties + "receivedBy")
   val ADDRESSPROP = ResourceFactory.createProperty(properties + "addressProp")
   val OUTINFO = ResourceFactory.createProperty(properties + "outInfo")
+
+  //opreturn
+  val PROTOCOL = ResourceFactory.createProperty(properties + "protocol")
+  val METADATA = ResourceFactory.createProperty(properties + "metadata")
+
 }
