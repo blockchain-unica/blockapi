@@ -1,0 +1,18 @@
+#Addresses with bitcoin not yet spent
+
+PREFIX prop: <http://blockchain/properties#>
+SELECT ?txHash	?address	?date
+WHERE {
+	?tx	prop:forwardAddr	?addr;
+     	prop:tx_info		?tx_info.
+
+  	?tx_info	prop:date	?date;
+            	prop:txHash	?txHash.
+  	?addr	prop:addressProp	?address.
+
+  FILTER NOT EXISTS {
+  	?tx	prop:forwardAddr	?addr.
+    ?addr	prop:sentTo		?tx2
+  }
+}
+ORDER BY (?date)

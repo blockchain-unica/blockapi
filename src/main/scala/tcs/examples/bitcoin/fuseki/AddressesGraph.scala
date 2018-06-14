@@ -9,11 +9,26 @@ import tcs.db.fuseki.{BlockchainURI, GraphModel}
 
 import scala.collection.mutable
 import scala.util.control.Breaks._
-import scala.collection.mutable.ArrayBuffer
+
+/**
+  * Creates an RDF view that represents a graph of addresses. If you decide to create a graph with "Back"
+  * direction, the code starts from a transaction, makes a backward research of addresses that receive bitcoin from
+  * other addresses, and store data into the database. Instead if you decide to create a graph with "Forward" direction,
+  * the code starts form a transaction, makes a forward research of addresses that sent bitcoin to other addresses,
+  * and store data into the database. You can also create both graphs with settings "Both".
+  *
+  * @param tx_hash Transaction hash
+  * @param depth   Max depth of the graph
+  * @param startBlock First block in the graph creation
+  * @param endBlock Last block in the graph creation
+  * @param network Either Bitcoin Main network or Bitcoin Test network.
+  */
 
 class AddressesGraph(
                       val tx_hash: String = "",
                       val depth: Int = 4,
+                      val startBlock: Long = 1l,
+                      val endBlock: Long = 300000l,
                       val network: Network = MainNet
                     ) {
 
@@ -25,21 +40,21 @@ class AddressesGraph(
 
   var fst_model: Boolean = true
 
-  var startBlock: Long = 1l
-  var endBlock: Long = 300000l
-
   def startAddressesGraph(side: Direction = Both): Unit = {
     if (side.equals(Back))
       backAddresses()
     else if (side.equals(Forward)) {
-      forwardAddresses()
+      forwardAddressesWithoutDepth()
     }
     else if (side.equals(Both)) {
       backAddresses()
-      forwardAddresses()
+      forwardAddressesWithoutDepth()
     }
   }
 
+  /**
+    * Delete the dataset
+    */
   def delete(): Unit = {
     model.deleteDataset()
   }
@@ -48,6 +63,12 @@ class AddressesGraph(
     model.datasetQuery(query)
   }
 
+  /**
+    * Given a transaction, it stores the transaction into the model. Then load into a queue the transaction
+    * hash and the output index informations contain in the input of the transaction. Next, the algorithm dequeue the
+    * element from the queue, search the relative transaction with the function getTransaction(), and load the
+    * transaction and their output addresses into the model. The algorithm runs until the queue is empty.
+    */
   private def backAddresses(): Unit = {
 
     var queue: mutable.Queue[(String, Int, String, Int, Int)] = mutable.Queue()
@@ -123,17 +144,26 @@ class AddressesGraph(
               })
             }
           }
-
-
         }
       }
     }
     model.commit()
   }
 
+
+  /**
+    * Given a transaction, it stores the transaction and their output addresses data into the model, then stores the
+    * transaction hash, the depth of the addresses relative to the graph, and the output references (output index and
+    * relative address) into a list. Subsequently the algorithm search in each input, of each transaction, of each
+    * forward block, if there's a match to transaction hash and output index contained into the input, and the
+    * information inside the HashMap. If there's, the new transaction and their addresses data are loaded into the
+    * model. The algorithm run as long as the list is empty (this happens when all addresses, with a depth less or equal
+    * to max depth, have been finded), or if the final block has been reached.
+    */
+
   private def forwardAddresses(): Unit = {
 
-    var transactionList: ArrayBuffer[(String, Set[Int], List[(Int, String)])] = ArrayBuffer()
+    var transactionMap: mutable.HashMap[String, (Set[Int], List[(Int, String)])] = mutable.HashMap()
 
     println("Start forwardTransaction..")
 
@@ -141,6 +171,8 @@ class AddressesGraph(
 
     var fst: Boolean = true
     var change: Boolean = true
+
+    var startTime = System.currentTimeMillis() / 1000
 
     breakable {
       blockchain.start(start).end(endBlock).foreach(block => {
@@ -152,18 +184,14 @@ class AddressesGraph(
             if (fst) {
               if (tx.hash.toString == tx_hash) {
                 println("Creation first graph: " + tx.hash.toString)
-                if (fst_model) {
-                  model.addStatements(BlockchainURI.TX_INFO + tx.hash.toString,
-                    List(
-                      (BlockchainURI.TXHASH, tx.hash.toString),
-                      (BlockchainURI.TXSIZE, tx.txSize),
-                      (BlockchainURI.TXDATE, tx.date),
-                      (BlockchainURI.LOCKTIME, tx.lock_time)
-                    ),
-                    (BlockchainURI.TX + tx.hash.toString + "/-1", BlockchainURI.TX_PROP)
+                model.addStatements(BlockchainURI.TX_INFO + tx.hash.toString,
+                  List(
+                    (BlockchainURI.TXHASH, tx.hash.toString),
+                    (BlockchainURI.TXSIZE, tx.txSize),
+                    (BlockchainURI.TXDATE, tx.date),
+                    (BlockchainURI.LOCKTIME, tx.lock_time)
                   )
-                  fst_model = false
-                }
+                )
 
                 var tmp_lst: List[(Int, String)] = List()
                 tx.outputs.foreach(out => {
@@ -174,64 +202,64 @@ class AddressesGraph(
                         (BlockchainURI.INDEX, out.index.toString),
                         (BlockchainURI.ISOPRETURN, "true")
                       ),
-                      (BlockchainURI.TX + tx.hash.toString + "/1", BlockchainURI.FORWARDADDR)
+                      (BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString, BlockchainURI.FORWARDADDR)
                     )
                   } else {
                     var address = out.getAddress(network) match {
                       case Some(addr: Address) => addr.toString
                       case None => "unable_to_decode"
                     }
-
                     println("address")
 
                     tmp_lst = (out.index, address) :: tmp_lst
+
+                    model.addStatements(BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString,
+                      List(
+                        (BlockchainURI.VALUE, out.value),
+                        (BlockchainURI.TX_PROP, model.resource(BlockchainURI.TX_INFO + tx.hash.toString))
+                      )
+                    )
 
                     model.addStatements(BlockchainURI.ADDRESS + address,
                       List(
                         (BlockchainURI.ADDRESSPROP, address),
                         (BlockchainURI.DEPTH, 1)
                       ),
-                      (BlockchainURI.TX + tx.hash.toString + "/-1", BlockchainURI.FORWARDADDR)
-                    )
-
-                    model.addStatements(BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString,
-                      List(
-                        (BlockchainURI.VALUE, out.value)
-                      ),
-                      (BlockchainURI.ADDRESS + address, BlockchainURI.SENTTO)
+                      (BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString, BlockchainURI.FORWARDADDR)
                     )
                   }
                 })
-                transactionList += ((tx_hash, Set(2), tmp_lst))
+                transactionMap.put(tx_hash, (Set(2), tmp_lst))
                 fst = false
               }
             } else {
               tx.inputs.foreach(in => {
-                var tl = transactionList.find(tl => in.redeemedTxHash.toString == tl._1).orNull
+                var tl = transactionMap.getOrElse(in.redeemedTxHash.toString, null)
                 if (tl != null) {
 
-                  val outInfo: (Int, String) = tl._3.find(t => t._1 == in.redeemedOutIndex).orNull
+                  val outInfo: (Int, String) = tl._2.find(t => t._1 == in.redeemedOutIndex).orNull
 
                   if (outInfo != null) {
                     println("-----" + tx.hash)
                     println(tl)
                     change = true
+
                     model.addStatements(BlockchainURI.TX_INFO + tx.hash.toString,
                       List(
                         (BlockchainURI.TXHASH, tx.hash.toString),
                         (BlockchainURI.TXSIZE, tx.txSize),
                         (BlockchainURI.TXDATE, tx.date),
                         (BlockchainURI.LOCKTIME, tx.lock_time)
-                      ),
-                      (BlockchainURI.TX + tl._1 + "/" + outInfo._1, BlockchainURI.TX_PROP)
+                      )
                     )
                     var tmp_lst: List[(Int, String)] = List()
 
-                    var dp = tl._2.filter(p => p < depth)
+                    var dp = tl._1.filter(p => p < depth)
 
                     if (dp.nonEmpty) {
                       tx.outputs.foreach(out => {
                         if (out.isOpreturn()) {
+
                           model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
                             List(
                               (BlockchainURI.INDEX, out.index.toString),
@@ -248,65 +276,213 @@ class AddressesGraph(
 
                           var depth_prop = dp.map(d => (BlockchainURI.DEPTH, d))
 
+                          model.addStatements(BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString,
+                            List(
+                              (BlockchainURI.VALUE, out.value),
+                              (BlockchainURI.TX_PROP, model.resource(BlockchainURI.TX_INFO + tx.hash.toString))
+                            ),
+                            (BlockchainURI.ADDRESS + outInfo._2, BlockchainURI.SENTTO)
+                          )
+
                           model.addStatements(BlockchainURI.ADDRESS + address,
                             List(
                               (BlockchainURI.ADDRESSPROP, address)
                             ) ++ depth_prop,
-                            (BlockchainURI.TX + tl._1 + "/" + outInfo._1, BlockchainURI.FORWARDADDR)
-                          )
-                          model.addStatements(BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString,
-                            List(
-                              (BlockchainURI.VALUE, out.value)
-                            ),
-                            (BlockchainURI.ADDRESS + address, BlockchainURI.SENTTO)
+                            (BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString, BlockchainURI.FORWARDADDR)
                           )
                         }
                       })
                       //item of the new transaction
                       if (tmp_lst.nonEmpty) {
-                        val index = transactionList.indexWhere(p => p._1 == tx.hash.toString)
+                        var tmp = transactionMap.getOrElse(tx.hash.toString, null)
 
-                        if (index != -1) {
-                          val tmp = transactionList(index)
-                          transactionList(index) = (tmp._1, tmp._2 ++ dp.map(d => d + 1), tmp._3)
-                        }else{
-                          transactionList += ((tx.hash.toString, dp.map(d => d + 1), tmp_lst))
-                        }
+                        if (tmp != null)
+                          transactionMap.put(tx.hash.toString, (tmp._1 ++ dp.map(d => d + 1), tmp._2))
+                        else
+                          transactionMap.put(tx.hash.toString, (dp.map(d => d + 1), tmp_lst))
                       }
                     }
-                    val l = tl._3.filter(_ != outInfo)
-                    //item replacement
-                    transactionList -= ((tl._1, tl._2, tl._3)) //old item
+
+                    val l: List[(Int, String)] = tl._2.filter(_ != outInfo)
 
                     if (l.nonEmpty)
-                      transactionList += ((tl._1, tl._2, l)) //new item
+                      transactionMap.put(in.redeemedTxHash.toString, (tl._1, l))
+                    else
+                      transactionMap.remove(in.redeemedTxHash.toString)
                   }
-
-                  //delete item when all outputs of the tx have been finded
-                  if (tl._3.isEmpty)
-                    transactionList -= ((tl._1, tl._2, tl._3))
                 }
-                if (transactionList.isEmpty)
+                if (transactionMap.isEmpty)
                   break
               })
             }
           })
-          //transactionList.foreach(tl => println(tl))
         }
       })
     }
     model.commit()
-    transactionList.clear()
+    transactionMap.clear()
+
+    val totalTime = System.currentTimeMillis() / 1000 - startTime
+
+    println("Total time: " + totalTime)
   }
 
-  def start(start: Long): AddressesGraph = {
-    startBlock = start
-    this
-  }
+  private def forwardAddressesWithoutDepth(): Unit = {
+    var transactionMap: mutable.HashMap[String, List[(Int, String)]] = mutable.HashMap()
 
-  def end(end: Long): AddressesGraph = {
-    endBlock = end
-    this
+    println("Start forwardTransaction..")
+
+    var start: Long = startBlock
+
+    var fst: Boolean = true
+    var change: Boolean = true
+
+    var startTime = System.currentTimeMillis() / 1000
+
+    breakable {
+      blockchain.start(start).end(endBlock).foreach(block => {
+        change = true
+        println(block.height)
+        while (change) {
+          change = false
+          block.txs.foreach(tx => {
+            if (fst) {
+              if (tx.hash.toString == tx_hash) {
+                println("Creation first graph: " + tx.hash.toString)
+
+                model.addStatements(BlockchainURI.TX_INFO + tx.hash.toString,
+                  List(
+                    (BlockchainURI.TXHASH, tx.hash.toString),
+                    (BlockchainURI.TXSIZE, tx.txSize),
+                    (BlockchainURI.TXDATE, tx.date),
+                    (BlockchainURI.LOCKTIME, tx.lock_time)
+                  )
+                )
+                var tmp_lst: List[(Int, String)] = List()
+                tx.outputs.foreach(out => {
+
+                  if (out.isOpreturn()) {
+
+                    model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
+                      List(
+                        (BlockchainURI.INDEX, out.index.toString),
+                        (BlockchainURI.ISOPRETURN, "true")
+                      ),
+                      (BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString, BlockchainURI.FORWARDADDR)
+                    )
+                  } else {
+                    var address = out.getAddress(network) match {
+                      case Some(addr: Address) => addr.toString
+                      case None => "unable_to_decode"
+                    }
+                    println("address")
+                    tmp_lst = (out.index, address) :: tmp_lst
+
+                    model.addStatements(BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString,
+                      List(
+                        (BlockchainURI.VALUE, out.value),
+                        (BlockchainURI.TX_PROP, model.resource(BlockchainURI.TX_INFO + tx.hash.toString))
+                      )
+                    )
+
+                    model.addStatements(BlockchainURI.ADDRESS + address,
+                      List(
+                        (BlockchainURI.ADDRESSPROP, address),
+                        (BlockchainURI.DEPTH, 1)
+                      ),
+                      (BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString, BlockchainURI.FORWARDADDR)
+                    )
+                  }
+                })
+                transactionMap.put(tx_hash, tmp_lst)
+                fst = false
+              }
+            } else {
+              tx.inputs.foreach(in => {
+                val tl = transactionMap.getOrElse(in.redeemedTxHash.toString, null)
+                if (tl != null) {
+                  val outInfo: (Int, String) = tl.find(t => t._1 == in.redeemedOutIndex).orNull
+                  if (outInfo != null) {
+                    println("-----" + tx.hash)
+                    println(in.redeemedTxHash.toString + "-" + tl)
+                    change = true
+
+
+                    model.addStatements(BlockchainURI.TX_INFO + tx.hash.toString,
+                      List(
+                        (BlockchainURI.TXHASH, tx.hash.toString),
+                        (BlockchainURI.TXSIZE, tx.txSize),
+                        (BlockchainURI.TXDATE, tx.date),
+                        (BlockchainURI.LOCKTIME, tx.lock_time)
+                      )
+                    )
+                    var tmp_lst: List[(Int, String)] = List()
+
+                    tx.outputs.foreach(out => {
+                      if (out.isOpreturn()) {
+
+
+                        model.addStatements(BlockchainURI.OUT + tx.hash.toString + "/" + out.index.toString,
+                          List(
+                            (BlockchainURI.INDEX, out.index.toString),
+                            (BlockchainURI.ISOPRETURN, "true")
+                          ),
+                          (BlockchainURI.TX + tx.hash.toString + "/1", BlockchainURI.FORWARDADDR)
+                        )
+                      } else {
+                        var address = out.getAddress(network) match {
+                          case Some(addr: Address) => addr.toString
+                          case None => "unable_to_decode"
+                        }
+                        tmp_lst = (out.index, address) :: tmp_lst
+
+
+                        model.addStatements(BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString,
+                          List(
+                            (BlockchainURI.VALUE, out.value),
+                            (BlockchainURI.TX_PROP, model.resource(BlockchainURI.TX_INFO + tx.hash.toString))
+                          ),
+                          (BlockchainURI.ADDRESS + outInfo._2, BlockchainURI.SENTTO)
+                        )
+
+
+                        model.addStatements(BlockchainURI.ADDRESS + address,
+                          List(
+                            (BlockchainURI.ADDRESSPROP, address)
+                          ),
+                          (BlockchainURI.TX + tx.hash.toString + "/" + out.index.toString, BlockchainURI.FORWARDADDR)
+                        )
+                      }
+                    })
+
+                    //item of the new transaction
+                    if (tmp_lst.nonEmpty) {
+                      transactionMap.put(tx.hash.toString, tmp_lst)
+                    }
+
+                    val l = tl.filter(_ != outInfo)
+
+                    if (l.nonEmpty)
+                      transactionMap.put(in.redeemedTxHash.toString, l)
+                    else
+                      transactionMap.remove(in.redeemedTxHash.toString)
+                  }
+
+                }
+                if (transactionMap.isEmpty)
+                  break
+              })
+            }
+          })
+        }
+      })
+    }
+    model.commit()
+    transactionMap.clear()
+
+    val totalTime = System.currentTimeMillis() / 1000 - startTime
+
+    println("Total time: " + totalTime)
   }
 }
 
