@@ -4,6 +4,7 @@ object Pools {
 
   val _50BTC = "50BTC.com"
   val _58COIN = "58coin"
+  val _8BAOCHI = "8baochi.com"
 
   val ANTPOOL = "AntPool"
 
@@ -39,6 +40,7 @@ object Pools {
 
   val KANOPOOL = "KanoPool"
 
+  val LTC1BTC = "LTC1BTC"
   val LTCTOP = "LTC.TOP"
   val LITECOINPOOL = "LitecoinPool.org"
 
@@ -46,10 +48,15 @@ object Pools {
 
   val NANOPOOL = "Nanopool"
 
+  val OZCOIN = "OzCoin"
+
+  val P2POOL = "P2Pool"
   val PANDAPOOL = "PandaPool"
+  val POLMINE = "polMine.pl"
   val PPLNS = "EthereumPPLNS"
   val PROHASHING = "ProHashing.com"
 
+  val SFMINER = "SilverFish sfminer.com"
   val SPARKPOOL = "Sparkpool"
   val SLUSHPOOL = "SlushPool"
 
@@ -61,6 +68,7 @@ object Pools {
   val UUPOOL = "uupool.cn"
 
   val VIABTC = "ViaBTC"
+  val VIALTC = "ViaLTC"
 
   val WATERHOLE = "waterhole"
 

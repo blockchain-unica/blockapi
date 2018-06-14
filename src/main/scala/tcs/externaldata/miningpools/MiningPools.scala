@@ -2,6 +2,7 @@ package tcs.externaldata.miningpools
 
 import tcs.blockchain.bitcoin.BitcoinTransaction
 import tcs.blockchain.litecoin.LitecoinTransaction
+//import tcs.externaldata.metadata.MetadataParser
 
 object MiningPools {
 
@@ -35,6 +36,7 @@ object MiningPools {
           if (hex.contains("3538636f696e2e636f6d")) return Pools._58COIN
           if (hex.contains("706f6f6c2e626974636f696e2e636f6d")) return Pools.BITCOINCOM
           if (hex.contains("436f6e6e656374425443202d20486f6d6520666f72204d696e657273")) return Pools.CONNECTED
+          if (hex.contains("4c544331425443") || hex.contains("6c746331627463")) return Pools.LTC1BTC
           // F2Pool does not have a unique identifier
           if (hex.contains("777868") ||
             hex.contains("66326261636b7570") ||
@@ -53,12 +55,16 @@ object MiningPools {
           if (hex.contains("474956452d4d452d434f494e532e636f6d")) return Pools.GIVEMECOINS
           if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
           if (hex.contains("424154504f4f4c")) return Pools.BATPOOL
+          if (hex.contains("3862616f636869")) return Pools._8BAOCHI
+          if (hex.contains("5032506f6f6c")) return Pools.P2POOL
+          if (hex.contains("6f7a636f696e") || hex.contains("6f7a636f2e696e")) return Pools.OZCOIN
+          if (hex.contains("706f6c6d696e650") || hex.contains("6279706d6e65")) return Pools.POLMINE
 
           /**Searching for most complex pattern after every other known pattern due to avoid
             * useless operations and minimize collision risk
             */
 
-          if(hex.matches(".*2f434d.{16}2f.*")) return Pools.CLEVERMINING
+          if(hex.matches(".*2f434d.{4,26}2f.*")) return Pools.CLEVERMINING
           if(hex.matches(".*4d696e656420627920416e74506f6f6c.*")) return Pools.ANTPOOL
           if(hex.contains("2f50726f68617368696e672f")) return Pools.PROHASHING
           //if it isn't a generic nodeStratum signature
@@ -104,12 +110,25 @@ object MiningPools {
       val programByte: Array[Byte] = transaction.inputs.head.inScript.getProgram()
 
       if (programByte != null) {
-        val hex: String = programByte.map("%02x".format(_)).mkString
+        val hex: String = (programByte.map("%02x".format(_)).mkString)
         if (hex != "") {
+
+          if (hex.contains("73666d696e6572")) return Pools.SFMINER
+          /**Found a pattern for F2Pool
+            * F2Pool (DiscusFish) miners identify all their blocks with f09f90, which happen to be quite frequently found
+            * Also, they append "Mined by ..."
+            * Furthermore, around blocks 813XXX they mined a relevant sequence of blocks with the appended message:
+            * "New Horizons is 3XXXXXX km to Pluto"
+            */
+
+          if (( hex.contains("f09f90") && (hex.contains("4d696e656420627920") || hex.contains("4e657720486f72697a6f6e73")) )
+          ) return Pools.F2POOL
           if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
           if (hex.contains("42544343")) return Pools.BTCCPOOL
           if (hex.contains("4c54432e544f50")) return Pools.LTCTOP
-          if (hex.contains("566961425443")) return Pools.VIABTC
+          if (hex.contains("566961425443") || hex.contains("766961627463") ||
+          hex.contains("564941425443")) return Pools.VIABTC
+          if (hex.contains("5669614c5443")) return Pools.VIALTC
           if (hex.contains("2e7a706f6f6c2e6361")) return Pools.ZPOOL
           if (hex.contains("2f6d70682f")) return Pools.MPH
           if (hex.contains("544244696365")) return Pools.TBDICE
@@ -117,21 +136,24 @@ object MiningPools {
           if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
           if (hex.contains("424154504f4f4c")) return Pools.BATPOOL
 
-          if (hex.contains("4d696e656420627920416e74506f6f6c20") || hex.matches(".*4d696e656420627920416e74506f6f6c.*")) return Pools.ANTPOOL
+          /*if (hex.contains("4d696e656420627920416e74506f6f") || hex.matches(".*4d696e656420627920416e74506f6f.*"))
+            return Pools.ANTPOOL*/
+          if (hex.contains("416e74506f6f6c")) return Pools.ANTPOOL
           if (hex.contains("42570a665704") ||
-            hex.contains("2f42572f") ||
-            hex.contains("425720506f6f6c")) return Pools.BW
-          // F2Pool does not have a unique identifier
-          // Found a pattern for F2Pool
-          if (( hex.contains("f09f90") && hex.contains("4d696e656420627920") )
-          ) return Pools.F2POOL
+            hex.contains("425720506f6f6c") ||
+            (hex.contains("4257") && hex.contains("2f4257"))
+          ) return Pools.BW
+          if (hex.contains("5b5032506f6f6c5d")) return Pools.P2POOL
+          //if (hex.contains("3862616f636869")) return Pools._8BAOCHI
+          if (hex.contains("6f7a636f696e") || hex.contains("6f7a636f2e696e")) return Pools.OZCOIN
+
 
 
           /**Searching for most complex pattern after every other known pattern due to avoid
             * useless operations and minimize collision risk
             */
 
-          if(hex.matches(".*2f434d.{12,22}2f.*")) return Pools.CLEVERMINING
+          if(hex.matches(".*2f434d.{4,26}2f.*")) return Pools.CLEVERMINING
 
           //PROHASHING SIGNATURE FOR REALLY OLD BLOCKS
           //SEPARATED DUE TO AVOID REGEX EXECUTION ON EVERY TRY
