@@ -1,0 +1,16 @@
+#Opreturn with unknown protocol of chained transactions
+PREFIX prop: <http://blockchain/properties#>
+
+SELECT ?txHash ?nextTxHash ?protocol	?metadata
+WHERE {
+  ?tx	prop:nextOpReturn+	?next;
+        prop:txHash			?txHash.
+
+  ?next prop:opReturn		?opReturn;
+  		prop:txHash			?nextTxHash.
+  ?opReturn	prop:protocol	?protocol;
+            prop:metadata	?metadata.
+
+  FILTER regex (?protocol, "unknown")
+}
+LIMIT 100

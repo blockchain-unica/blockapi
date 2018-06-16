@@ -1,13 +1,11 @@
-package tcs.examples.bitcoin.fuseki
+package it.unica.blockchain.analyses.bitcoin.fuseki
 
-import java.io.FileWriter
-
+import it.unica.blockchain.blockchains.BlockchainLib
+import it.unica.blockchain.blockchains.bitcoin.{BitcoinSettings, MainNet}
+import it.unica.blockchain.db.fuseki.{BlockchainURI, GraphModel}
+import it.unica.blockchain.db.{DatabaseSettings, Fuseki}
+import it.unica.blockchain.externaldata.metadata.MetadataParser
 import org.bitcoinj.core.ScriptException
-import tcs.blockchain.BlockchainLib
-import tcs.blockchain.bitcoin.{BitcoinSettings, MainNet}
-import tcs.db.{DatabaseSettings, Fuseki}
-import tcs.db.fuseki.{BlockchainURI, GraphModel}
-import tcs.externaldata.metadata.MetadataParser
 
 import scala.collection.mutable
 
@@ -23,12 +21,11 @@ class OpReturnGraph(
   val model: GraphModel = new GraphModel(fuseki, 50000l)
 
   def opReturnResearch() = {
-    val w = new FileWriter("log.txt")
-
     val transactionMap: mutable.HashMap[String, mutable.HashSet[Int]] = mutable.HashMap()
 
     blockchain.start(startBlock).end(endBlock).foreach(block => {
-      println(block.height)
+      if(block.height % 1000 == 0)
+        println(block.height)
 
       block.txs.foreach(tx => {
 
@@ -41,9 +38,6 @@ class OpReturnGraph(
 
           if (outputList != null) {
             if (outputList.contains(in.redeemedOutIndex)) {
-
-              //println(tx.hash)
-              //println("---" + in.redeemedTxHash.toString + ", " + in.redeemedOutIndex + " " + outputList)
 
               //update or remove item of the input transaction from transactionMap
               outputList.remove(in.redeemedOutIndex)
@@ -62,27 +56,32 @@ class OpReturnGraph(
         tx.outputs.foreach(out => {
           //println(tx.hash + "/" + out.index)
           var isOpreturn: Boolean = false
+          var exc : Boolean = false
 
           try {
             isOpreturn = out.isOpreturn()
           } catch {
             case sexp: ScriptException => {
-              //println("ScriptException - "+ block.height + " tx: " + tx.hash)
-              w.write("ScriptException - "+ block.height + " tx: " + tx.hash)
+              println("ScriptException - "+ block.height + " tx: " + tx.hash)
               isOpreturn = true
+              exc = true
             }
             case iexp: IllegalStateException => {
-              //println("IllegalStateException - " + block.height + " tx: " + tx.hash)
-              w.write("IllegalStateException - " + block.height + " tx: " + tx.hash)
-
+              println("IllegalStateException - " + block.height + " tx: " + tx.hash)
               isOpreturn = true
+              exc = true
             } //block: 310272 - tx: ce7d73cba662af3dfbd699384111115f4ccd24b3748a88bf9bc70c1cc4d08660
           }
 
           if (isOpreturn) {
             opReturn = true
-            var protocol: String = MetadataParser.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.transOut.toString)
-            var metadata: String = out.getMetadata()
+            var protocol = ""
+            var metadata = ""
+
+            if(!exc) {
+              protocol = MetadataParser.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.transOut.toString)
+              metadata = out.getMetadata()
+            }
 
             println(protocol)
             println(metadata)
@@ -101,7 +100,7 @@ class OpReturnGraph(
 
         if (opReturn) {
           println("opReturn tx: " + tx.hash.toString)
-          model.addStatements(BlockchainURI.TX + tx.hash.toString + "/" + tx.hash,
+          model.addStatements(BlockchainURI.TX + tx.hash.toString,
             List(
               (BlockchainURI.TXHASH, tx.hash.toString),
               (BlockchainURI.TXSIZE, tx.txSize.toString),
@@ -116,10 +115,6 @@ class OpReturnGraph(
         }
 
       })
-
-      /*if(block.height % 10000 == 0)
-        println(block.height)
-*/
     })
 
     model.commit()
