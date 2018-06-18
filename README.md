@@ -129,4 +129,4 @@ Students of the Cybersecurity course:
    * [Paolo Orrù](https://it.linkedin.com/in/paoloorru), [Elisa Pau](linkedin.com/in/elisa-pau-52699b107) - Cross validation Ethereum
    * [Stefano Danese](), [Giuseppe Bellisano](), [Emanuela Ripoli]() - Bitcoin transactions ip-geolocalization
    * [Riccardo Casu](https://www.linkedin.com/in/riccardo-casu-79870a166/), [Carlo Cuccu](www.linkedin.com/in/carlo-cuccu-213939165), [Vittoria Frau](www.linkedin.com/in/vittoria-frau) - Bitcoin exchange rates
-   * [Federico Medda](), [Alberto Musa]() - Cross validation Bitcoin
+   * [Federico Medda](https://bitbucket.org/federicomedda/), [Alberto Musa](https://github.com/AlbertoMusa) - Cross validation Bitcoin
