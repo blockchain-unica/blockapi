@@ -9,6 +9,8 @@ import it.unica.blockchain.blockchains.{Transaction => TCSTransaction}
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
+
+
 /**
   * Defines a transaction of the Litecoin blockchain.
   *
@@ -17,7 +19,6 @@ import scala.collection.mutable.ListBuffer
   * @param inputs List of transaction inputs
   * @param outputs List of transaction outputs
   */
-
 class LitecoinTransaction(
                           override val hash: String,
                           override val date: Date,
@@ -144,11 +145,11 @@ class LitecoinTransaction(
     outputs.foreach(out => {
       if(
         out.transOut.getScriptPubKey.getScriptType == ScriptType.P2SH ||
-          out.transOut.getScriptPubKey.getScriptType == ScriptType.P2PKH ||
-          out.transOut.getScriptPubKey.getScriptType == ScriptType.PUB_KEY ||
-          out.transOut.getScriptPubKey.isSentToMultiSig ||
-          out.transOut.getScriptPubKey.isOpReturn)
-      { return TxType.TX_STANDARD }
+        out.transOut.getScriptPubKey.getScriptType == ScriptType.P2PKH ||
+        out.transOut.getScriptPubKey.getScriptType == ScriptType.PUB_KEY ||
+        out.transOut.getScriptPubKey.isSentToMultiSig ||
+        out.transOut.getScriptPubKey.isOpReturn)
+        { return TxType.TX_STANDARD }
 
       return TxType.TX_NONSTANDARD
 
@@ -259,9 +260,8 @@ object LitecoinTransaction {
 
     // TODO: Test getMessageSize
     return new LitecoinTransaction(tx.getHash.toString, null, tx.getMessageSize, inputs, outputs, tx.getLockTime)
-
-
   }
+
   /**
     * Factory for [[it.unica.blockchain.blockchains.litecoin.LitecoinTransaction]] instances.
     * Creates a new transaction given its LitecoinJ representation.

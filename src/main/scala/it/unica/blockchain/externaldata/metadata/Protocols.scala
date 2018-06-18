@@ -36,6 +36,10 @@ object Protocols {
 
   val BLOCKSTORE = "blockstore"
 
+  val COPYROBO = "copyrobo"
+
+  val PROOFSTACK = "proofstack"
+
   val EMPTY = "empty"
   val UNKNOWN = "unknown"
 }
