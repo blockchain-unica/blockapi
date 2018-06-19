@@ -1,8 +1,6 @@
 package it.unica.blockchain.blockchains.bitcoin
 
 import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.Calendar
 
 import com._37coins.bcJsonRpc.{BitcoindClientFactory, BitcoindInterface}
 import com.googlecode.jsonrpc4j.HttpException
