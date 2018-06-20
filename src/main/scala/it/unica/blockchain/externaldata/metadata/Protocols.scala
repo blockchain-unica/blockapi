@@ -42,4 +42,6 @@ object Protocols {
 
   val EMPTY = "empty"
   val UNKNOWN = "unknown"
+  //only for segwit commitment identification
+  val SEGWITCOMMITMENT = "segwit"
 }

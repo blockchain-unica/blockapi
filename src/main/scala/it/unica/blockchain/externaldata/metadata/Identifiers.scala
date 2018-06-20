@@ -58,4 +58,5 @@ object Identifiers {
 
   val PROOFSTACK_CODE1 = "4070726f6f662e6c696e6b"
 
+  val SEGWIT_COMMITMENT = "aa21a9ed"
   }

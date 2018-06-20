@@ -156,6 +156,11 @@ object MetadataParser {
     return Protocols.UNKNOWN;
   }
 
+  def isSegwit(metadata: String): Boolean ={
+    if (metadata.contains(Identifiers.SEGWIT_COMMITMENT)) return true
+    else return false
+  }
+
 
   def extractData(message: String): String = {
     var v1: Integer = message.indexOf("[")
