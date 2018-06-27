@@ -35,15 +35,17 @@ object OpReturnOutputsLite {
     //OP_RETURN has been included in Litecoin since 0.9 release
     //Blocks before 2014 will return null on every row
     
-    blockchain.start(500000).end(1200000).foreach(block => {
+    blockchain.start(500000).foreach(block => {
 
       if (block.height % 10000 == 0) println("Block: " + block.height)
 
       block.txs.foreach(tx => {
         tx.outputs.foreach(out => {
           if (out.isOpreturn()) {
-            var protocol: String = MetadataParser.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.transOut.toString)
-            var metadata: String = out.getMetadata()
+            var protocol: String =
+              MetadataParser.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.transOut.toString)
+            var metadata: String =
+              out.getMetadata()
             outputTable.insert(Seq(tx.hash.toString, convertDate(block.date), protocol, metadata))
           }
         })

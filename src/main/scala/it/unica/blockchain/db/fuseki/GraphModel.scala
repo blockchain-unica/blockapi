@@ -19,9 +19,18 @@ class GraphModel(
   private var model: Model = _
   private var load: Boolean = true
 
+  def addStatements(resource: String,
+                    properties: List[(Property, Any)]
+                   ): Unit = addStatements(resource, properties, List())
+
+  def addStatements(resource: String,
+                    properties: List[(Property, Any)],
+                    appendToResource: (String, Property)
+                   ): Unit = addStatements(resource, properties, List(appendToResource))
+
   def addStatements(resource: String = "",
                     properties: List[(Property, Any)],
-                    appendToResource: (String, Property) = (null, null)
+                    appendToResourceList: List[(String, Property)]
                    ): Unit = {
 
     if (model != null)
@@ -50,9 +59,15 @@ class GraphModel(
       }
     })
 
-    if (appendToResource._1 != null && appendToResource._2 != null) {
+    /*if (appendToResource._1 != null && appendToResource._2 != null) {
       model.createResource(appendToResource._1).addProperty(appendToResource._2, res)
-    }
+    }*/
+
+    appendToResourceList.foreach(t =>
+      if(t._1 != null && t._2 != null)
+        model.createResource(t._1).addProperty(t._2, res)
+    )
+
     res = null
   }
 

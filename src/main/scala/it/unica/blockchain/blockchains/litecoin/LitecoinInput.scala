@@ -16,10 +16,9 @@ import scala.collection.mutable.ListBuffer
   * @param value Input value (in Satoshi).
   * @param redeemedOutIndex Index of the output redeemed (w.r.t. the transaction containing the output);
   *                         null if the enclosing transaction is coinbase.
-  * @param isCoinbase True if the enclosing transaction is coninbase.
+  * @param isCoinbase True if the enclosing transaction is coinbase.
   * @param inScript Input script.
   */
-
 class LitecoinInput(
                     val redeemedTxHash: Sha256Hash,
                     val value: Long,
@@ -29,7 +28,6 @@ class LitecoinInput(
                     val sequenceNo: Long,
                     val outPoint: TransactionOutPoint
                    ){
-
 
   /**
     * String representation of a LitecoinInput.

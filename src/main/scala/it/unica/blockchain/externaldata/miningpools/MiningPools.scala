@@ -53,16 +53,24 @@ object MiningPools {
           if (hex.contains("474956452d4d452d434f494e532e636f6d")) return Pools.GIVEMECOINS
           if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
           if (hex.contains("424154504f4f4c")) return Pools.BATPOOL
+          if (hex.contains("3862616f636869")) return Pools._8BAOCHI
+          if (hex.contains("5032506f6f6c")) return Pools.P2POOL
+          if (hex.contains("3168617368")) return Pools._1HASH
+          if (hex.contains("756c7469706f6f6c")) return Pools.MULTIPOOL
+          if (hex.contains("67686173682e696f")) return Pools.GHASH
+          if (hex.contains("44504f4f4c")) return Pools.DPOOL
 
           /**Searching for most complex pattern after every other known pattern due to avoid
             * useless operations and minimize collision risk
             */
 
-          if(hex.matches(".*2f434d.{16}2f.*")) return Pools.CLEVERMINING
-          if(hex.matches(".*4d696e656420627920416e74506f6f6c.*")) return Pools.ANTPOOL
-          if(hex.contains("2f50726f68617368696e672f")) return Pools.PROHASHING
+          if (hex.matches(".*2f434d.{4,26}2f.*")) return Pools.CLEVERMINING
+          if (hex.matches(".*4d696e656420627920416e74506f6f6c.*")) return Pools.ANTPOOL
+          if (hex.contains("2f50726f68617368696e672f")) return Pools.PROHASHING
+          if (hex.contains("6f7a636f696e") || hex.contains("6f7a636f2e696e")) return Pools.OZCOIN
+          if (hex.contains("706f6c6d696e650") || hex.contains("6279706d6e65")) return Pools.POLMINE
           //if it isn't a generic nodeStratum signature
-          if((!hex.contains("6e6f64655374726174756d")) && hex.matches(".*2f[a-f||0-9]{20}2f"))  return Pools.PROHASHING
+          if ((!hex.contains("6e6f64655374726174756d")) && hex.matches(".*2f[a-f||0-9]{20}2f"))  return Pools.PROHASHING
           //then if it matches this regex it's a block mined by PH
         }
       }
@@ -106,40 +114,75 @@ object MiningPools {
       if (programByte != null) {
         val hex: String = programByte.map("%02x".format(_)).mkString
         if (hex != "") {
+
+          if (hex.contains("73666d696e6572") ||
+            hex.contains("4d696e65642062792073666d696e65722e636f6d")) return Pools.SFMINER
+
+          /**Found a pattern for F2Pool
+            * F2Pool (DiscusFish) miners identify all their blocks with f09f90, which is a small pattern
+            * that could risk collisions
+            * Also, they append "Mined by ..."
+            * Furthermore, around blocks 813XXX they mined a relevant sequence of blocks with the appended message:
+            * "New Horizons is 3XXXXXX km to Pluto"
+            */
+
+          if (hex.contains("f09f90") &&
+            ((hex.contains("4d696e656420627920") || hex.contains("4e657720486f72697a6f6e73")))
+          ) return Pools.F2POOL
           if (hex.contains("2f4c502f")) return Pools.LITECOINPOOL
           if (hex.contains("42544343")) return Pools.BTCCPOOL
           if (hex.contains("4c54432e544f50")) return Pools.LTCTOP
-          if (hex.contains("566961425443")) return Pools.VIABTC
+          if (hex.contains("566961425443") || hex.contains("766961627463") ||
+          hex.contains("564941425443")) return Pools.VIABTC
+          if (hex.contains("5669614c5443")) return Pools.VIALTC
           if (hex.contains("2e7a706f6f6c2e6361")) return Pools.ZPOOL
           if (hex.contains("2f6d70682f")) return Pools.MPH
           if (hex.contains("544244696365")) return Pools.TBDICE
           if (hex.contains("474956452d4d452d434f494e532e636f6d")) return Pools.GIVEMECOINS
           if (hex.contains("436f696e4d696e65")) return Pools.COINMINE
           if (hex.contains("424154504f4f4c")) return Pools.BATPOOL
+          if (hex.contains("636b706f6f6c")) return Pools.CKPOOL
 
-          if (hex.contains("4d696e656420627920416e74506f6f6c20") || hex.matches(".*4d696e656420627920416e74506f6f6c.*")) return Pools.ANTPOOL
+          /*if (hex.contains("4d696e656420627920416e74506f6f") || hex.matches(".*4d696e656420627920416e74506f6f.*"))
+            return Pools.ANTPOOL*/
+          if (hex.contains("416e74506f6f6c")) return Pools.ANTPOOL
           if (hex.contains("42570a665704") ||
-            hex.contains("2f42572f") ||
-            hex.contains("425720506f6f6c")) return Pools.BW
-          // F2Pool does not have a unique identifier
-          // Found a pattern for F2Pool
-          if (( hex.contains("f09f90") && hex.contains("4d696e656420627920") )
-          ) return Pools.F2POOL
+            hex.contains("425720506f6f6c") ||
+            (hex.contains("4257") && hex.contains("2f4257"))
+          ) return Pools.BW
+          if (hex.contains("5b5032506f6f6c5d")) return Pools.P2POOL
 
 
           /**Searching for most complex pattern after every other known pattern due to avoid
             * useless operations and minimize collision risk
             */
 
-          if(hex.matches(".*2f434d.{12,22}2f.*")) return Pools.CLEVERMINING
+          //if(hex.matches(".*2f434d.{4,26}2f.*")) return Pools.CLEVERMINING
+          if (hex.contains("73686172705f66697265")) return "assigned to LTC1BTC (mined by sharp_fire)"
 
-          //PROHASHING SIGNATURE FOR REALLY OLD BLOCKS
-          //SEPARATED DUE TO AVOID REGEX EXECUTION ON EVERY TRY
-          if(hex.contains("2f50726f68617368696e672f")) return Pools.PROHASHING
+          if (hex.contains("2f434d6575") ||
+              hex.contains("2f434d7573") ||
+              hex.contains("2f434d7366697265") ||
+              hex.matches(".*2f434d.{4,26}2f.*"))
+            return Pools.CLEVERMINING
+
+          //MINOR POOLS START HERE
+
+          if (hex.contains("2f50726f68617368696e672f")) return Pools.PROHASHING
+          if (hex.contains("6f7a636f696e") || hex.contains("6f7a636f2e696e")) return Pools.OZCOIN
+          if (hex.contains("77616c7463")) return Pools.WALTC
+          if (hex.contains("756c7469706f6f6c")) return Pools.MULTIPOOL
+          if (hex.contains("67686173682e696f")) return Pools.GHASH
+          if (hex.contains("776166666c65706f6f6c2e636f6d")) return Pools.WAFFLEPOOL
+          if (hex.contains("436f696e48756e7472")) return Pools.COINHUNTR
+          if (hex.contains("6d696e656c697465636f696e")) return Pools.MINELITECOIN
+          if (hex.contains("65617379326d696e65")) return Pools.EASY2MINE
+          if (hex.contains("3862616f636869")) return Pools._8BAOCHI
           //if it isn't a generic nodeStratum signature
-          if((!hex.contains("6e6f64655374726174756d")) && hex.matches(".*2f[a-f||0-9]{20}2f"))  return Pools.PROHASHING
+          if ((!hex.contains("6e6f64655374726174756d")) && hex.matches(".*2f[a-f||0-9]{20}2f"))  return Pools.PROHASHING
           //then if it matches this regex it's a block mined by PH
         }
+
       }
     }
     return Pools.UNKNOWN
