@@ -86,7 +86,8 @@ object MetadataParser {
       return Protocols.NOTARY;
     }
 
-    if (metadata.contains(Identifiers.BRACKET + Identifiers.OMNI_CODE1)) {
+    if (metadata.contains(Identifiers.BRACKET + Identifiers.OMNI_CODE1) ||
+      metadata.contains(Identifiers.BRACKET + Identifiers.OMNI_CODE2)) {
       return Protocols.OMNI;
     }
 
@@ -132,6 +133,18 @@ object MetadataParser {
       return Protocols.STAMPERY;
     }
 
+    if (metadata.contains(Identifiers.BRACKET + Identifiers.COPYROBO_CODE1) ||
+      metadata.contains(Identifiers.BRACKET + Identifiers.COPYROBO_CODE2) ||
+      metadata.contains(Identifiers.BRACKET + Identifiers.COPYROBO_CODE3)) {
+      return Protocols.COPYROBO;
+    }
+
+    if (metadata.contains(Identifiers.BRACKET + Identifiers.PROOFSTACK_CODE1)) {
+      return Protocols.PROOFSTACK;
+    }
+
+
+
     val message = extractData(metadata)
     val rc4 = new RC4(ConvertUtils.hexToBytes(key))
     val result : String = ConvertUtils.bytesToHex(rc4.decrypt(ConvertUtils.hexToBytes(message))).toLowerCase
@@ -141,6 +154,11 @@ object MetadataParser {
     }
 
     return Protocols.UNKNOWN;
+  }
+
+  def isSegwit(metadata: String): Boolean ={
+    if (metadata.contains(Identifiers.SEGWIT_COMMITMENT)) return true
+    else return false
   }
 
 
