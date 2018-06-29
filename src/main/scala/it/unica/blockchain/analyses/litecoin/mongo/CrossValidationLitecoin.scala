@@ -7,8 +7,8 @@ import it.unica.blockchain.mongo.Collection
 
 object CrossValidationLitecoin {
   def main(args: Array[String]): Unit= {
-    val initialBlock:Int = 0
-    val finalBlock:Int = 10
+    val initialBlock:Int = 1447684
+    val finalBlock:Int = 1447688
     val dbMongo = new DatabaseSettings("litecoinDB")
 
     getDataFromTool(initialBlock, finalBlock, dbMongo)
@@ -24,7 +24,21 @@ object CrossValidationLitecoin {
       blockId = block.height.intValue()
       println("Current block ID: " + blockId)
 
+      block.txs.foreach(tx => {
+        val list = List (
+          ("hash", tx.hash),
+          ("date", tx.date),
+          ("inputCount", tx.inputs.length),
+          ("outputCount", tx.outputs.length),
+          ("outputValue", tx.getOutputsSum())
+        )
+        
+        toolBlockchain.append(list)
+      })
+
     })
+
+    toolBlockchain.close
 
 
 
