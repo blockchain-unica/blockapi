@@ -20,29 +20,46 @@ object CrossValidationLitecoin {
     val toolBlockchain = new Collection("litecoinToolValidation", dbMongo)
     var blockId:Int = initialBlock
 
-    blockchain.start(initialBlock).end(finalBlock).foreach(block => {
-      blockId = block.height.intValue()
-      println("Current block ID: " + blockId)
+    try {
+      blockchain.start(initialBlock).end(finalBlock).foreach(block => {
+        blockId = block.height.intValue()
+        println("Current block ID: " + blockId)
 
-      block.txs.foreach(tx => {
-        val list = List (
-          ("hash", tx.hash),
-          ("date", tx.date),
-          ("inputCount", tx.inputs.length),
-          ("outputCount", tx.outputs.length),
-          ("outputValue", tx.getOutputsSum())
-        )
+        block.txs.foreach(tx => {
+          val list = List (
+            ("hash", tx.hash),
+            ("date", tx.date),
+            ("inputCount", tx.inputs.length),
+            ("outputCount", tx.outputs.length),
+            ("outputValue", tx.getOutputsSum())
+          )
 
-        toolBlockchain.append(list)
+          toolBlockchain.append(list)
+        })
+
       })
 
-    })
+      toolBlockchain.close
+    } catch {
+      case e:Exception => {
+        toolBlockchain.close
+        println("Error while proessing block " + blockId)
+        e.printStackTrace()
+        getDataFromTool(blockId+1, finalBlock, dbMongo)
+      }
+    }
+  }
 
-    toolBlockchain.close
+  /*def getDataFromBlockCypher(initialBlock:Int, finalBlock:Int, dbMongo:DatabaseSettings): Unit = {
+    val explorerBlockchain = new Collection("litecoinExplorerValidation", dbMongo)
+
+    for(blockId <- initialBlock to finalBlock) {
+      val jsonString =
+    }
+
+  }*/
 
 
 
 
   }
-
-}
