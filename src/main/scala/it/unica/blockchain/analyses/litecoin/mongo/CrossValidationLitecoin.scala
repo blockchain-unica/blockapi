@@ -32,7 +32,7 @@ object CrossValidationLitecoin {
           ("outputCount", tx.outputs.length),
           ("outputValue", tx.getOutputsSum())
         )
-        
+
         toolBlockchain.append(list)
       })
 
