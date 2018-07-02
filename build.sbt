@@ -30,6 +30,9 @@ libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.1.0"
 libraryDependencies += "org.mongodb" % "mongo-java-driver" % "3.6.0"
 //libraryDependencies += "org.mongodb.scala" %% "mongo-scala-bson" % "2.1.0"
 
+libraryDependencies += "org.apache.tika" % "tika-server" % "1.5"
+
+libraryDependencies += "com.j256.simplemagic" % "simplemagic" % "1.1"
 
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.5"
 
