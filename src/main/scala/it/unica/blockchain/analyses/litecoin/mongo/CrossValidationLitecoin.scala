@@ -1,10 +1,11 @@
 package it.unica.blockchain.analyses.litecoin.mongo
 
+import com.mysql.cj.x.protobuf.MysqlxExpr
 import it.unica.blockchain.blockchains.BlockchainLib
 import it.unica.blockchain.blockchains.litecoin.{LitecoinSettings, MainNet}
 import it.unica.blockchain.db.DatabaseSettings
 import it.unica.blockchain.mongo.Collection
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, JsValue, Json}
 import scalaj.http.Http
 
 object CrossValidationLitecoin {
@@ -14,7 +15,7 @@ object CrossValidationLitecoin {
     val dbMongo = new DatabaseSettings("litecoinDB")
 
     getDataFromTool(initialBlock, finalBlock, dbMongo)
-    getDataFromBlockCypher(initialBlock, finalBlock, dbMongo)
+    getDataFromChainSo(initialBlock, finalBlock, dbMongo)
 
   }
 
@@ -53,7 +54,7 @@ object CrossValidationLitecoin {
     }
   }
 
-  def getDataFromBlockCypher(initialBlock: Int, finalBlock: Int, dbMongo: DatabaseSettings): Unit = {
+  def getDataFromChainSo(initialBlock: Int, finalBlock: Int, dbMongo: DatabaseSettings): Unit = {
     val explorerBlockchain = new Collection("litecoinExplorerValidation", dbMongo)
 
     for (blockId <- initialBlock to finalBlock) {
@@ -61,8 +62,21 @@ object CrossValidationLitecoin {
       val jsonObject = Json.parse(jsonString)
       val blockHash = (jsonObject \ "data" \\ "blockhash").toString()
       val finalBlockHash = blockHash.substring(6,blockHash.length-2)
+      val txJsonString = Http("https://chain.so/api/v2/get_block/LTC/" + finalBlockHash).timeout(1000000000, 1000000000).asString.body
+      val txJsonObject = Json.parse(txJsonString)
+      val txHashArray = (txJsonObject \ "data" \ "txs").as[JsArray]
+      println("Block Hash : " + finalBlockHash)
+      var counter = 0
 
-      println(finalBlockHash)
+      for (i <- 0 to txHashArray.value.size-1) {
+        counter += 1
+        println(txHashArray(i))
+      }
+      println(counter)
+
+
+
+
 
     }
 
