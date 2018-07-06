@@ -1,6 +1,8 @@
 package it.unica.blockchain.analyses.litecoin.mongo
 
-import com.mysql.cj.x.protobuf.MysqlxExpr
+import java.sql.Date
+import java.text.SimpleDateFormat
+
 import it.unica.blockchain.blockchains.BlockchainLib
 import it.unica.blockchain.blockchains.litecoin.{LitecoinSettings, MainNet}
 import it.unica.blockchain.db.DatabaseSettings
@@ -11,7 +13,7 @@ import scalaj.http.Http
 object CrossValidationLitecoin {
   def main(args: Array[String]): Unit = {
     val initialBlock: Int = 1447684
-    val finalBlock: Int = 1447688
+    val finalBlock: Int = 1447685
     val dbMongo = new DatabaseSettings("litecoinDB")
 
     getDataFromTool(initialBlock, finalBlock, dbMongo)
@@ -60,17 +62,27 @@ object CrossValidationLitecoin {
     for (blockId <- initialBlock to finalBlock) {
       val jsonString = Http("https://chain.so/api/v2/get_blockhash/LTC/" + blockId).timeout(1000000000, 1000000000).asString.body
       val jsonObject = Json.parse(jsonString)
-      val blockHash = (jsonObject \ "data" \\ "blockhash").toString()
-      val finalBlockHash = blockHash.substring(6,blockHash.length-2)
-      val txJsonString = Http("https://chain.so/api/v2/get_block/LTC/" + finalBlockHash).timeout(1000000000, 1000000000).asString.body
-      val txJsonObject = Json.parse(txJsonString)
-      val txHashArray = (txJsonObject \ "data" \ "txs").as[JsArray]
-      println("Block Hash : " + finalBlockHash)
+      val blockHash = (jsonObject \ "data" \ "blockhash").as[JsValue].toString().substring(1, (jsonObject \ "data" \ "blockhash").as[JsValue].toString().size-1)
+      val txJsonString = Http("https://chain.so/api/v2/get_block/LTC/" + blockHash).timeout(1000000000, 1000000000).asString.body
+      val txHashJsonObject = Json.parse(txJsonString)
+      val txHashArray = (txHashJsonObject \ "data" \ "txs").as[JsArray]
+      println("Block Hash: " + blockHash)
       var counter = 0
 
       for (i <- 0 to txHashArray.value.size-1) {
         counter += 1
-        println(txHashArray(i))
+        val txHashRequest = Http("https://chain.so/api/v2/tx/LTC/" + txHashArray(i).toString().substring(1, txHashArray(i).toString().size-1)).timeout(1000000000, 1000000000).asString.body
+        val txJsonObject = Json.parse(txHashRequest)
+        val inputCount = (txJsonObject \ "data" \ "inputs").as[JsArray].value.size
+        val outputCount = (txJsonObject \ "data" \ "outputs").as[JsArray].value.size
+        val outputSum:Int = (((txJsonObject \ "data" \ "sent_value").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "sent_value").as[JsValue].toString().length-1).toDouble -
+          (txJsonObject \ "data" \ "fee").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "fee").as[JsValue].toString().length-1).toDouble) * 100000000).toInt
+        val date = new Date(((txJsonObject \ "data" \ "time").as[Long])*1000)
+        val sfd:SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.0000")
+        println(sfd.format(date))
+
+
+
       }
       println(counter)
 
