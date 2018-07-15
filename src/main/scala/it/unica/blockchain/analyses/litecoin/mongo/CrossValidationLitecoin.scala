@@ -9,7 +9,26 @@ import it.unica.blockchain.mongo.Collection
 import play.api.libs.json.{JsArray, JsValue, Json}
 import scalaj.http.Http
 
-/** **/
+/**The script uses two methods to get informations from both Litecoin blockchain tool
+  * and Litecoin blockchain explorer, and updates a collection on MongoDB with the obtained values.
+  *
+  * To be more specific:
+  * Method getDataFromTool explores the Litecoin blockchain downloaded from the tool and stores the
+  * values in a collection.
+  * Method getDataFromChainSo performs requests with Http protocol to get the values from chain.so
+  * and stores them in a collection.
+  *
+  * The stored values are, for each transaction:
+  *   -Hash
+  *   -Date
+  *   -Number of inputs
+  *   -Number of outputs
+  *   -Output value of the whole transaction
+  *
+  * @author Daniele Sanna
+  * @author Giovanni Usai
+   */
+
 
 
 object CrossValidationLitecoin {
