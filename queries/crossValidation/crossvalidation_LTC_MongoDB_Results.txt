@@ -5,8 +5,6 @@ questo metodo siamo stati bloccati dopo poche richieste. Abbiamo quindi inserito
 le varie richieste all'explorer all'interno di un ciclo do-while in modo tale da
 continuare a fare richieste anche in caso di blocco, tuttavia dopo circa 800 transazioni
 il programma rimane in stallo senza ricevere più informazioni.
-Non abbiamo riscontrato differenze tra le due collection create per quanto riguarda
-il numero di transazioni, l'hash, il numero di input ed il numero di output.
-Per quanto riguarda i valori degli output abbiamo riscontrato alcune differenze che
-crediamo siano dovute a piccoli errori di approssimazione, poichè, salvando le differenze
-in un'altra collection abbiamo notato che sono minime, +/- 1 sul valore degli output.
+
+Non abbiamo riscontrato differenze tra le due collection create dopo l'esecuzione delle
+query richieste.

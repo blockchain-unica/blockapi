@@ -128,8 +128,8 @@ object CrossValidationLitecoin {
             ("date", sfd.parse(sfd.format(new Date(((txJsonObject \ "data" \ "time").as[Long]) * 1000)))),
             ("inputCount", (txJsonObject \ "data" \ "inputs").as[JsArray].value.size),
             ("outputCount", (txJsonObject \ "data" \ "outputs").as[JsArray].value.size),
-            ("outputValue", (((txJsonObject \ "data" \ "sent_value").as[JsValue].toString().replaceAll("\"", "").toDouble * 100000000) -
-              ((txJsonObject \ "data" \ "fee").as[JsValue].toString().replaceAll("\"", "").toDouble * 100000000)).toLong)
+            ("outputValue", (BigDecimal((txJsonObject \ "data" \ "sent_value").as[JsValue].toString().replaceAll("\"", "") )* 100000000 -
+              BigDecimal((txJsonObject \ "data" \ "fee").as[JsValue].toString().replaceAll("\"", "") )* 100000000).toLong)
           )
 
           explorerBlockchain.append(explorerList)
