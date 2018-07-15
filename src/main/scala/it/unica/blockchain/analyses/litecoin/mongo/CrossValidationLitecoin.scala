@@ -35,7 +35,7 @@ object CrossValidationLitecoin {
   def main(args: Array[String]): Unit = {
     /*Initialization of parameters to scan a range of blocks and to create a database on MongoDB*/
     val initialBlock: Int = 1443231
-    val finalBlock: Int = 1443330
+    val finalBlock: Int = 1443232
     val dbMongo = new DatabaseSettings("litecoinDB")
 
     getDataFromTool(initialBlock, finalBlock, dbMongo)
@@ -101,7 +101,8 @@ object CrossValidationLitecoin {
         } while (jsonString.contains("Too"))
 
         val jsonObject = Json.parse(jsonString)
-        val blockHash = (jsonObject \ "data" \ "blockhash").as[JsValue].toString().substring(1, (jsonObject \ "data" \ "blockhash").as[JsValue].toString().size - 1)
+        //val blockHash = (jsonObject \ "data" \ "blockhash").as[JsValue].toString().substring(1, (jsonObject \ "data" \ "blockhash").as[JsValue].toString().size - 1)
+        val blockHash = (jsonObject \ "data" \ "blockhash").as[JsValue].toString().replaceAll("\"", "")
 
         /*Gets the set of transaction's hash in a block and stores it in an array*/
         do {
@@ -117,7 +118,7 @@ object CrossValidationLitecoin {
           val sfd: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.0000")
           var txHashRequest = " "
           do {
-            txHashRequest = Http("https://chain.so/api/v2/tx/LTC/" + txHashArray(i).toString().substring(1, txHashArray(i).toString().size - 1)).timeout(1000000000, 1000000000).asString.body
+            txHashRequest = Http("https://chain.so/api/v2/tx/LTC/" + txHashArray(i).toString().replaceAll("\"", "")).timeout(1000000000, 1000000000).asString.body
             sleep(1000)
           } while (txHashRequest.contains("Too"))
 
@@ -127,8 +128,8 @@ object CrossValidationLitecoin {
             ("date", sfd.parse(sfd.format(new Date(((txJsonObject \ "data" \ "time").as[Long]) * 1000)))),
             ("inputCount", (txJsonObject \ "data" \ "inputs").as[JsArray].value.size),
             ("outputCount", (txJsonObject \ "data" \ "outputs").as[JsArray].value.size),
-            ("outputValue", ((txJsonObject \ "data" \ "sent_value").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "sent_value").as[JsValue].toString().length - 1).toDouble * 100000000L) -
-              ((txJsonObject \ "data" \ "fee").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "fee").as[JsValue].toString().length - 1).toDouble * 100000000L))
+            ("outputValue", (((txJsonObject \ "data" \ "sent_value").as[JsValue].toString().replaceAll("\"", "").toDouble * 100000000) -
+              ((txJsonObject \ "data" \ "fee").as[JsValue].toString().replaceAll("\"", "").toDouble * 100000000)).toLong)
           )
 
           explorerBlockchain.append(explorerList)
@@ -141,7 +142,7 @@ object CrossValidationLitecoin {
         explorerBlockchain.close
         println("Error while proessing block " + blockId)
         e.printStackTrace()
-        getDataFromTool(blockId + 1, finalBlock, dbMongo)
+        getDataFromChainSo(blockId + 1, finalBlock, dbMongo)
       }
     }
 
