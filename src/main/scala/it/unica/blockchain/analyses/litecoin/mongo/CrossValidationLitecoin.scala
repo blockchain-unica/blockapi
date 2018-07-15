@@ -84,55 +84,66 @@ object CrossValidationLitecoin {
 
   def getDataFromChainSo(initialBlock: Int, finalBlock: Int, dbMongo: DatabaseSettings): Unit = {
     val explorerBlockchain = new Collection("litecoinExplorerValidation", dbMongo)
+    var blockId:Int = initialBlock
 
-    for (blockId <- initialBlock to finalBlock) {
-      var jsonString = " "
-      var txJsonString = " "
+    try {
+      /*Scan the range of blocks defined by initialBlock and finalBlock*/
+      for (blockId <- initialBlock to finalBlock) {
+        var jsonString = " "
+        var txJsonString = " "
 
-      /*Gets the block hash by performing a Http request using the number of the block.
+        /*Gets the block hash by performing a Http request using the number of the block.
       * The do-while construct is used to avoid being kicked from the domain because of the
       * "Too many requests" error.*/
-      do {
-        jsonString = Http("https://chain.so/api/v2/get_blockhash/LTC/" + blockId).timeout(1000000000, 1000000000).asString.body
-        sleep(1000)
-      } while (jsonString.contains("Too"))
-
-      val jsonObject = Json.parse(jsonString)
-      val blockHash = (jsonObject \ "data" \ "blockhash").as[JsValue].toString().substring(1, (jsonObject \ "data" \ "blockhash").as[JsValue].toString().size-1)
-
-      /*Gets the set of transaction's hash in a block and stores it in an array*/
-      do {
-        txJsonString = Http("https://chain.so/api/v2/get_block/LTC/" + blockHash).timeout(1000000000, 1000000000).asString.body
-        sleep(1000)
-      } while (txJsonString.contains("Too"))
-
-      val txHashJsonObject = Json.parse(txJsonString)
-      val txHashArray = (txHashJsonObject \ "data" \ "txs").as[JsArray]
-
-      /*Makes a request for the values for each transaction, stores them in a list and updates the collection*/
-      for (i <- 0 to txHashArray.value.size-1) {
-        val sfd:SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.0000")
-        var txHashRequest = " "
         do {
-          txHashRequest = Http("https://chain.so/api/v2/tx/LTC/" + txHashArray(i).toString().substring(1, txHashArray(i).toString().size - 1)).timeout(1000000000, 1000000000).asString.body
+          jsonString = Http("https://chain.so/api/v2/get_blockhash/LTC/" + blockId).timeout(1000000000, 1000000000).asString.body
           sleep(1000)
-        } while (txHashRequest.contains("Too"))
+        } while (jsonString.contains("Too"))
 
-        val txJsonObject = Json.parse(txHashRequest)
-        val explorerList = List (
-          ("hash", txHashArray(i).toString().substring(1, txHashArray(i).toString().size - 1)),
-          ("date", sfd.parse(sfd.format(new Date(((txJsonObject \ "data" \ "time").as[Long])*1000)))),
-          ("inputCount", (txJsonObject \ "data" \ "inputs").as[JsArray].value.size),
-          ("outputCount", (txJsonObject \ "data" \ "outputs").as[JsArray].value.size),
-          ("outputValue", ((txJsonObject \ "data" \ "sent_value").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "sent_value").as[JsValue].toString().length-1).toDouble* 100000000L) -
-            ((txJsonObject \ "data" \ "fee").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "fee").as[JsValue].toString().length-1).toDouble * 100000000L))
-        )
+        val jsonObject = Json.parse(jsonString)
+        val blockHash = (jsonObject \ "data" \ "blockhash").as[JsValue].toString().substring(1, (jsonObject \ "data" \ "blockhash").as[JsValue].toString().size - 1)
 
-        explorerBlockchain.append(explorerList)
+        /*Gets the set of transaction's hash in a block and stores it in an array*/
+        do {
+          txJsonString = Http("https://chain.so/api/v2/get_block/LTC/" + blockHash).timeout(1000000000, 1000000000).asString.body
+          sleep(1000)
+        } while (txJsonString.contains("Too"))
 
+        val txHashJsonObject = Json.parse(txJsonString)
+        val txHashArray = (txHashJsonObject \ "data" \ "txs").as[JsArray]
+
+        /*Makes a request for the values for each transaction, stores them in a list and updates the collection*/
+        for (i <- 0 to txHashArray.value.size - 1) {
+          val sfd: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.0000")
+          var txHashRequest = " "
+          do {
+            txHashRequest = Http("https://chain.so/api/v2/tx/LTC/" + txHashArray(i).toString().substring(1, txHashArray(i).toString().size - 1)).timeout(1000000000, 1000000000).asString.body
+            sleep(1000)
+          } while (txHashRequest.contains("Too"))
+
+          val txJsonObject = Json.parse(txHashRequest)
+          val explorerList = List(
+            ("hash", txHashArray(i).toString().substring(1, txHashArray(i).toString().size - 1)),
+            ("date", sfd.parse(sfd.format(new Date(((txJsonObject \ "data" \ "time").as[Long]) * 1000)))),
+            ("inputCount", (txJsonObject \ "data" \ "inputs").as[JsArray].value.size),
+            ("outputCount", (txJsonObject \ "data" \ "outputs").as[JsArray].value.size),
+            ("outputValue", ((txJsonObject \ "data" \ "sent_value").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "sent_value").as[JsValue].toString().length - 1).toDouble * 100000000L) -
+              ((txJsonObject \ "data" \ "fee").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "fee").as[JsValue].toString().length - 1).toDouble * 100000000L))
+          )
+
+          explorerBlockchain.append(explorerList)
+        }
+      }
+      explorerBlockchain.close
+    }catch {
+      /*Throws an exception if there are errors while processing a block*/
+      case e: Exception => {
+        explorerBlockchain.close
+        println("Error while proessing block " + blockId)
+        e.printStackTrace()
+        getDataFromTool(blockId + 1, finalBlock, dbMongo)
       }
     }
-    explorerBlockchain.close
 
   }
   /*Definition of a sleep function used to make requests with a delay to minimize the number of "Too many requests" error
