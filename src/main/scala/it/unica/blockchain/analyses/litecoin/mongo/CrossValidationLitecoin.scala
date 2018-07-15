@@ -101,7 +101,6 @@ object CrossValidationLitecoin {
         } while (jsonString.contains("Too"))
 
         val jsonObject = Json.parse(jsonString)
-        //val blockHash = (jsonObject \ "data" \ "blockhash").as[JsValue].toString().substring(1, (jsonObject \ "data" \ "blockhash").as[JsValue].toString().size - 1)
         val blockHash = (jsonObject \ "data" \ "blockhash").as[JsValue].toString().replaceAll("\"", "")
 
         /*Gets the set of transaction's hash in a block and stores it in an array*/
