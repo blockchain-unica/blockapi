@@ -2,21 +2,20 @@ package it.unica.blockchain.analyses.litecoin.mongo
 
 import java.sql.Date
 import java.text.SimpleDateFormat
-
 import it.unica.blockchain.blockchains.BlockchainLib
 import it.unica.blockchain.blockchains.litecoin.{LitecoinSettings, MainNet}
 import it.unica.blockchain.db.DatabaseSettings
 import it.unica.blockchain.mongo.Collection
-import org.mongodb.scala.{MongoClient, MongoCollection, MongoDatabase}
 import play.api.libs.json.{JsArray, JsValue, Json}
 import scalaj.http.Http
 
-import scala.xml.Document
+/** **/
+
 
 object CrossValidationLitecoin {
   def main(args: Array[String]): Unit = {
     val initialBlock: Int = 1443231
-    val finalBlock: Int = 1443231
+    val finalBlock: Int = 1443330
     val dbMongo = new DatabaseSettings("litecoinDB")
 
     getDataFromTool(initialBlock, finalBlock, dbMongo)
@@ -93,8 +92,8 @@ object CrossValidationLitecoin {
           ("date", sfd.parse(sfd.format(new Date(((txJsonObject \ "data" \ "time").as[Long])*1000)))),
           ("inputCount", (txJsonObject \ "data" \ "inputs").as[JsArray].value.size),
           ("outputCount", (txJsonObject \ "data" \ "outputs").as[JsArray].value.size),
-          ("outputValue", ((txJsonObject \ "data" \ "sent_value").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "sent_value").as[JsValue].toString().length-1).toDouble* 100000000).toLong -
-            ((txJsonObject \ "data" \ "fee").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "fee").as[JsValue].toString().length-1).toDouble * 100000000).toLong)
+          ("outputValue", ((txJsonObject \ "data" \ "sent_value").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "sent_value").as[JsValue].toString().length-1).toDouble* 100000000L) -
+            ((txJsonObject \ "data" \ "fee").as[JsValue].toString().substring(1, (txJsonObject \ "data" \ "fee").as[JsValue].toString().length-1).toDouble * 100000000L))
         )
 
         explorerBlockchain.append(explorerList)
