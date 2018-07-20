@@ -32,14 +32,13 @@ object OpReturnOutputs {
       sql"""insert into opreturnoutput (transactionHash, txdate, protocol, metadata) values(?,?,?,?)""",
       mySQL)
 
-    blockchain.start(290000).end(473100).foreach(block => {
-
-      if (block.height % 10000 == 0) println("Block: " + block.height)
-
+    blockchain.start(290000).foreach(block => {
       block.txs.foreach(tx => {
         tx.outputs.foreach(out => {
           if (out.isOpreturn()) {
-            var protocol: String = MetadataParser.getApplication(tx.inputs.head.outPoint.toString.substring(0, 64), out.transOut.toString)
+            var protocol: String = MetadataParser.getApplication(
+              tx.inputs.head.outPoint.toString.substring(0, 64),
+              out.transOut.toString)
             var metadata: String = out.getMetadata()
             outputTable.insert(Seq(tx.hash.toString, convertDate(block.date), protocol, metadata))
           }

@@ -19,11 +19,7 @@ object TxWithRates {
 
     val txWithRates = new Collection("txWithRates", mongo)
 
-    blockchain.start(400000).end(473100).foreach(block => {
-
-      if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
-
-
+    blockchain.end(473100).foreach(block => {
       block.txs.foreach(tx => {
         txWithRates.append(List(
           ("txHash", tx.hash),
