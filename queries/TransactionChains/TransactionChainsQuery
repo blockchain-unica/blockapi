@@ -1,0 +1,3 @@
+db.getCollection('transactionChains').find(		
+	{'Type':{$ne : "null"}}
+)
