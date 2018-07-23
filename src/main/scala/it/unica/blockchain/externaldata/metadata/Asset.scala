@@ -49,8 +49,6 @@ object Asset {
   private def downloadAssets(): Try[Seq[Asset]] = {
     val response = Http(XChainAssetsEndpoint)
       .param("start", "0")
-      // not sure whether this number can be constant
-      // it can be improved by adding second step: fetch recordsTotal and then fetch all assets
       .param("length", "73702")
       .param("action", "next")
       .param("offset", "")
