@@ -58,5 +58,8 @@ object Identifiers {
 
   val PROOFSTACK_CODE1 = "4070726f6f662e6c696e6b"
 
+  val POET_CODE1 = "504f4554"
+  val EXONUM_CODE1 = "45584f4e554d"
+
   val SEGWIT_COMMITMENT = "aa21a9ed"
   }

@@ -40,6 +40,9 @@ object Protocols {
 
   val PROOFSTACK = "proofstack"
 
+  val POET = "po.et"
+  val EXONUM = "Exonum"
+
   val EMPTY = "empty"
   val UNKNOWN = "unknown"
   //only for segwit commitment identification

@@ -143,7 +143,13 @@ object MetadataParser {
       return Protocols.PROOFSTACK;
     }
 
+    if (metadata.contains(Identifiers.BRACKET + Identifiers.POET_CODE1)) {
+      return Protocols.POET;
+    }
 
+    if (metadata.contains(Identifiers.BRACKET + Identifiers.EXONUM_CODE1)) {
+      return Protocols.EXONUM;
+    }
 
     val message = extractData(metadata)
     val rc4 = new RC4(ConvertUtils.hexToBytes(key))
