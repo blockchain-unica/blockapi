@@ -131,4 +131,4 @@ Students of the Cybersecurity course:
    * [Riccardo Casu](https://www.linkedin.com/in/riccardo-casu-79870a166/), [Carlo Cuccu](https://www.linkedin.com/in/carlo-cuccu-213939165), [Vittoria Frau](https://www.linkedin.com/in/vittoria-frau) - Bitcoin exchange rates
    * [Federico Medda](https://bitbucket.org/federicomedda/), [Alberto Musa](https://github.com/AlbertoMusa) - Cross validation Bitcoin
    * [Simone Balloccu](), [Andrea Bellanti](), [Federica Stocchino]() - Transaction chains
-   * [Daniele Sanna](), [Giovanni Usai]() - Cross validation Litecoin
+   * [Daniele Sanna](https://github.com/danielesanna), [Giovanni Usai](https://github.com/giovanniusai) - Cross validation Litecoin
