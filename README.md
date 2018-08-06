@@ -132,4 +132,4 @@ Students of the Cybersecurity course:
    * [Federico Medda](https://bitbucket.org/federicomedda/), [Alberto Musa](https://github.com/AlbertoMusa) - Cross validation Bitcoin
    * [Simone Balloccu](), [Andrea Bellanti](), [Federica Stocchino]() - Transaction chains
    * [Daniele Sanna](https://github.com/danielesanna), [Giovanni Usai](https://github.com/giovanniusai) - Cross validation Litecoin
-   * [Soukaina Aassouss](), [Reda Belaiche](), [Khadija Zine]() - Counterparty Tokens 
+   * [Soukaina Aassouss](), [Reda Belaiche](), [Khadija Zine](https://github.com/khadijazine) - Counterparty Tokens 
