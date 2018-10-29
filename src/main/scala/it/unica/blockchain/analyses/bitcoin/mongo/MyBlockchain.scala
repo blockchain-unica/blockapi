@@ -11,11 +11,15 @@ import it.unica.blockchain.mongo.Collection
 object MyBlockchain {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mongo = new DatabaseSettings("myDatabase")
+    // 1) Connect to a blockchain client (Bitcoin Core)
+    val blockchain = BlockchainLib.getBitcoinBlockchain(
+      new BitcoinSettings("user", "password", "8332", MainNet))
 
+    // 2) Connect to a DBMS and create a view (MongoDB collection)
+    val mongo = new DatabaseSettings("myDatabase")
     val myBlockchain = new Collection("myBlockchain", mongo)
 
+    // 3) Visit the blockchain and append values to the view
     blockchain.foreach(block => {
       block.txs.foreach(tx => {
         myBlockchain.append(List(

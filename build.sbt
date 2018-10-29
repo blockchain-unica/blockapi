@@ -30,6 +30,9 @@ libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.1.0"
 libraryDependencies += "org.mongodb" % "mongo-java-driver" % "3.6.0"
 //libraryDependencies += "org.mongodb.scala" %% "mongo-scala-bson" % "2.1.0"
 
+libraryDependencies += "org.apache.tika" % "tika-server" % "1.5"
+
+libraryDependencies += "com.j256.simplemagic" % "simplemagic" % "1.1"
 
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.5"
 
@@ -52,3 +55,5 @@ libraryDependencies += "org.apache.jena" % "apache-jena-libs" % "3.7.0"
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7"
 
 libraryDependencies += "org.litecoinj" % "litecoinj-core" % "0.15-SNAPSHOT"
+
+libraryDependencies += "com.github.tototoshi" %% "scala-csv" % "1.3.5"

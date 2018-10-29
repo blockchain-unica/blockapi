@@ -1,0 +1,7 @@
+/* Check if collections have the same number of transactions */
+
+if(db.litecoinToolValidation.count() !== db.litecoinExplorerValidation.count()){
+    print("Warning: Collections have a different number of transactions");
+} else {
+    print("Collections have the same number of transactions");
+}

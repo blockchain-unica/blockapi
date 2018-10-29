@@ -1,0 +1,17 @@
+/* Check if stored transactions have the same hash */
+
+var contDifferences = 0;
+db.litecoinToolValidation.find().forEach(function(doc1){
+    var doc2 = db.litecoinExplorerValidation.findOne({hash: doc1.hash});
+
+    if (!(doc2)) {
+            contDifferences += 1;
+    }
+});
+
+
+if (contDifferences > 0) {
+    print("Found differences between the collections: " + contDifferences + " docs differs");
+} else {
+    print("No difference found");
+}
