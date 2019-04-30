@@ -1,5 +1,5 @@
 package it.unica.blockchain.analyses.litecoin.mongo
-
+/*
 import java.sql.Date
 import java.text.SimpleDateFormat
 import it.unica.blockchain.blockchains.BlockchainLib
@@ -150,3 +150,4 @@ object CrossValidationLitecoin {
   * from chain.so*/
   def sleep(time: Long): Unit = Thread.sleep(time)
 }
+*/

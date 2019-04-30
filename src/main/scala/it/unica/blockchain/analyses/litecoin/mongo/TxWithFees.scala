@@ -1,5 +1,5 @@
 package it.unica.blockchain.analyses.litecoin.mongo
-
+/*
 import it.unica.blockchain.blockchains.BlockchainLib
 import it.unica.blockchain.blockchains.litecoin.{LitecoinSettings, MainNet}
 import it.unica.blockchain.externaldata.rates.LitecoinRates
@@ -34,3 +34,4 @@ object TxWithFeesLite {
     txWithFees.close
   }
 }
+*/
