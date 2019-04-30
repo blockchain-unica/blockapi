@@ -1,7 +1,7 @@
 package it.unica.blockchain.externaldata.miningpools
 
 import it.unica.blockchain.blockchains.bitcoin.BitcoinTransaction
-import it.unica.blockchain.blockchains.litecoin.LitecoinTransaction
+//import it.unica.blockchain.blockchains.litecoin.LitecoinTransaction
 
 object MiningPools {
 
@@ -106,6 +106,7 @@ object MiningPools {
     * LTCTOP, LitecoinPool, BW and some F2Pool identifiers
     * found
     */
+/*
   def getLitecoinPool(transaction: LitecoinTransaction): String = {
 
     if (transaction.inputs.head.isCoinbase) {
@@ -187,5 +188,5 @@ object MiningPools {
     }
     return Pools.UNKNOWN
   }
-
+*/
 }
