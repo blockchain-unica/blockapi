@@ -1,5 +1,6 @@
 package it.unica.blockchain.blockchains.litecoin
 
+/*
 import org.litecoinj.core.{ECKey, _}
 import org.litecoinj.crypto.TransactionSignature
 import org.litecoinj.params.{MainNetParams, TestNet3Params}
@@ -224,3 +225,4 @@ object LitecoinInput {
     xs.map(_.getValue.longValue()).sum
   }
 }
+*/

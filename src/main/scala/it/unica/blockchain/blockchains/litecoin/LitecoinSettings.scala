@@ -1,5 +1,6 @@
 package it.unica.blockchain.blockchains.litecoin
 
+/*
 /**
   * Framework settings for the Litecoin blockchain.
   *
@@ -67,3 +68,4 @@ object MainNet extends Network
   * Litecoin Test network
   */
 object TestNet extends Network
+*/

@@ -1,5 +1,5 @@
 package it.unica.blockchain.blockchains.litecoin
-
+/*
 import java.net.URL
 
 import com._37coins.bcJsonRpc.{LitecoindClientFactory, LitecoindInterface}
@@ -186,3 +186,4 @@ class LitecoinBlockchain(settings: LitecoinSettings) extends Traversable[Litecoi
     return UTXOmap.keySet.map(couple => (couple._1.toString, couple._2))
   }
 }
+*/

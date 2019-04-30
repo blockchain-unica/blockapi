@@ -1,5 +1,6 @@
 package it.unica.blockchain.blockchains.litecoin
 
+/*
 import org.litecoinj.core.{Address, Sha256Hash, TransactionOutput}
 import org.litecoinj.params.{MainNetParams, TestNet3Params}
 import org.litecoinj.script.Script
@@ -138,3 +139,4 @@ object LitecoinOutput {
       })
   }
 }
+*/

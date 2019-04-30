@@ -1,5 +1,5 @@
 package it.unica.blockchain.blockchains.litecoin
-
+/*
 object SignatureHash extends Enumeration {
   type SignatureHash = Value
   val ALL = Value(1)
@@ -11,3 +11,4 @@ object SignatureHash extends Enumeration {
   val ANYONECANPAY_SINGLE = Value(0x83)
   val UNSET = Value(0)
 }
+*/

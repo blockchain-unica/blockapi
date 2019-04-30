@@ -1,5 +1,6 @@
 package it.unica.blockchain.blockchains.litecoin
 
+/*
 import java.util.Date
 
 import org.litecoinj.core.{Sha256Hash, Transaction}
@@ -299,3 +300,4 @@ object LitecoinTransaction {
     return new LitecoinTransaction(tx.getHash.toString, txDate, tx.getMessageSize, inputs, outputs, tx.getLockTime)
   }
 }
+*/

@@ -1,5 +1,5 @@
 package it.unica.blockchain.analyses.litecoin.sql
-
+/*
 import scalikejdbc._
 import it.unica.blockchain.blockchains.BlockchainLib
 import it.unica.blockchain.blockchains.litecoin.{LitecoinSettings, MainNet}
@@ -74,3 +74,4 @@ object MyBlockchainLite{
 
   }
 }
+*/
