@@ -55,11 +55,13 @@ class BitcoinInput(
     try {
       Some(getAddressFromP2PKHInput(inScript.getChunks, param))
     } catch {
+      /*
       case e: Exception => try {
         Some(getAddressFromP2PSHInput(inScript.getChunks, param))
       } catch {
         case e: Exception => None
       }
+      */
     }
   }
 
@@ -73,10 +75,12 @@ class BitcoinInput(
     key.toAddress(param)
   }
 
+  /*
   private def getAddressFromP2PSHInput(chuncks: java.util.List[ScriptChunk], param: NetworkParameters) = {
     val redeemScriptBytes = chuncks.get(chuncks.size() - 1).data
     Address.fromP2SHHash(param, ConvertUtils.getRIPEMD160Digest(Sha256Hash.hash(redeemScriptBytes)))
   }
+  */
 
   /**
     *
