@@ -1,4 +1,4 @@
-package it.unica.blockchain.analyses.ethereum.mongo.levensthein
+package it.unica.blockchain.analyses.ethereum.mongo
 
 import java.util.Date
 
