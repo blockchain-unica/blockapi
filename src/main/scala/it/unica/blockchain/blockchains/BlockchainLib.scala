@@ -2,10 +2,11 @@ package it.unica.blockchain.blockchains
 
 import it.unica.blockchain.blockchains.bitcoin.{BitcoinBlockchain, BitcoinSettings}
 import it.unica.blockchain.blockchains.ethereum.{EthereumBlockchain, EthereumSettings}
-import it.unica.blockchain.blockchains.litecoin.{LitecoinBlockchain, LitecoinSettings}
+//import it.unica.blockchain.blockchains.litecoin.{LitecoinBlockchain, LitecoinSettings}
 
 object BlockchainLib {
 
+  /*
   /** Creates a Litecoin blockchain given the Litecoin Core settings.
     *
     * @param settings Litecoin settings (e.g. Litecoin core network, user, password, etc.)
@@ -14,6 +15,7 @@ object BlockchainLib {
   def getLitecoinBlockchain(settings: LitecoinSettings): LitecoinBlockchain = {
     new LitecoinBlockchain(settings)
   }
+  */
 
   /** Creates a Bitcoin blockchain given the Bitcoin Core settings.
     *
