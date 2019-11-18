@@ -27,6 +27,16 @@ public class Block {
 	private String versionHex;
 	private long mediantime;
 	private String chainwork;
+
+	public int getnTx() {
+		return nTx;
+	}
+
+	public void setnTx(int nTx) {
+		this.nTx = nTx;
+	}
+
+	private int nTx;
 	
 	public List<String> getTx() {
 		return tx;

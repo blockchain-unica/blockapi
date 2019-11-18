@@ -55,13 +55,14 @@ class BitcoinInput(
     try {
       Some(getAddressFromP2PKHInput(inScript.getChunks, param))
     } catch {
+      case _  : Exception => None
       /*
-      case e: Exception => try {
-        Some(getAddressFromP2PSHInput(inScript.getChunks, param))
-      } catch {
-        case e: Exception => None
-      }
-      */
+    case e: Exception => try {
+      Some(getAddressFromP2PSHInput(inScript.getChunks, param))
+    } catch {
+      case e: Exception => None
+    }
+    */
     }
   }
 
