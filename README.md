@@ -7,7 +7,7 @@ The workflow consists in two steps:
 1. construct a view of the blockchain and save it in a database;
 2. analyse the view by using the query language of the database.
 
-The blockchains currently supported are Bitcoin, Litecoin, and  Ethereum.
+The blockchains currently supported are Bitcoin and  Ethereum.
 The DBMS currently supported are MongoDB, MySQL, PostgreSQL, and Fuseki.
 
 The library is dicussed in [A general framework for blockchain analytics](https://www.researchgate.net/publication/321415812_A_general_framework_for_blockchain_analytics),
@@ -19,18 +19,19 @@ The Scaladoc is uploaded on this repository in the [doc folder](https://github.c
 
 ### Install prerequisites
 #### General prerequisites
+At the moment, [Java JDK 1.8](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html) is needed to run the API.
+
 Prerequisites depends on the target analyses.
 Generally speaking the framework needs at least one blockchain client and one DBMS.
 
 1. Blockchain clients:
-    * [Bitcoin Core](https://bitcoin.org/en/bitcoin-core/) (extracts data from Bitcoin)
-    * [Parity](https://parity.io/) (extracts data from Ethereum)
-    * [Litecoin Core](https://litecoin.org/#download) (extracts data from Litecoin)
+    * [Bitcoin Core](https://bitcoin.org/en/bitcoin-core/) (Tested with version v0.19.0.1: extracts data from Bitcoin)
+    * [Parity](https://www.parity.io/ethereum/) (Tested with version v2.6.8: extracts data from Ethereum)
 2. DBMS:
-    * [MongoDB](https://www.mongodb.com/what-is-mongodb) (constructs a NoSQL view of the data)
-    * [MySQL](https://www.mysql.com/) (constructs a SQL view of the data)
-    * [PostgreSQL](https://www.postgresql.org/) (constructs a SQL view of the data)
-    * [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/index.html) (constructs a RDF view of the data)
+    * [MongoDB](https://www.mongodb.com/what-is-mongodb) (Tested with version v4.2: constructs a NoSQL view of the data)
+    * [MySQL](https://www.mysql.com/) (Tested with version v5.7: constructs a SQL view of the data)
+    * [PostgreSQL](https://www.postgresql.org/) (Tested with version v11: constructs a SQL view of the data)
+    * [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/index.html) (Tested with version v3.14.0: constructs a RDF view of the data)
 3. Either
     * use an IDE for executing a Scala SBT project (we used [IntelliJ IDEA](https://www.jetbrains.com/idea/)) or
     * use the command line in place of an IDE (Install [SBT](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html))
@@ -39,7 +40,7 @@ Generally speaking the framework needs at least one blockchain client and one DB
 This step is required to sucessfully compile the project.
 Before building the project, execute the following commands:
 
-##### Bitcoinj 
+##### Bitcoinj
 ```bash
 git clone https://github.com/bitbart/bitcoinj.git
 cd bitcoinj
@@ -48,33 +49,36 @@ mvn install -DskipTests
 cd core
 mvn install -DskipTests
 ```
-##### Litecoinj
-```bash
-git clone https://github.com/litecoinj-unica/litecoinj.git
-cd litecoinj
-mvn install -DskipTests
-cd core
-mvn install -DskipTests
-```
 
 #### Analysis dependent prerequisites 
 
 ##### ICO Analytics
-This instructions are needed only for performing analyses on ICO on Ethereum.
+
+##### Bitcoin
+
+This instructions are needed for performing analyses on ICO on Ethereum.
+
+In order to use some analyses on Bitcoin you must require the respective API key:
+1. [Blockchain](https://api.blockchain.info/customer/signup) 
+    * It is sufficient to sign up and then active your [APIKey](https://exchange.blockchain.com/api/#introduction)
+
+After doing this, do the following:
+Copy `Blockchain` key into `bitcoin\CrossValidationBitcoin.apiKey` attribute
+
+##### Ethereum
+
+This instructions are needed for performing analyses on ICO on Ethereum.
 
 In order to use the `ICO` class (created to retrieve ICOs data) you must require the respective API keys:
 1. [EtherScan](https://etherscan.io) 
     * It is sufficient to sign up and then go [here](https://etherscan.io/myapikey)
-2. [ICOBench](https://icobench.com/)
-    * [Sign Up](https://icobench.com/register), then require an API key [here](https://icobench.com/developers) 
-3. [Ethplorer](https://github.com/EverexIO/Ethplorer/wiki/Ethplorer-API)
+2. [Ethplorer](https://github.com/EverexIO/Ethplorer/wiki/Ethplorer-API)
     * There is a default, free key: `freekey`. 
       If you need more data or highload of service, you can to get personal API key. 
 
 After doing these steps, do the following:
-1. Copy `EtherScan` key into `EtherScanAPI.apiKey` attribute
-2. Copy `ICOBench` private key and public key into `ICOBenchAPI.privateKey` and `ICOBenchAPI.publicKey` attributes respectively
-3. Copy `Ethplorer` key into `EthplorerAPI.apiKey` attribute
+1. Copy `EtherScan` key into `externaldata\contracts\EtherScanAPI.apiKey` and `utils\Etherscan.apiKey` attributes
+2. Copy `Ethplorer` key into `EthplorerAPI.apiKey` attribute
 
 ### Install blockchain analytics API
 1. Execute the blockchain client in order to obtain a local copy of the target blockchain (this process may take several hours)
@@ -88,47 +92,15 @@ After doing these steps, do the following:
 5. From your IntelliJ welcome screen: select "Import Project" and open the [build.sbt](https://github.com/bitbart/bitcoin-analytics-api/blob/master/build.sbt) file from your repository directory.
 
 ### Running 
-1. Execute of one of the available [examples](https://github.com/bitbart/bitcoin-analytics-api/tree/master/src/main/scala/tcs/examples). Either 
+1. Execute of one of the available [examples](https://github.com/blockchain-unica/blockapi/tree/master/src/main/scala/it/unica/blockchain/analyses). Either 
     * open the file from your IDE and select run or 
     * use the command line: from the root directory of the project, execute
         ```bash
-        sbt "runMain tcs.examples.ClassName"
+        sbt "runMain it.unica.blockchain.analyses.ClassName"
         ```
 
 Our framework will build the selected database. Then you can query it for performing your analysis.
 For each available Scala script, we provide some default [queries along with the resulting csv files](https://github.com/bitbart/blockchain-analytics-api/tree/master/queries).
 
 ### Acknowledgments
-The authors thank the following developers of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions. 
-
-Members of Blockchain@Unica lab:
-   * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei), [Sergio Serusi](https://sites.google.com/site/tcsunica/members/sergio-serusi) - Improvements on software architecture and testing
-   
-Interns at Blockchain@Unica lab:
-   * [Giulia Argiolas](https://github.com/giuliamorgen) - Introduction of Litecoin blockchain
-   * [Daniele Stefano Ferru](https://github.com/ferruvich) - Introduction of Ethereum blockchain, analysis of ICOs
-   * [Davide Curcio](https://github.com/davidecurcio) - Fuseki Database
-   * [Antonio Sanna](https://github.com/TonioMeepo) - Bitcoin mempool
-   
-Students of the Cybersecurity course:
-   * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Empty blocks on Ethereum
-   * [Giacomo Corrias](https://www.linkedin.com/in/giacomo-corrias-a730b7160/), [Francesco Pisu](https://www.linkedin.com/in/francesco-pisu-b07a3b13a/) - Empty blocks on Bitcoin
-   * [Giancarlo Lelli](https://www.linkedin.com/in/giancarlolelli/) - Bitcoin pools
-   * [Fabrizio Chelo](https://www.linkedin.com/in/fabrizio-chelo-37005735), [Hicham Lafhouli](https://github.com/H1cham), [Antonello Meloni](https://github.com/infovillasimius) - Signature hash types
-   * [Giovanni Laerte Frongia](https://www.linkedin.com/in/giovanni-laerte-frongia-3899b2107/), [Luca Pitzalis](https://github.com/pizza1994) - Verified contracts from Etherscan.io
-   * [Filippo Andrea Fanni](https://www.linkedin.com/in/filippo-andrea-fanni/), [Martina Senis](), [Alessandro Tola](https://www.linkedin.com/in/alessandro-tola-54048238/) - Ethereum pools 
-   * [Riccardo Mulas](https://github.com/riccardomulas) - Non-standard transactions
-   * [Fabio Carta](https://www.linkedin.com/in/fabio-carta-45781196/), [Francesca Malloci](https://www.linkedin.com/in/francescamalloci/), [Flavia Murru](https://www.linkedin.com/in/flavia-murru-269459159) - Duplicate Ethereum contracts
-   * [Carlo Cabras](https://www.linkedin.com/in/carlocabras21/), [Federico Maria Cau](https://www.linkedin.com/in/federico-maria-cau-9178b114a/), [Mattia Samuel Mancosu](https://www.linkedin.com/in/mattia-samuel-mancosu/) - Balances of Ethereum addresses
-   * [Andrea Demontis](https://github.com/AndreaDemontis), [Stefano Dessì](https://github.com/StefanoDessi) - Balances of Bitcoin addresses
-   * [Federica Gerina](https://www.linkedin.com/in/federica-gerina-961765132/), [Silvia Maria Massa](https://www.linkedin.com/in/silvia-maria-massa-2072a6163/), [Francesca Moi](https://www.linkedin.com/in/francesca-moi-3582b9164/) - State of the DAPPS
-   * [Giuseppina Lai](https://www.linkedin.com/in/giusy-lai-ba8175b1/), [Federica Muceli](), [Federico Spiga]() - UTXO set
-   * [Alessandro Bonini](https://www.linkedin.com/in/alessandro-bonini/), [Alberto Pes](https://www.linkedin.com/in/alberto-pes-32478070/), [Maurizio Porcu](https://www.linkedin.com/in/maurizioporcu/) - Blockchain.info tags
-   * [Stefano Raimondo Chessa](https://github.com/StefanoChessa), [Marco Guria](https://github.com/marcoguria), [Alessio Manai](https://www.linkedin.com/in/alessiomanai/), [Alessio Speroni](https://www.linkedin.com/in/alessiosperoni) - Ethereum tokens
-   * [Paolo Orrù](https://www.linkedin.com/in/paoloorru), [Elisa Pau](https://www.linkedin.com/in/elisa-pau-52699b107) - Cross validation Ethereum
-   * [Stefano Danese](https://www.linkedin.com/in/stefano-danese-3422585b), [Giuseppe Bellisano](https://www.linkedin.com/in/bellisano), [Emanuela Ripoli](https://www.linkedin.com/in/emanuela-ripoli-291891166) - Bitcoin transactions ip-geolocalization
-   * [Riccardo Casu](https://www.linkedin.com/in/riccardo-casu-79870a166/), [Carlo Cuccu](https://www.linkedin.com/in/carlo-cuccu-213939165), [Vittoria Frau](https://www.linkedin.com/in/vittoria-frau) - Bitcoin exchange rates
-   * [Federico Medda](https://bitbucket.org/federicomedda/), [Alberto Musa](https://github.com/AlbertoMusa) - Cross validation Bitcoin
-   * [Simone Balloccu](), [Andrea Bellanti](), [Federica Stocchino]() - Transaction chains
-   * [Daniele Sanna](https://github.com/danielesanna), [Giovanni Usai](https://github.com/giovanniusai) - Cross validation Litecoin
-   * [Soukaina Aassouss](), [Reda Belaiche](), [Khadija Zine](https://github.com/khadijazine) - Counterparty Tokens 
+The authors thank the [following developers](Acknowledgments.md) of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions. 
