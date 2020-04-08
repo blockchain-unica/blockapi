@@ -12,6 +12,11 @@ import it.unica.blockchain.externaldata.rates.BitcoinRates
 /**
   * Created by Livio on 28/09/2017.
   */
+
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object TxWithFees {
   def main(args: Array[String]): Unit = {
 
@@ -34,17 +39,18 @@ object TxWithFees {
       sql"""insert into txfees (blockHash, transactionHash, txdate, fee, rate) values(?,?,?,?,?)""",
       mySQL)
 
-
+    /**This analysis must be runned without setting the starting point.*/
     blockchain.foreach(block => {
 
       if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
       block.txs.foreach(tx => {
+        val fee = tx.getInputsSum() - tx.getOutputsSum()
         txTable.insert(Seq(
           block.hash.toString,
           tx.hash.toString,
           convertDate(block.date),
-          (tx.getInputsSum() - tx.getOutputsSum()),
+          (if(fee < 0) -1 else fee),
           BitcoinRates.getRate(block.date)))
       })
     })

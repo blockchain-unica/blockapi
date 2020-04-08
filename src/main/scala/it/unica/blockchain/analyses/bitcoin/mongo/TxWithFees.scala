@@ -10,6 +10,11 @@ import it.unica.blockchain.externaldata.rates.BitcoinRates
 /**
   * Created by Livio on 16/06/2017.
   */
+
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object TxWithFees {
   def main(args: Array[String]): Unit = {
 
@@ -18,16 +23,18 @@ object TxWithFees {
 
     val txWithFees = new Collection("txWithFees", mongo)
 
-    blockchain.end(473100).foreach(block => {
+    /**This analysis must be runned without setting the starting point.*/
+    blockchain.end(1000).foreach(block => {
 
-      if (block.height % 10000 == 0) println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
+      println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
 
       block.txs.foreach(tx => {
+        val fee = tx.getInputsSum() - tx.getOutputsSum()
         txWithFees.append(List(
           ("blockHash", block.hash),
           ("txHash", tx.hash),
           ("date", block.date),
-          ("fee", tx.getInputsSum() - tx.getOutputsSum()),
+          ("fee", if(fee < 0) -1 else fee),
           ("rate", BitcoinRates.getRate(block.date))
         ))
       })
