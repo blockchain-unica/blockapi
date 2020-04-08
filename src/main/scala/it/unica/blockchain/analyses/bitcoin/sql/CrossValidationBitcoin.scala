@@ -11,8 +11,14 @@ import scalaj.http.Http
 import play.api.libs.json.Json
 import java.util.Date
 
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object CrossValidationBitcoin {
   def main(args: Array[String]): Unit = {
+
+    val apiKey = "InsertYourAPICode"
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
     val mySQL = new DatabaseSettings("validation", MySQL, "user", "password")
@@ -58,7 +64,7 @@ object CrossValidationBitcoin {
           tx.outputs.length,
           tx.getOutputsSum()))
 
-        val jsonString = Http("https://blockchain.info/it/rawtx/" + tx.hash).timeout(1000000000, 1000000000).asString.body
+        val jsonString = Http("https://blockchain.info/it/rawtx/" + tx.hash + "?api_code=" + apiKey).timeout(1000000000, 1000000000).asString.body
         val jsonObject = Json.parse(jsonString)
         val in = (jsonObject \ "inputs" \\ "sequence")
         val out = (jsonObject \ "out" \\ "value")
