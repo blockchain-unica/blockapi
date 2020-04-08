@@ -15,7 +15,7 @@ object BitcoinPools{
   def main(args: Array[String]): Unit ={
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val mySQL = new DatabaseSettings("myblockchain", MySQL, "root", "mysql")
+    val mySQL = new DatabaseSettings("myblockchain", MySQL, "user", "password")
 
     val txTable = new Table(sql"""
       create table if not exists btcpools(

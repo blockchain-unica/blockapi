@@ -11,6 +11,11 @@ import it.unica.blockchain.externaldata.metadata.MetadataParser
 /**
   * Created by Livio on 13/09/2017.
   */
+
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object OpReturnOutputs {
   def main(args: Array[String]): Unit = {
 

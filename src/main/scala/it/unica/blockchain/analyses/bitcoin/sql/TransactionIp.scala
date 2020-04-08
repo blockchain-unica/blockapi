@@ -11,11 +11,16 @@ import it.unica.blockchain.utils._
 /**
   * Created by Livio on 14/06/2017.
   */
+
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object TransactionIp {
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("alice", "8ak1gI25KFTvjovL3gAM967mies3E=", "8332", MainNet))
-    val mySQL = new DatabaseSettings("transactionip", MySQL, "alice", "Djanni74!")
+    val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
+    val mySQL = new DatabaseSettings("transactionip", MySQL, "user", "password")
 
     val startTime = System.currentTimeMillis() / 1000
 
