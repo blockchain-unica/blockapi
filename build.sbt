@@ -25,9 +25,9 @@ libraryDependencies += "org.bitcoinj" % "bitcoinj-core" % "0.14.5"
 // https://mvnrepository.com/artifact/com.github.briandilley.jsonrpc4j/jsonrpc4j
 libraryDependencies += "com.github.briandilley.jsonrpc4j" % "jsonrpc4j" % "1.1"
 
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.1.0"
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.9.0"
 // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
-libraryDependencies += "org.mongodb" % "mongo-java-driver" % "3.6.0"
+libraryDependencies += "org.mongodb" % "mongodb-driver-legacy" % "3.12.2"
 //libraryDependencies += "org.mongodb.scala" %% "mongo-scala-bson" % "2.1.0"
 
 libraryDependencies += "org.apache.tika" % "tika-server" % "1.5"
