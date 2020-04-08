@@ -8,18 +8,22 @@ import it.unica.blockchain.blockchains.ethereum.EthereumSettings
 import it.unica.blockchain.db.sql.Table
 import it.unica.blockchain.db.{DatabaseSettings, MySQL}
 
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
 
 object EmptyBlocks {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("https://mainnet.infura.io/lGhdnAJw7n56K0xXGP3i:8545"))
+    /** Signup to Infura and insert your Project ID into the URL, after "https://mainnet.infura.io/" **/
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("https://mainnet.infura.io/InsertYourProjectID:8545"))
     val pg = new DatabaseSettings("ethereum", MySQL, "root", "toor")
 
     val blockTable = new Table(
       sql"""
           CREATE TABLE IF NOT EXISTS block(
-            hash CHARACTER VARYING(100) NOT NULL PRIMARY KEY,
+            hash VARCHAR(100) NOT NULL PRIMARY KEY,
             timestamp TIMESTAMP,
-            miner CHARACTER VARYING(100)
+            miner VARCHAR(100)
           )
          """,
       sql"""
