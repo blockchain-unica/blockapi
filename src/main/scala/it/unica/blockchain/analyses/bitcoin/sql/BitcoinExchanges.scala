@@ -1,5 +1,7 @@
 package it.unica.blockchain.analyses.bitcoin.sql
 
+import java.util.Date
+
 import scalikejdbc._
 import it.unica.blockchain.blockchains.BlockchainLib
 import it.unica.blockchain.blockchains.bitcoin.{BitcoinSettings, MainNet}
@@ -8,13 +10,18 @@ import it.unica.blockchain.db.sql.Table
 import it.unica.blockchain.utils.converter.DateConverter
 import it.unica.blockchain.externaldata.rates.BitcoinRates
 
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
 
 object  BitcoinExchanges {
   def main(args: Array[String]): Unit = {
 
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet))
-    val postgreSQL = new DatabaseSettings("btcExchanges", PostgreSQL, "postgres", "password")
+    val postgreSQL = new DatabaseSettings("btcExchanges", PostgreSQL, "user", "password")
     val startTime = System.currentTimeMillis() / 1000
+    val start = 68750
+    val end = 68850
 
     val txTable = new Table(
       sql"""
@@ -32,10 +39,24 @@ object  BitcoinExchanges {
       sql"""insert into txrates (txHash, txdate, outputsum, USDrate, EURrate, GBPrate, JPYrate, CNYrate) values(?,?,?,?,?,?,?,?)""",
       postgreSQL)
 
-    blockchain.start(232901).end(235800).foreach(block => {
+
+    //Settings for rates
+    //Getting start date
+    val start_date = blockchain.getBlock(start).date
+    //Getting end date
+    val end_date = blockchain.getBlock(end).date
+
+    // Coindesk has no rates before this timestamp
+    if (!end_date.before(new Date(1279411200000l))) BitcoinRates.setRate(start_date, end_date)
+
+    blockchain.start(start).end(end).foreach(block => {
 
       if (block.height % 10000 == 0)
-      println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
+        println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Block: " + block.height)
+
+      //Take rates values for the currencies
+      println("Getting rates...")
+      val exMap = BitcoinRates.getRate_Mod(block.date)
 
       block.txs.foreach(tx => {
         println(DateConverter.formatTimestamp(System.currentTimeMillis()) + " - Tx: " + tx.date)
@@ -43,11 +64,11 @@ object  BitcoinExchanges {
           tx.hash.toString,
           block.date,
           tx.getOutputsSum(),
-          BitcoinRates.getRate(block.date, "USD"),
-          BitcoinRates.getRate(block.date, "EUR"),
-          BitcoinRates.getRate(block.date, "GBP"),
-          BitcoinRates.getRate(block.date, "JPY"),
-          BitcoinRates.getRate(block.date, "CNY")
+          exMap.get("USD"),
+          exMap.get("EUR"),
+          exMap.get("GBP"),
+          exMap.get("JPY"),
+          exMap.get("CNY")
         ))
       })
     })

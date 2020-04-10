@@ -1,5 +1,8 @@
 package it.unica.blockchain.analyses.bitcoin.fuseki
 
+/**This transaction may needs you to run your node with txindex = 1 option.
+  * For further information see: https://bitcoin.stackexchange.com/questions/40867/bitcoind-how-to-find-the-block-from-a-txid*/
+
 object TestAddresses {
   def main(args: Array[String]): Unit = {
 

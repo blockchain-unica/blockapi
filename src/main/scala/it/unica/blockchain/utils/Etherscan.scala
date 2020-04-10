@@ -6,7 +6,7 @@ import com.codesnippets4all.json.parsers.JsonParserFactory
 import it.unica.blockchain.utils.httprequester.HttpRequester
 
 package object Etherscan {
-  def apiKey = "apikey"
+  def apiKey = "Insert apikey"
   /**
     *
     * This method of fetching the contract's source code is NOT optimal, but until etherscan.io extends its API to
@@ -48,7 +48,7 @@ package object Etherscan {
     try {
       //The json parsedr fails when it finds an empty array, so it is replaced by the string "Empty"
       val content = HttpRequester.get("https://api.etherscan.io/api?module=proxy&action=eth_getBlockByNumber&tag=" +
-        blockAddress +"&boolean=true&apikey==" + apiKey).replaceAll("\\Q[]\\E","\"Empty\"")
+        blockAddress +"&boolean=true&apikey=" + apiKey).replaceAll("\\Q[]\\E","\"Empty\"")
 
       val map = JsonParserFactory.getInstance.newJsonParser().parseJson(content)
       val block = map.get("result").asInstanceOf[util.Map[String,Any]]

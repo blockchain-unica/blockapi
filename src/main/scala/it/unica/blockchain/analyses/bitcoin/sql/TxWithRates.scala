@@ -12,6 +12,11 @@ import it.unica.blockchain.externaldata.rates.BitcoinRates
 /**
   * Created by Stefano on 02/11/2017.
   */
+
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object TxWithRates {
   def main(args: Array[String]): Unit = {
 

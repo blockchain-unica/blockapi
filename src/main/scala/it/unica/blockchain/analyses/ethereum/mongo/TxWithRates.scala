@@ -6,6 +6,10 @@ import it.unica.blockchain.db.DatabaseSettings
 import it.unica.blockchain.mongo.Collection
 import it.unica.blockchain.externaldata.rates.EthereumRates
 
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object TxWithRates {
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))

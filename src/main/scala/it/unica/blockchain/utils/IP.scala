@@ -28,7 +28,7 @@ class IP {
 
     implicit val formats = DefaultFormats
 
-    val urlAPIGeoIp = "http://geoip.nekudo.com/api/"
+    val urlAPIGeoIp = "http://api.ipgeolocationapi.com/geolocate/"
 
     /*
     An ip (ipaddress) of value "0" is supplied as input to the function when this is not recognized as a valid ipv4 (ipv6)
@@ -42,7 +42,7 @@ class IP {
 
       // try to parse the json object
       try {
-        val country = ((jsonValue \ "country") \ "name").extract[String]
+        val country = (jsonValue \ "name").extract[String]
         return country
       }
       // handles the exception that occurs when geoip does not associate a nation with the ip

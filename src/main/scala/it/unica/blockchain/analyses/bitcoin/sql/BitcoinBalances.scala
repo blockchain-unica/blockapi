@@ -11,6 +11,10 @@ import it.unica.blockchain.externaldata.rates.BitcoinRates
 import scala.collection.mutable
 import scala.collection.mutable.Map
 
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object BitcoinBalances
 {
   /**

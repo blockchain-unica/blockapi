@@ -18,7 +18,7 @@ object AddressesWithTags {
     val mongo = new DatabaseSettings("myDatabase")
 
     val outWithTags = new Collection("outWithTags", mongo)
-    var tags = Tag.getTagsFromFile("src/main/scala/tcs/custom/bitcoin/tagsList.txt")
+    var tags = Tag.getTagsFromFile("src\\main\\scala\\it\\unica\\blockchain\\externaldata\\tags\\tagsList.txt")
 
     blockchain.foreach(block => {
 

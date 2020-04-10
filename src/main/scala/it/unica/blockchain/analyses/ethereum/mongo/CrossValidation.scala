@@ -10,6 +10,10 @@ import it.unica.blockchain.mongo.Collection
 import it.unica.blockchain.utils.converter.DateConverter
 import it.unica.blockchain.utils.Etherscan
 
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object CrossValidation {
   def main(args: Array[String]): Unit = {
     val startBlock:Long = 2010000

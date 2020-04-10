@@ -8,16 +8,21 @@ import it.unica.blockchain.db.{DatabaseSettings, PostgreSQL}
 import scalikejdbc._
 import it.unica.blockchain.blockchains.ethereum.EthereumSettings
 
+/**This analysis uses external data.
+  * Make sure you have installed all the required libraries!
+  * Checkout the README file */
+
 object EthereumPools {
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("https://mainnet.infura.io/lGhdnAJw7n56K0xXGP3i:8545"))
+    /** Signup to Infura and insert your Project ID into the URL, after "https://mainnet.infura.io/" **/
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("https://mainnet.infura.io/InsertYourProjectID:8545"))
     val pg = new DatabaseSettings("ethereum", PostgreSQL, "postgres", "password")
     val blockTable = new Table(
       sql"""
           CREATE TABLE IF NOT EXISTS pools(
-            hash CHARACTER VARYING(100) NOT NULL PRIMARY KEY,
+            hash VARCHAR(100) NOT NULL PRIMARY KEY,
             timestamp TIMESTAMP,
-            mining_pool CHARACTER VARYING(50)
+            mining_pool VARCHAR(50)
           )
          """,
       sql"""

@@ -35,13 +35,21 @@ object Etherscan {
     val content = HttpRequester.get("http://etherscan.io/address/" + tx.getCreates + "#code")
     //println(content)
 
-    if (content.contains("<b>Contract Source Code Verified</b>")){
+    if (content.contains("Contract Source Code Verified")){
       isVerified = true
 
       // Fetches the contract name
-      val strForName = "<td>Contract Name:\n</td>\n<td>"
+      val strForName = "Contract Name:"
       name = content.substring(content.indexOf(strForName)+strForName.length)
+      name = name.substring(name.indexOf("<span"))
+      name = name.substring(name.indexOf(">") +1)
       name = name.substring(0, name.indexOf("<"))
+
+      // Fetches the contract bytecode
+      val strForBytecode = "<div id='verifiedbytecode2'>"
+      source = content.substring(content.indexOf(strForBytecode)+strForBytecode.length)
+      source = source.substring(0, source.indexOf("<"))
+
 
       // Fetches the date in which the contract has been verified
       val datePage = HttpRequester.get("https://etherscan.io/contractsVerified?cn=" + URLEncoder.encode(name, "UTF-8"))
@@ -51,7 +59,8 @@ object Etherscan {
       if (indexOfContract == -1){
 
         // Retrives the total number of pages
-        var numPages = datePage.substring(datePage.indexOf("</b> of <b>") + "</b> of <b>".length)
+        var numPages = datePage.substring(datePage.indexOf("1</strong> of") + "1</strong> of".length)
+        numPages = numPages.substring(numPages.indexOf(">")+1)
         numPages = numPages.substring(0, numPages.indexOf("<"))
         val n = numPages.toInt
 
