@@ -52,14 +52,12 @@ mvn install -DskipTests
 
 #### Analysis dependent prerequisites 
 
-##### ICO Analytics
-
 ##### Bitcoin
 
-This instructions are needed for performing analyses on ICO on Ethereum.
+This instructions are needed for performing analyses on CrossValidation on Bitcoin.
 
 In order to use some analyses on Bitcoin you must require the respective API key:
-1. [Blockchain](https://api.blockchain.info/customer/signup) 
+1. [Blockchain.info](https://api.blockchain.info/customer/signup) 
     * It is sufficient to sign up and then active your [APIKey](https://exchange.blockchain.com/api/#introduction)
 
 After doing this, do the following:
@@ -67,18 +65,14 @@ Copy `Blockchain` key into `bitcoin\CrossValidationBitcoin.apiKey` attribute
 
 ##### Ethereum
 
-This instructions are needed for performing analyses on ICO on Ethereum.
+This instructions are needed for performing analyses on CrossValidation on Ethereum.
 
-In order to use the `ICO` class (created to retrieve ICOs data) you must require the respective API keys:
+In order to use some analyses on Bitcoin you must require the respective API key:
 1. [EtherScan](https://etherscan.io) 
     * It is sufficient to sign up and then go [here](https://etherscan.io/myapikey)
-2. [Ethplorer](https://github.com/EverexIO/Ethplorer/wiki/Ethplorer-API)
-    * There is a default, free key: `freekey`. 
-      If you need more data or highload of service, you can to get personal API key. 
 
 After doing these steps, do the following:
-1. Copy `EtherScan` key into `externaldata\contracts\EtherScanAPI.apiKey` and `utils\Etherscan.apiKey` attributes
-2. Copy `Ethplorer` key into `EthplorerAPI.apiKey` attribute
+Copy `EtherScan` key into `utils\Etherscan.apiKey` attribute
 
 ### Install blockchain analytics API
 1. Execute the blockchain client in order to obtain a local copy of the target blockchain (this process may take several hours)
