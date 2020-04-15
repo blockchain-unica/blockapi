@@ -1,3 +1,6 @@
+### Acknowledgments
+The authors thank the following developers of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions. 
+
 Members of Blockchain@Unica lab:
    * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei), [Sergio Serusi](https://sites.google.com/site/tcsunica/members/sergio-serusi) - Improvements on software architecture and testing
    
