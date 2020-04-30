@@ -100,6 +100,11 @@ object EthereumTransaction{
       } else {
         contract = getContract(tx)
       }
+
+      if(contract.isERC20Compliant())
+        contract = contract.asInstanceOf[ERC20Token]
+      if(contract.isERC721Compliant())
+        contract = contract.asInstanceOf[ERC721Token]
     }
 
     new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,

@@ -4,6 +4,8 @@ import java.util
 
 import com.codesnippets4all.json.parsers.JsonParserFactory
 import it.unica.blockchain.utils.httprequester.HttpRequester
+import play.api.libs.json.Json
+import scalaj.http.Http
 
 package object Etherscan {
   def apiKey = "Insert apikey"
@@ -19,23 +21,11 @@ package object Etherscan {
     */
   def getSourceCodeFromEtherscan(address : String): String = {
 
-    try {
-      val content = HttpRequester.get("http://etherscan.io/address/" + address + "#code")
-      //println(content)
-      val strForContract = "Find Similiar Contracts"
-      var sourceCode = content.substring(content.indexOf(strForContract)+strForContract.length)
+    val content = Http("https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + address + "&apikey=" + apiKey).asString.body
+    val json = Json.parse(content);
+    val sourceCode = (json \ "result" \ "0" \ "SourceCode").get.as[String];
 
-
-      //println("Getting source code for: " + address)
-      sourceCode = sourceCode.substring(sourceCode.indexOf("<pre") + 4)
-      sourceCode = sourceCode.substring(sourceCode.indexOf(">") + 1, sourceCode.indexOf("</pre><br><script"))
-
-      return sourceCode
-    } catch {
-      case ioe: java.io.IOException => {ioe.printStackTrace(); return ""}
-      case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return ""}
-      case e: Exception => {e.printStackTrace(); return ""}
-    }
+    return sourceCode
   }
 
   /**

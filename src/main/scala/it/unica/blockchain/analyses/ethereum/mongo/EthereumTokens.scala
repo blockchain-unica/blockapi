@@ -1,7 +1,7 @@
 package it.unica.blockchain.analyses.ethereum.mongo
 
 import it.unica.blockchain.blockchains.BlockchainLib
-import it.unica.blockchain.blockchains.ethereum.{EthereumSettings, EthereumTransaction}
+import it.unica.blockchain.blockchains.ethereum.{ERC20Token, EthereumSettings, EthereumTransaction}
 import it.unica.blockchain.db.DatabaseSettings
 import it.unica.blockchain.mongo.Collection
 
@@ -36,15 +36,15 @@ object EthereumTokens {
       }
       block.txs.foreach(tx => {
           if (tx.hasContract && tx.contract.isERC20Compliant){
-
+            val contract = tx.contract.asInstanceOf[ERC20Token]
             tokens.append(
               List(
                 ("contractAddress", tx.contract.address),
                 ("txhash", tx.contract.hashOriginatingTx),
                 ("date", tx.date),
-                ("tokenName", tx.contract.getTokenName()),
-                ("tokenSymbol", tx.contract.getTokenSymbol()),
-                ("tokenDivisibility", tx.contract.getTokenDivisibility())
+                ("tokenName", contract.getTokenName()),
+                ("tokenSymbol", contract.getTokenSymbol()),
+                ("tokenDivisibility", contract.getTokenDivisibility())
               )
             )
           }
