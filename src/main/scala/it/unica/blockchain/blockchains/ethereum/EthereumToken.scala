@@ -6,16 +6,16 @@ import org.apache.commons.codec.DecoderException
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.StringUtils
 
-case class EthereumToken(
-                          override val name: String,
-                          override val address: String,
-                          override val hashOriginatingTx: String,
+class EthereumToken(
+                          name: String,
+                          address: EthereumAddress,
+                          hashOriginatingTx: String,
 
-                          override val isVerified: Boolean,
-                          override val verificationDate: Date,
+                          isVerified: Boolean,
+                          verificationDate: Date,
 
-                          override val bytecode: String,
-                          override val sourceCode: String
+                          bytecode: String,
+                          sourceCode: String
                         ) extends EthereumContract(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode) {
 
   /**

@@ -30,12 +30,13 @@ object EthereumTokens {
     val tokens = new Collection("EthereumTokens", mongo)
 
     // Iterating each block
-    blockchain.start(2100000).end(2355000).foreach(block => {
-      if(block.height%100 == 0){
+    blockchain.start(9990000).end(9990100).foreach(block => {
+      //if(block.height%100 == 0){
         println("Current Block " + block.height)
-      }
+      //)}
       block.txs.foreach(tx => {
-          if (tx.hasContract && tx.contract.isERC20Compliant){
+        //println("\t tx: " + tx.hash)
+        if (tx.hasContract && tx.contract.isERC20Compliant){
             val contract = tx.contract.asInstanceOf[ERC20Token]
             tokens.append(
               List(

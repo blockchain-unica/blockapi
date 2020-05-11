@@ -11,7 +11,7 @@ import scala.util.matching.Regex
 
 case class EthereumContract(
                              val name: String,
-                             val address: String,
+                             val address: EthereumAddress,
                              val hashOriginatingTx: String,
 
                              val isVerified: Boolean,
@@ -75,5 +75,19 @@ case class EthereumContract(
       bytecode.contains("b88d4fde") && //checks safeTransferFrom(address,address,uint256,bytes) declaration
       bytecode.contains("150b7a02") && //checks onERC721Received(address,address,uint256,bytes) declaration
       bytecode.contains("01ffc9a7") //checks supportsInterface(bytes4) declaration
+  }
+}
+
+object EthereumContract{
+
+  def factory(name: String, address: EthereumAddress, hashOriginatingTx: String, isVerified: Boolean, verificationDate: Date, bytecode: String, sourceCode: String):EthereumContract ={
+    var contract = EthereumContract(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
+
+    if(contract.isERC20Compliant())
+      contract = contract.asInstanceOf[ERC20Token]
+    if(contract.isERC721Compliant())
+      contract = contract.asInstanceOf[ERC721Token]
+
+    return contract
   }
 }
