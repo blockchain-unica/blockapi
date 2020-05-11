@@ -94,29 +94,45 @@ object EthereumTransaction{
 
     // If the transaction creates a contract, initialize it.
     var contract : EthereumContract = null
-    if (tx.getCreates() != null) {
+    var address : EthereumAddress = new EthereumAddress(tx.getCreates)
+    if (tx.getCreates != null) {
       if(retrieveVerifiedContracts) {
         contract = getVerifiedContract(tx)
       } else {
         contract = getContract(tx)
       }
-
-      if(contract.isERC20Compliant())
-        contract = contract.asInstanceOf[ERC20Token]
-      if(contract.isERC721Compliant())
-        contract = contract.asInstanceOf[ERC721Token]
     }
 
-    new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
-                                   tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-                                   tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
-                                   contract, receipt)
+    contract match {
+      case _: ERC20Token =>
+        ERC20Transaction.factory(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
+          tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
+          tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+          contract, receipt)
+
+      //case _: ERC721Token =>
+
+      case _ =>
+        new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
+          tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
+          tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+          contract, receipt)
+    }
+
+    /*if(transaction.contract != null && transaction.contract.isInstanceOf[ERC20Token]){
+      transaction = transaction.asInstanceOf[ERC20Transaction].methodCalled()
+    }
+    if(transaction.contract != null && transaction.contract.isInstanceOf[ERC721Token]){
+      //transaction = transaction.asInstanceOf[ERC721Transaction].methodCalled()
+    }
+
+    return transaction*/
   }
 
 
   /** */
   def getContract(tx: TransactionObject): EthereumContract = {
-    new EthereumContract("", tx.getCreates, tx.getHash, false, null, getContractBytecode(tx.getCreates), null)
+    EthereumContract.factory("", EthereumAddress.factory(tx.getCreates), tx.getHash, false, null, getContractBytecode(tx.getCreates), null)
   }
 
 
@@ -135,7 +151,7 @@ object EthereumTransaction{
     try {
 
       val (name, date, source, isVerified) = getVerifiedContractFromEtherscan(tx)
-      return new EthereumContract(name, tx.getCreates, tx.getHash, isVerified, date, getContractBytecode(tx.getCreates), source)
+      return EthereumContract.factory(name, EthereumAddress.factory(tx.getCreates), tx.getHash, isVerified, date, getContractBytecode(tx.getCreates), source)
 
     } catch {
       case ioe: java.io.IOException => {ioe.printStackTrace(); return contract}
