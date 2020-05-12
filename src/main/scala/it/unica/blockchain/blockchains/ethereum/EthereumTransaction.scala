@@ -40,8 +40,8 @@ case class EthereumTransaction(
                                 val blockHash: String,
                                 val blockHeight: BigInt,
                                 val transactionIndex: BigInt,
-                                val from: String,
-                                val to: String,
+                                val from: EthereumAddress,
+                                val to: EthereumAddress,
                                 val value: BigInt,
                                 val gasPrice: BigInt,
                                 val gas: BigInt,
@@ -92,9 +92,11 @@ object EthereumTransaction{
 
     this.web3j = web3j
 
+    val from = EthereumAddress.factory(tx.getFrom)
+    val to = EthereumAddress.factory(tx.getTo)
+
     // If the transaction creates a contract, initialize it.
     var contract : EthereumContract = null
-    var address : EthereumAddress = new EthereumAddress(tx.getCreates)
     if (tx.getCreates != null) {
       if(retrieveVerifiedContracts) {
         contract = getVerifiedContract(tx)
@@ -106,27 +108,24 @@ object EthereumTransaction{
     contract match {
       case _: ERC20Token =>
         ERC20Transaction.factory(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
-          tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
+          from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
           tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
           contract, receipt)
 
-      //case _: ERC721Token =>
+      case _: ERC721Token =>
+        ERC721Transaction.factory(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
+          from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
+          tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+          contract, receipt)
 
       case _ =>
         new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
-          tx.getFrom, tx.getTo, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
+          from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
           tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
           contract, receipt)
-    }
 
-    /*if(transaction.contract != null && transaction.contract.isInstanceOf[ERC20Token]){
-      transaction = transaction.asInstanceOf[ERC20Transaction].methodCalled()
-    }
-    if(transaction.contract != null && transaction.contract.isInstanceOf[ERC721Token]){
-      //transaction = transaction.asInstanceOf[ERC721Transaction].methodCalled()
-    }
 
-    return transaction*/
+    }
   }
 
 

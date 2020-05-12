@@ -73,8 +73,7 @@ case class EthereumContract(
       bytecode.contains("23b872dd") && //checks transferFrom(address,address,uint256) declaration
       bytecode.contains("42842e0e") && //checks safeTransferFrom(address,address,uint256) declaration
       bytecode.contains("b88d4fde") && //checks safeTransferFrom(address,address,uint256,bytes) declaration
-      bytecode.contains("150b7a02") && //checks onERC721Received(address,address,uint256,bytes) declaration
-      bytecode.contains("01ffc9a7") //checks supportsInterface(bytes4) declaration
+      bytecode.contains("150b7a02")    //checks onERC721Received(address,address,uint256,bytes) declaration
   }
 }
 
