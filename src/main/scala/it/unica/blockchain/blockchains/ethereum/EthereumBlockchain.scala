@@ -145,13 +145,13 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
             case "call" =>
               val value = new BigInteger(blockTrace.getAction.getValue.substring(2), 16)
               if (blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0) {
-                internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
+                internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, EthereumAddress.factory(blockTrace.getAction.getFrom), EthereumAddress.factory(blockTrace.getAction.getTo), value)
               }
-            case "suicide" => internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getAddress, blockTrace.getAction.getRefundAddress, 0)
+            case "suicide" => internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, EthereumAddress.factory(blockTrace.getAction.getAddress), EthereumAddress.factory(blockTrace.getAction.getRefundAddress), 0)
             case "create" =>
               val value = new BigInteger(blockTrace.getAction.getValue.substring(2), 16)
               if (blockTrace.getTraceAddress.nonEmpty && value.compareTo(new BigInteger("0")) > 0) {
-                internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, blockTrace.getAction.getFrom, blockTrace.getAction.getTo, value)
+                internalTxs ::= EthereumInternalTransaction(blockTrace.getTransactionHash, blockTrace.getTraceType, EthereumAddress.factory(blockTrace.getAction.getFrom), EthereumAddress.factory(blockTrace.getAction.getTo), value)
               }
             case _ =>
           }

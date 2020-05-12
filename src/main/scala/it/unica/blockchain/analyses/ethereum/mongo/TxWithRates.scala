@@ -22,14 +22,14 @@ object TxWithRates {
         println("Current block ->" + block.height)
       }
       block.txs.foreach(tx => {
-        val creates = if(tx.hasContract) tx.addressCreated else ""
-        val to = if(tx.to == null) "" else tx.to
+        val creates = if(tx.hasContract) tx.addressCreated.address else ""
+        val to = if(tx.to == null) "" else tx.to.address
         val list = List(
           ("txHash", tx.hash),
           ("blockHeight", tx.blockHeight.toString()),
           ("txIndex", tx.transactionIndex),
           ("date", block.date),
-          ("from", tx.from),
+          ("from", tx.from.address),
           ("to", to),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
           ("creates", creates),

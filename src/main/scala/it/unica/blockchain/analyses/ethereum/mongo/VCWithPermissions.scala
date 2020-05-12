@@ -37,12 +37,12 @@ object VCWithPermissions {
 
       block.txs.foreach(tx => {
 
-        println("Block: " + block.height + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated)
+        println("Block: " + block.height + " Transaction: " + tx.hash + " Address created: " + tx.addressCreated.address)
 
         if (tx.hasContract){
 
           val list = List(
-            ("contractAddress", tx.contract.address),
+            ("contractAddress", tx.contract.address.address),
             ("contractName", tx.contract.name),
             ("date", block.date),
             ("dateVerified", tx.contract.verificationDate),

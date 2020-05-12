@@ -14,8 +14,8 @@ import it.unica.blockchain.blockchains.Transaction
 case class EthereumInternalTransaction(
                                 parentTxHash: String,
                                 txType: String,
-                                from: String,
-                                to: String,
+                                from: EthereumAddress,
+                                to: EthereumAddress,
                                 value: BigInt
                               ) {
   override def toString(): String = {

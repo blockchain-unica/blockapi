@@ -19,7 +19,7 @@ class ETHTokenTransaction (
                             gasPrice: BigInt,
                             gas: BigInt,
                             input: String,
-                            addressCreated: String,
+                            addressCreated: EthereumAddress,
                             publicKey: String,
                             raw: String,
                             r: String,

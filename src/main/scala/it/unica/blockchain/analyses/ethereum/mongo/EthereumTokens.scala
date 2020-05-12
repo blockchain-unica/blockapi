@@ -40,7 +40,7 @@ object EthereumTokens {
             val contract = tx.contract.asInstanceOf[ERC20Token]
             tokens.append(
               List(
-                ("contractAddress", tx.contract.address),
+                ("contractAddress", tx.contract.address.address),
                 ("txhash", tx.contract.hashOriginatingTx),
                 ("date", tx.date),
                 ("tokenName", contract.getTokenName()),

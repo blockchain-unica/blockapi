@@ -19,7 +19,7 @@ class ERC20Transaction (
                         gasPrice: BigInt,
                         gas: BigInt,
                         input: String,
-                        addressCreated: String,
+                        addressCreated: EthereumAddress,
                         publicKey: String,
                         raw: String,
                         r: String,
@@ -35,7 +35,7 @@ class ERC20Transaction (
 
 object  ERC20Transaction{
 
-  def factory(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: String, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction ={
+  def factory(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction ={
     val index = input.indexOf("0x")
     val methodBytecode = input.substring(index+2, index+10)
 

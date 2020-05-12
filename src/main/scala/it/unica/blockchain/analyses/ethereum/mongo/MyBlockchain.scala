@@ -20,14 +20,14 @@ object MyBlockchain {
       }
       block.txs.foreach(tx => {
         val internalTransactions = block.internalTransactions.filter(itx => itx.parentTxHash.equals(tx.hash))
-        val creates = if(tx.addressCreated == null) "" else tx.addressCreated
-        val to = if(tx.to == null) "" else tx.to
+        val creates = if(tx.addressCreated == null) "" else tx.addressCreated.address
+        val to = if(tx.to == null) "" else tx.to.address
         val list = List(
           ("txHash", tx.hash),
           ("blockHeight", tx.blockHeight.toString()),
           ("txIndex", tx.transactionIndex),
           ("date", block.date),
-          ("from", tx.from),
+          ("from", tx.from.address),
           ("to", to),
           ("value", tx.value.doubleValue()/weiIntoEth.doubleValue()),
           ("creates", creates),

@@ -57,11 +57,11 @@ object EthereumERC20Info {
 
       block.txs.foreach(tx => {
 
-        if (addressSet.contains(tx.to)){
+        if (addressSet.contains(tx.to.address)){
           incInputTransaction(tx)
         }
 
-        if (addressSet.contains(tx.from)){
+        if (addressSet.contains(tx.from.address)){
           incOutputTransaction(tx)
         }
 
@@ -75,11 +75,11 @@ object EthereumERC20Info {
 
         block.internalTransactions.foreach(itx => {
 
-          if (addressSet.contains(itx.to)){
+          if (addressSet.contains(itx.to.address)){
             incInputInternalTransaction(itx)
           }
 
-          if (addressSet.contains(itx.from)){
+          if (addressSet.contains(itx.from.address)){
             incOutputInternalTransaction(itx)
           }
 
@@ -93,22 +93,22 @@ object EthereumERC20Info {
 
   /***this function increments number of transaction in by one, checking transactions*/
   def incInputTransaction (tx : EthereumTransaction) : Unit = {
-    incTxIn(tx.to, tx.value)
+    incTxIn(tx.to.address, tx.value)
   }
 
   /***increments number of transaction out by one, checking transactions*/
   def incOutputTransaction (tx : EthereumTransaction) : Unit = {
-    incTxOut(tx.from, tx.value)
+    incTxOut(tx.from.address, tx.value)
   }
 
   /***increments number of transaction in by one, checking internal transactions*/
   def incInputInternalTransaction (itx : EthereumInternalTransaction) : Unit = {
-    incTxIn(itx.to, itx.value)
+    incTxIn(itx.to.address, itx.value)
   }
 
   /***it increments number of transaction out by one, checking internal transactions*/
   def incOutputInternalTransaction (itx : EthereumInternalTransaction) : Unit = {
-    incTxOut(itx.from, itx.value)
+    incTxOut(itx.from.address, itx.value)
   }
 
   /**

@@ -46,7 +46,7 @@ case class EthereumTransaction(
                                 val gasPrice: BigInt,
                                 val gas: BigInt,
                                 val input: String,
-                                val addressCreated: String,
+                                val addressCreated: EthereumAddress,
                                 val publicKey: String,
                                 val raw: String,
                                 val r: String,
@@ -94,6 +94,7 @@ object EthereumTransaction{
 
     val from = EthereumAddress.factory(tx.getFrom)
     val to = EthereumAddress.factory(tx.getTo)
+    val contractAddress = EthereumAddress.factory(tx.getCreates)
 
     // If the transaction creates a contract, initialize it.
     var contract : EthereumContract = null
@@ -109,19 +110,19 @@ object EthereumTransaction{
       case _: ERC20Token =>
         ERC20Transaction.factory(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
           from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-          tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+          contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
           contract, receipt)
 
       case _: ERC721Token =>
         ERC721Transaction.factory(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
           from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-          tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+          contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
           contract, receipt)
 
       case _ =>
         new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
           from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-          tx.getCreates, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+          contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
           contract, receipt)
 
 

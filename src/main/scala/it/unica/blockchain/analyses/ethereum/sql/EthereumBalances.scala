@@ -41,7 +41,7 @@ object EthereumBalances {
         //                println(transaction.date + " - " + rateInTransactionDate)
         val dollars = transaction.value.toDouble / weiInEth * rateInTransactionDate
 
-        if (map.contains(transaction.from)) {
+        if (map.contains(transaction.from.address)) {
           // if the address "from" is already present in the map,
           // we can update its balance
           /** how to update:
@@ -53,7 +53,7 @@ object EthereumBalances {
             */
 
           // current balance
-          val balance: Array[Double] = map(transaction.from)
+          val balance: Array[Double] = map(transaction.from.address)
 
           // update of the quantities
 
@@ -69,7 +69,7 @@ object EthereumBalances {
         else {
           // the address "from" is not in the map, so it must be added
           // only if there is a transaction sending money
-          if (dollars > 0 && transaction.from != null && transaction.from != "")
+          if (dollars > 0 && transaction.from != null && transaction.from.address != "")
 
           /** add an entry to the map which goes from the "from" address to
             * an array with:
@@ -79,10 +79,10 @@ object EthereumBalances {
             * n_sent: 1
             * n_received: 0
             */
-          map += transaction.from -> Array(0, dollars, -dollars, 1, 0)
+          map += transaction.from.address -> Array(0, dollars, -dollars, 1, 0)
         }
 
-        if (map.contains(transaction.to)) {
+        if (map.contains(transaction.to.address)) {
           // if the address "to" is already present in the map,
           // we can update its balance
 
@@ -95,7 +95,7 @@ object EthereumBalances {
             */
 
           // current balance
-          val balance: Array[Double] = map(transaction.to)
+          val balance: Array[Double] = map(transaction.to.address)
 
           // update of the quantity of eth sent
           balance(0) += dollars // received += dollars
@@ -109,7 +109,7 @@ object EthereumBalances {
         else {
           // the address "to" is not in the map, so it must be added
           // only if there is a transaction sending money
-          if (dollars > 0 && transaction.to != null && transaction.to != "")
+          if (dollars > 0 && transaction.to != null && transaction.to.address != "")
 
           /** add an entry to the map which goes from the "to" address to
             * an array with:
@@ -119,7 +119,7 @@ object EthereumBalances {
             * n_sent: 0
             * n_received: 1
             */
-          map += transaction.to -> Array(dollars, 0, dollars, 0, 1)
+          map += transaction.to.address -> Array(dollars, 0, dollars, 0, 1)
         }
       })
     })
