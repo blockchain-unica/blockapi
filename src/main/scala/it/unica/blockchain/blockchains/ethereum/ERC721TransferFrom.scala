@@ -45,22 +45,27 @@ class ERC721TransferFrom (
 object ERC721TransferFrom{
 
   def getInputData(inputData :String) :(String, EthereumAddress, EthereumAddress, BigInt) ={
-    val method :String = "transferFrom(address from, address to, uint256 amount)"
+    val argDim = 64
+    val firstArg = 10
+    val secondArg = firstArg + argDim
+    val thirdArg = secondArg + argDim
 
-    val from :String = inputData.substring(10,74)
-    val to :String = inputData.substring(74,138)
-    val value :String = inputData.substring(74)
+    val method :String = "transferFrom(address _from, address _to, uint256 _amount)"
 
-    val refMethod = classOf[TypeDecoder].getDeclaredMethod("decode", classOf[String], classOf[Int], classOf[Class[_]])
+    val from :String = inputData.substring(firstArg, secondArg)
+    val to :String = inputData.substring(secondArg, thirdArg)
+    val value :String = inputData.substring(thirdArg)
+
+    val refMethod = classOf[TypeDecoder].getDeclaredMethod("decode", classOf[String], classOf[Class[_]])
     refMethod.setAccessible(true)
 
-    val addressFrom = refMethod.invoke(null, from, 0, classOf[Address]).asInstanceOf[Address]
+    val addressFrom = refMethod.invoke(null, from, classOf[Address]).asInstanceOf[Address]
     val ethAddressFrom = new EthereumAddress(addressFrom.toString)
 
-    val addressTo = refMethod.invoke(null, to, 0, classOf[Address]).asInstanceOf[Address]
+    val addressTo = refMethod.invoke(null, to, classOf[Address]).asInstanceOf[Address]
     val ethAddressTo = new EthereumAddress(addressTo.toString)
 
-    val amount = refMethod.invoke(null, value, 0, classOf[Uint256]).asInstanceOf[Uint256]
+    val amount = refMethod.invoke(null, value, classOf[Uint256]).asInstanceOf[Uint256]
 
     return (method, ethAddressFrom, ethAddressTo, amount.getValue())
   }

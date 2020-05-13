@@ -37,7 +37,10 @@ object  ERC721Transaction{
 
   def factory(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction ={
     val index = input.indexOf("0x")
-    val methodBytecode = input.substring(index+2, index+10)
+    var methodBytecode : String = "No Function"
+
+    if(input != "0x")
+      methodBytecode = input.substring(index+2, index+10)
 
     methodBytecode match {
       //case "70a08231" => // balanceOf(address)

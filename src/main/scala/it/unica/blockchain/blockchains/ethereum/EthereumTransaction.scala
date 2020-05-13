@@ -106,7 +106,7 @@ object EthereumTransaction{
       }
     }
 
-    contract match {
+    tokenTxCheck(to) match {
       case _: ERC20Token =>
         ERC20Transaction.factory(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
           from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
@@ -128,7 +128,6 @@ object EthereumTransaction{
 
     }
   }
-
 
   /** */
   def getContract(tx: TransactionObject): EthereumContract = {
@@ -163,4 +162,16 @@ object EthereumTransaction{
   private def getContractBytecode(contractAddress : String) : String = {
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
+
+  /**This function check out if the transaction is made to or from a token*/
+  private def tokenTxCheck (to :EthereumAddress): EthereumContract ={
+
+    val bytecode = getContractBytecode(to.address)
+    if(bytecode != "0x"){
+      return EthereumContract.factory("", to, "", false, null, bytecode, null)
+    }
+
+    null
+  }
+
 }
