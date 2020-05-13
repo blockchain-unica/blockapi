@@ -116,11 +116,16 @@ object Etherscan {
     */
   private def getSourceCodeFromEtherscan(address : String): String = {
 
-    val apiKey = "InsertAPIKey"
+    val apiKey = ""
+    var content : String = null
 
-    val content = Http("https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + address + "&apikey=" + apiKey).asString.body
-    val json = Json.parse(content);
-    val sourceCode = (json \ "result" \ "0" \ "SourceCode").get.as[String];
+    if(apiKey != "")
+     content = Http("https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + address + "&apikey=" + apiKey).asString.body
+    else
+      content = Http("https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + address).asString.body
+
+    val json = Json.parse(content)
+    val sourceCode = (json \ "result" \ "0" \ "SourceCode").get.as[String]
 
     return sourceCode
   }

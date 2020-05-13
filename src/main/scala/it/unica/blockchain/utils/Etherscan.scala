@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 import scalaj.http.Http
 
 package object Etherscan {
-  def apiKey = "Insert apikey"
+  def apiKey = ""
   /**
     *
     * This method of fetching the contract's source code is NOT optimal, but until etherscan.io extends its API to
@@ -21,7 +21,13 @@ package object Etherscan {
     */
   def getSourceCodeFromEtherscan(address : String): String = {
 
-    val content = Http("https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + address + "&apikey=" + apiKey).asString.body
+    var content : String = null
+
+    if(apiKey != "")
+      content = Http("https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + address + "&apikey=" + apiKey).asString.body
+    else
+      content = Http("https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + address).asString.body
+
     val json = Json.parse(content);
     val sourceCode = (json \ "result" \ "0" \ "SourceCode").get.as[String];
 
