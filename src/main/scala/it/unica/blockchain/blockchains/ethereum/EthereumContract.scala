@@ -83,10 +83,10 @@ object EthereumContract{
     var contract = EthereumContract(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
 
     if(contract.isERC20Compliant())
-      contract = contract.asInstanceOf[ERC20Token]
-    if(contract.isERC721Compliant())
-      contract = contract.asInstanceOf[ERC721Token]
-
-    return contract
+      new ERC20Token(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
+    else if(contract.isERC721Compliant())
+      new ERC721Token(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
+    else
+      contract
   }
 }
