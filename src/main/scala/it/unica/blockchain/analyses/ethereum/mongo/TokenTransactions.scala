@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils
 import scala.collection.immutable.HashSet
 import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase}
 import it.unica.blockchain.blockchains.BlockchainLib
-import it.unica.blockchain.blockchains.ethereum.{ERC20TransferFrom, ERC721TransferFrom, EthereumInternalTransaction, EthereumSettings, EthereumTransaction}
+import it.unica.blockchain.blockchains.ethereum.{ERC20BalanceOf, ERC20Transfer, ERC20TransferFrom, ERC721BalanceOf, ERC721OwnerOf, ERC721TransferFrom, EthereumInternalTransaction, EthereumSettings, EthereumTransaction}
 import it.unica.blockchain.analyses.ethereum.mongo.levensthein.Helpers._
 import it.unica.blockchain.db.DatabaseSettings
 import it.unica.blockchain.mongo.Collection
@@ -40,6 +40,25 @@ object TokenTransactions {
                 ("_value", tx.asInstanceOf[ERC20TransferFrom].tokenValue.toString)
               )
             )
+          case _: ERC20Transfer =>
+            txsCollection.append(
+              List(
+                ("type", "ERC20"),
+                ("tx", tx.hash),
+                ("methodCalled", tx.asInstanceOf[ERC20TransferFrom].method),
+                ("_to", tx.asInstanceOf[ERC20TransferFrom].tokenTo.address),
+                ("_value", tx.asInstanceOf[ERC20TransferFrom].tokenValue.toString)
+              )
+            )
+          case _: ERC20BalanceOf =>
+            txsCollection.append(
+              List(
+                ("type", "ERC20"),
+                ("tx", tx.hash),
+                ("methodCalled", tx.asInstanceOf[ERC20TransferFrom].method),
+                ("_owner", tx.asInstanceOf[ERC20TransferFrom].tokenFrom.address)
+              )
+            )
           case _: ERC721TransferFrom =>
             txsCollection.append(
               List(
@@ -49,6 +68,24 @@ object TokenTransactions {
                 ("_from", tx.asInstanceOf[ERC721TransferFrom].tokenFrom.address),
                 ("_to", tx.asInstanceOf[ERC721TransferFrom].tokenTo.address),
                 ("_tokenId", tx.asInstanceOf[ERC721TransferFrom].tokenValue.toString)
+              )
+            )
+          case _: ERC721BalanceOf =>
+            txsCollection.append(
+              List(
+                ("type", "ERC721"),
+                ("tx", tx.hash),
+                ("methodCalled", tx.asInstanceOf[ERC20TransferFrom].method),
+                ("_owner", tx.asInstanceOf[ERC20TransferFrom].tokenFrom.address)
+              )
+            )
+          case _: ERC721OwnerOf =>
+            txsCollection.append(
+              List(
+                ("type", "ERC721"),
+                ("tx", tx.hash),
+                ("methodCalled", tx.asInstanceOf[ERC20TransferFrom].method),
+                ("_tokenId", tx.asInstanceOf[ERC20TransferFrom].tokenFrom.address)
               )
             )
           case _ =>

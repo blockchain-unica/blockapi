@@ -46,7 +46,7 @@ object ERC20BalanceOf {
 
     val method: String = "balanceOf(address _owner)"
 
-    val owner: String = inputData.substring(firstArg, firstArg + argDim)
+    val owner: String = inputData.substring(firstArg)
 
     val refMethod = classOf[TypeDecoder].getDeclaredMethod("decode", classOf[String], classOf[Class[_]])
     refMethod.setAccessible(true)
