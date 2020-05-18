@@ -52,7 +52,17 @@ object  ETHTokenTransaction {
       //case "18160ddd" => //totalSupply()
       //case "dd62ed3e" => //allowance(address,address)
       //case "a9059cbb" => //transfer(address,uint256)
-      //case "70a08231" => // balanceOf(address)
+      case "70a08231" => // balanceOf(address)
+        ERCTxCheck(to) match {
+          case TokenType.ERC20 =>
+            val (method, tokenOwner) = ERC20BalanceOf.getInputData(input)
+            new ERC20BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
+          case TokenType.ERC721 =>
+            val (method, tokenOwner) = ERC721BalanceOf.getInputData(input)
+            new ERC721BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
+          case TokenType.None =>
+            new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+        }
       //case "6352211e" => // ownerOf(uint256)
       //case "095ea7b3" => // approve(address,uint256)
       //case "081812fc" => // getApproved(uint256)
@@ -63,17 +73,14 @@ object  ETHTokenTransaction {
           case TokenType.ERC20 =>
             val (method, tokenFrom, tokenTo, tokenValue) = ERC20TransferFrom.getInputData(input)
             new ERC20TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenValue)
-
           case TokenType.ERC721 =>
             val (method, tokenFrom, tokenTo, tokenValue) = ERC721TransferFrom.getInputData(input)
             new ERC721TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenValue)
-
           case TokenType.None =>
             new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
         }
       //case "42842e0e" => // safeTransferFrom(address,address,uint256)
       //case "b88d4fde" => // safeTransferFrom(address,address,uint256,bytes)
-      //case "150b7a02" => // onERC721Received(address,address,uint256,bytes)
       case _ => //Not a Token function
         new EthereumTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
 
