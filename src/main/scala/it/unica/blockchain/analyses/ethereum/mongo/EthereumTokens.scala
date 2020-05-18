@@ -25,7 +25,7 @@ object EthereumTokens {
 
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545", false, true))
     val mongo = new DatabaseSettings("EthereumTokens")
     val tokens = new Collection("EthereumTokens", mongo)
 

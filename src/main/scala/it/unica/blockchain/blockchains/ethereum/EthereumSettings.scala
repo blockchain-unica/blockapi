@@ -9,6 +9,7 @@ package it.unica.blockchain.blockchains.ethereum
   */
 class EthereumSettings (
                          val url : String,
-                         val retrieveVerifiedContracts : Boolean = false
+                         val retrieveVerifiedContracts : Boolean = false,
+                         val searchForTokens : Boolean = false
                        ){
 }

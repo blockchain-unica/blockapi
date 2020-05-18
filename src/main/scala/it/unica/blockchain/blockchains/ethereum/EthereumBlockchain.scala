@@ -158,12 +158,12 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
         })
       }
 
-      EthereumBlock.factory(currBlock, internalTxs, transactionReceipts, settings.retrieveVerifiedContracts, web3j)
+      EthereumBlock.factory(currBlock, internalTxs, transactionReceipts, settings.retrieveVerifiedContracts, settings.searchForTokens, web3j)
 
     }
 
     else{
-      return EthereumBlock.factory(currBlock, List(), transactionReceipts, settings.retrieveVerifiedContracts, web3j)
+      return EthereumBlock.factory(currBlock, List(), transactionReceipts, settings.retrieveVerifiedContracts, settings.searchForTokens, web3j)
     }
   }
 

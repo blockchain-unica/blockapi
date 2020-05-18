@@ -21,14 +21,13 @@ object TokenTransactions {
     val txsCollection = new Collection("transactions", mongo)
 
     // Iterating each block
-    blockchain.start(10058360).end(10058360).foreach(block => {
+    blockchain.start(10058360).end(10058460).foreach(block => {
 
       //if(block.height%100 == 0){
       println("Current Block " + block.height)
       //)}
 
       block.txs.foreach(tx => {
-        //println("\t tx: " + tx.hash)
         tx match {
           case _: ERC20TransferFrom =>
             txsCollection.append(

@@ -73,18 +73,19 @@ case class EthereumContract(
       bytecode.contains("23b872dd") && //checks transferFrom(address,address,uint256) declaration
       bytecode.contains("42842e0e") && //checks safeTransferFrom(address,address,uint256) declaration
       bytecode.contains("b88d4fde") && //checks safeTransferFrom(address,address,uint256,bytes) declaration
+      bytecode.contains("01ffc9a7") && //checks supportsInterface(bytes4) declaration
       bytecode.contains("150b7a02")    //checks onERC721Received(address,address,uint256,bytes) declaration
   }
 }
 
 object EthereumContract{
 
-  def factory(name: String, address: EthereumAddress, hashOriginatingTx: String, isVerified: Boolean, verificationDate: Date, bytecode: String, sourceCode: String):EthereumContract ={
+  def factory(name: String, address: EthereumAddress, hashOriginatingTx: String, isVerified: Boolean, verificationDate: Date, bytecode: String, sourceCode: String, searchForTokens: Boolean):EthereumContract ={
     var contract = EthereumContract(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
 
-    if(contract.isERC20Compliant())
+    if (searchForTokens && contract.isERC20Compliant())
       new ERC20Token(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
-    else if(contract.isERC721Compliant())
+    else if (searchForTokens && contract.isERC721Compliant())
       new ERC721Token(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
     else
       contract
