@@ -17,24 +17,24 @@ import scala.io.Source
 /**
   * Defines an Ethereum Transaction
   *
-  * @param hash transaction's hash
-  * @param date date in which the transaction has been published (extracted from the containing block)
-  * @param nonce transaction's nonce
-  * @param blockHash hash of the block containing this transaction
-  * @param blockHeight number of the block containing this transaction
+  * @param hash             transaction's hash
+  * @param date             date in which the transaction has been published (extracted from the containing block)
+  * @param nonce            transaction's nonce
+  * @param blockHash        hash of the block containing this transaction
+  * @param blockHeight      number of the block containing this transaction
   * @param transactionIndex index of the transaction inside its block
-  * @param from from
-  * @param to to
-  * @param value transaction's value
-  * @param gasPrice transaction's gas price
-  * @param gas transaction's gas
-  * @param input input of the transaction
-  * @param addressCreated Address of the created contract (if this transaction creates a contract)
-  * @param publicKey transaction's public key
-  * @param raw transaction's raw data
-  * @param r r part
-  * @param s s part
-  * @param v v part
+  * @param from             from
+  * @param to               to
+  * @param value            transaction's value
+  * @param gasPrice         transaction's gas price
+  * @param gas              transaction's gas
+  * @param input            input of the transaction
+  * @param addressCreated   Address of the created contract (if this transaction creates a contract)
+  * @param publicKey        transaction's public key
+  * @param raw              transaction's raw data
+  * @param r                r part
+  * @param s                s part
+  * @param v                v part
   */
 case class EthereumTransaction(
                                 override val hash: String,
@@ -57,9 +57,9 @@ case class EthereumTransaction(
                                 val s: String,
                                 val v: Int,
 
-                                val contract : EthereumContract,
+                                val contract: EthereumContract,
                                 val requestOpt: Option[Request[_, EthGetTransactionReceipt]]
-                         ) extends Transaction {
+                              ) extends Transaction {
 
   def getContractAddress(): Option[String] = {
     if (requestOpt.isDefined) {
@@ -73,7 +73,7 @@ case class EthereumTransaction(
     None
   }
 
-  def hasContract : Boolean = {
+  def hasContract: Boolean = {
     return contract != null
   }
 }
@@ -81,9 +81,9 @@ case class EthereumTransaction(
 /**
   * Factories for [[it.unica.blockchain.blockchains.ethereum.EthereumTransaction]] instances
   */
-object EthereumTransaction{
+object EthereumTransaction {
 
-  private var web3j : Web3j = null
+  private var web3j: Web3j = null
 
   /**
     * Factory for [[it.unica.blockchain.blockchains.ethereum.EthereumTransaction]] instances
@@ -110,10 +110,18 @@ object EthereumTransaction{
       }
     }
 
-    ETHTokenTransaction.factory(web3j, tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
-      from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-      contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
-      contract, receipt)
+    if (searchForTokens) {
+      ETHTokenTransaction.factory(web3j, tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
+        from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
+        contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+        contract, receipt)
+    }
+    else {
+        new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
+          from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
+          contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+          contract, receipt)
+    }
   }
 
   /** */
@@ -132,7 +140,7 @@ object EthereumTransaction{
     */
   private def getVerifiedContract(tx: TransactionObject, searchForTokens: Boolean): EthereumContract = {
 
-    var contract : EthereumContract = null
+    var contract: EthereumContract = null
 
     try {
 
@@ -140,13 +148,19 @@ object EthereumTransaction{
       return EthereumContract.factory(name, EthereumAddress.factory(tx.getCreates), tx.getHash, isVerified, date, getContractBytecode(tx.getCreates), source, searchForTokens)
 
     } catch {
-      case ioe: java.io.IOException => {ioe.printStackTrace(); return contract}
-      case ste: java.net.SocketTimeoutException => {ste.printStackTrace(); return contract}
-      case e: Exception => {e.printStackTrace(); return contract}
+      case ioe: java.io.IOException => {
+        ioe.printStackTrace(); return contract
+      }
+      case ste: java.net.SocketTimeoutException => {
+        ste.printStackTrace(); return contract
+      }
+      case e: Exception => {
+        e.printStackTrace(); return contract
+      }
     }
   }
 
-  private def getContractBytecode(contractAddress : String) : String = {
+  private def getContractBytecode(contractAddress: String): String = {
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
 }

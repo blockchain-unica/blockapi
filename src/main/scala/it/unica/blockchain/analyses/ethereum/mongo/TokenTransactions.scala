@@ -16,12 +16,12 @@ import org.mongodb.scala.model.Updates._
 object TokenTransactions {
 
   def main(args: Array[String]): Unit = {
-    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545", false, true))
     val mongo = new DatabaseSettings("TokenTransactions")
     val txsCollection = new Collection("transactions", mongo)
 
     // Iterating each block
-    blockchain.start(10058360).end(10058460).foreach(block => {
+    blockchain.start(10058360).end(10058360).foreach(block => {
 
       //if(block.height%100 == 0){
       println("Current Block " + block.height)
@@ -37,7 +37,7 @@ object TokenTransactions {
                 ("methodCalled", tx.asInstanceOf[ERC20TransferFrom].method),
                 ("_from", tx.asInstanceOf[ERC20TransferFrom].tokenFrom.address),
                 ("_to", tx.asInstanceOf[ERC20TransferFrom].tokenTo.address),
-                ("_value", tx.asInstanceOf[ERC20TransferFrom].tokenValue.toString)
+                ("_value", tx.asInstanceOf[ERC20TransferFrom].tokenValue.getValue)
               )
             )
           case _: ERC20Transfer =>
@@ -45,9 +45,9 @@ object TokenTransactions {
               List(
                 ("type", "ERC20"),
                 ("tx", tx.hash),
-                ("methodCalled", tx.asInstanceOf[ERC20TransferFrom].method),
-                ("_to", tx.asInstanceOf[ERC20TransferFrom].tokenTo.address),
-                ("_value", tx.asInstanceOf[ERC20TransferFrom].tokenValue.toString)
+                ("methodCalled", tx.asInstanceOf[ERC20Transfer].method),
+                ("_to", tx.asInstanceOf[ERC20Transfer].tokenTo.address),
+                ("_value", tx.asInstanceOf[ERC20Transfer].tokenValue.getValue)
               )
             )
           case _: ERC20BalanceOf =>
@@ -55,8 +55,8 @@ object TokenTransactions {
               List(
                 ("type", "ERC20"),
                 ("tx", tx.hash),
-                ("methodCalled", tx.asInstanceOf[ERC20TransferFrom].method),
-                ("_owner", tx.asInstanceOf[ERC20TransferFrom].tokenFrom.address)
+                ("methodCalled", tx.asInstanceOf[ERC20BalanceOf].method),
+                ("_owner", tx.asInstanceOf[ERC20BalanceOf].tokenOwner.address)
               )
             )
           case _: ERC721TransferFrom =>
@@ -67,7 +67,7 @@ object TokenTransactions {
                 ("methodCalled", tx.asInstanceOf[ERC721TransferFrom].method),
                 ("_from", tx.asInstanceOf[ERC721TransferFrom].tokenFrom.address),
                 ("_to", tx.asInstanceOf[ERC721TransferFrom].tokenTo.address),
-                ("_tokenId", tx.asInstanceOf[ERC721TransferFrom].tokenValue.toString)
+                ("_tokenId", tx.asInstanceOf[ERC721TransferFrom].tokenValue.getValue)
               )
             )
           case _: ERC721BalanceOf =>
@@ -75,8 +75,8 @@ object TokenTransactions {
               List(
                 ("type", "ERC721"),
                 ("tx", tx.hash),
-                ("methodCalled", tx.asInstanceOf[ERC20TransferFrom].method),
-                ("_owner", tx.asInstanceOf[ERC20TransferFrom].tokenFrom.address)
+                ("methodCalled", tx.asInstanceOf[ERC721BalanceOf].method),
+                ("_owner", tx.asInstanceOf[ERC721BalanceOf].tokenOwner.address)
               )
             )
           case _: ERC721OwnerOf =>
@@ -84,8 +84,8 @@ object TokenTransactions {
               List(
                 ("type", "ERC721"),
                 ("tx", tx.hash),
-                ("methodCalled", tx.asInstanceOf[ERC20TransferFrom].method),
-                ("_tokenId", tx.asInstanceOf[ERC20TransferFrom].tokenFrom.address)
+                ("methodCalled", tx.asInstanceOf[ERC721OwnerOf].method),
+                ("_tokenId", tx.asInstanceOf[ERC721OwnerOf].tokenId.getValue)
               )
             )
           case _ =>

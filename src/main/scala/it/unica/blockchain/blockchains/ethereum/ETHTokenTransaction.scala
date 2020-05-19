@@ -45,7 +45,7 @@ object  ETHTokenTransaction {
     val index = input.indexOf("0x")
     var methodBytecode: String = "No Function"
 
-    if (input != "0x")
+    if (input != "0x" && input.length >= 10) //Is needed to be sure that there is at least the method call
       methodBytecode = input.substring(index + 2, index + 10)
 
     methodBytecode match {
@@ -54,9 +54,9 @@ object  ETHTokenTransaction {
       case "a9059cbb" => //transfer(address,uint256)
         ERCTxCheck(to) match {
           case TokenType.ERC20 =>
-            val (method, to, value) = ERC20Transfer.getInputData(input)
-            new ERC20Transfer(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, to, value)
-          case TokenType.None =>
+            val (method, tokenTo, tokenValue) = ERC20Transfer.getInputData(input)
+            new ERC20Transfer(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenTo, tokenValue)
+          case _ =>
             new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
         }
       case "70a08231" =>  // balanceOf(address)
@@ -75,7 +75,7 @@ object  ETHTokenTransaction {
           case TokenType.ERC721 =>
             val (method, tokenId) = ERC721OwnerOf.getInputData(input)
             new ERC721OwnerOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenId)
-          case TokenType.None =>
+          case _ =>
             new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
         }
       //case "095ea7b3" => // approve(address,uint256)
@@ -109,14 +109,25 @@ object  ETHTokenTransaction {
     val file_path_ERC20 = "src/main/scala/it/unica/blockchain/externaldata/token/ERC20.txt"
     val file_path_ERC721 = "src/main/scala/it/unica/blockchain/externaldata/token/ERC721.txt"
 
-    if(fileCheck(file_path_ERC20, address.address)) {
-      println("ERC20 FILE")
+    if(fileCheck(file_path_ERC20, address.address))
       TokenType.ERC20
-    } else if(fileCheck(file_path_ERC721, address.address)) {
-      println("ERC721 FILE")
+    else if(fileCheck(file_path_ERC721, address.address))
       TokenType.ERC721
-    } else
+    else
       additionalControl(address)
+  }
+
+  private def ERC20FileDivisibility(address : String): Int ={
+    val path = "src/main/scala/it/unica/blockchain/externaldata/token/ERC20.txt"
+    val bufferedSource = Source.fromFile(path)
+    var divisibility : Int = null
+
+    for(line <- bufferedSource.getLines){
+      if(line.contains(address)){
+        divisibility = line.substring(line.indexOf(",")+1).toInt
+      }
+    }
+    return divisibility
   }
 
   /** This function checks if a string is stored into a file at the given path.
@@ -139,17 +150,16 @@ object  ETHTokenTransaction {
   /** This function is needed to perform an additional control to be sure that the given
     *  address is not a token
     * @return a token type, None if the address is not a token
+    * @return an integer representing the divisibility for ERC20 tokens
     */
   private def additionalControl(address : EthereumAddress): TokenType ={
-    contractType(address) match {
+    val contract = contractType(address)
+    contract match {
       case _: ERC20Token =>
-        println("ERC20 AddCtrl")
         TokenType.ERC20
       case _: ERC721Token =>
-        println("ERC721 AddCtrl")
         TokenType.ERC721
       case _ =>
-        println("Not found")
         TokenType.None
     }
   }

@@ -1,6 +1,5 @@
 package it.unica.blockchain.blockchains.ethereum
 
-import java.lang.reflect.Method
 import java.util.Date
 
 import org.web3j.abi.TypeDecoder
@@ -35,7 +34,7 @@ class ERC20Transfer(
 
                      val method: String,
                      val tokenTo: EthereumAddress,
-                     val tokenValue: BigInt
+                     val tokenValue: Uint256
                    ) extends ERC20Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
 
 
@@ -43,7 +42,7 @@ class ERC20Transfer(
 
 object ERC20Transfer {
 
-  def getInputData(inputData: String): (String, EthereumAddress, BigInt) = {
+  def getInputData(inputData: String): (String, EthereumAddress, Uint256) = {
     val argDim = 64
     val firstArg = 10
     val secondArg = firstArg + argDim
@@ -61,6 +60,6 @@ object ERC20Transfer {
 
     val amount = refMethod.invoke(null, value, classOf[Uint256]).asInstanceOf[Uint256]
 
-    return (method, ethAddressTo, amount.getValue())
+    return (method, ethAddressTo, amount)
   }
 }
