@@ -50,54 +50,42 @@ object  ETHTokenTransaction {
 
     methodBytecode match {
       //case "18160ddd" => //totalSupply()
-      //case "dd62ed3e" => //allowance(address,address)
-      case "a9059cbb" => //transfer(address,uint256)
-        ERCTxCheck(to) match {
-          case TokenType.ERC20 =>
-            val (method, tokenTo, tokenValue) = ERC20Transfer.getInputData(input)
-            new ERC20Transfer(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenTo, tokenValue)
-          case _ =>
-            new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
-        }
+
+      case "dd62ed3e" => //allowance(address,address)
+        allowance(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "095ea7b3" => // approve(address,uint256)
+        approve(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
       case "70a08231" =>  // balanceOf(address)
-        ERCTxCheck(to) match {
-          case TokenType.ERC20 =>
-            val (method, tokenOwner) = ERC20BalanceOf.getInputData(input)
-            new ERC20BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
-          case TokenType.ERC721 =>
-            val (method, tokenOwner) = ERC721BalanceOf.getInputData(input)
-            new ERC721BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
-          case TokenType.None =>
-            new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
-        }
+        balanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "081812fc" => // getApproved(uint256)
+        getApproved(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "e985e9c5" => // isApprovedForAll(address,address)
+        isApprovedForAll(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
       case "6352211e" =>  // ownerOf(uint256)
-        ERCTxCheck(to) match {
-          case TokenType.ERC721 =>
-            val (method, tokenId) = ERC721OwnerOf.getInputData(input)
-            new ERC721OwnerOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenId)
-          case _ =>
-            new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
-        }
-      //case "095ea7b3" => // approve(address,uint256)
-      //case "081812fc" => // getApproved(uint256)
-      //case "a22cb465" => // setApprovalForAll(address,bool)
-      //case "e985e9c5" => // isApprovedForAll(address,address)
+        ownerOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "42842e0e" => // safeTransferFrom(address,address,uint256)
+        safeTransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "b88d4fde" => // safeTransferFrom(address,address,uint256,bytes)
+        safeTransferFromWithBytes(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "a22cb465" => // setApprovalForAll(address,bool)
+        setApprovalForAll(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "a9059cbb" => //transfer(address,uint256)
+        transfer(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
       case "23b872dd" => // transferFrom(address,address,uint256)
-        ERCTxCheck(to) match {
-          case TokenType.ERC20 =>
-            val (method, tokenFrom, tokenTo, tokenValue) = ERC20TransferFrom.getInputData(input)
-            new ERC20TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenValue)
-          case TokenType.ERC721 =>
-            val (method, tokenFrom, tokenTo, tokenId) = ERC721TransferFrom.getInputData(input)
-            new ERC721TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId)
-          case TokenType.None =>
-            new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
-        }
-      //case "42842e0e" => // safeTransferFrom(address,address,uint256)
-      //case "b88d4fde" => // safeTransferFrom(address,address,uint256,bytes)
+        transferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
       case _ => //Not a Token function
         new EthereumTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
-
     }
   }
 
@@ -115,19 +103,6 @@ object  ETHTokenTransaction {
       TokenType.ERC721
     else
       additionalControl(address)
-  }
-
-  private def ERC20FileDivisibility(address : String): Int ={
-    val path = "src/main/scala/it/unica/blockchain/externaldata/token/ERC20.txt"
-    val bufferedSource = Source.fromFile(path)
-    var divisibility : Int = null
-
-    for(line <- bufferedSource.getLines){
-      if(line.contains(address)){
-        divisibility = line.substring(line.indexOf(",")+1).toInt
-      }
-    }
-    return divisibility
   }
 
   /** This function checks if a string is stored into a file at the given path.
@@ -179,4 +154,124 @@ object  ETHTokenTransaction {
   private def getContractBytecode(contractAddress : String) : String = {
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
+
+  private def allowance( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC20 =>
+        val (method, tokenOwner, tokenSpender) = ERC20Allowance.getInputData(input)
+        new ERC20Allowance(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner, tokenSpender)
+      case _ =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def approve( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC20 =>
+        val (method, tokenSpender, tokenValue) = ERC20Approve.getInputData(input)
+        new ERC20Approve(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenSpender, tokenValue)
+      case TokenType.ERC721 =>
+        val (method, tokenApproved, tokenId) = ERC721Approve.getInputData(input)
+        new ERC721Approve(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenApproved, tokenId)
+      case TokenType.None =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def balanceOf( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC20 =>
+        val (method, tokenOwner) = ERC20BalanceOf.getInputData(input)
+        new ERC20BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
+      case TokenType.ERC721 =>
+        val (method, tokenOwner) = ERC721BalanceOf.getInputData(input)
+        new ERC721BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
+      case TokenType.None =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def getApproved( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC721 =>
+        val (method, tokenId) = ERC721GetApproved.getInputData(input)
+        new ERC721GetApproved(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenId)
+      case _ =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def isApprovedForAll( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC721 =>
+        val (method, tokenOwner, tokenOperator) = ERC721IsApprovedForAll.getInputData(input)
+        new ERC721IsApprovedForAll(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner, tokenOperator)
+      case _ =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def ownerOf( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC721 =>
+        val (method, tokenId) = ERC721OwnerOf.getInputData(input)
+        new ERC721OwnerOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenId)
+      case _ =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def safeTransferFrom( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC721 =>
+        val (method, tokenFrom, tokenTo, tokenId) = ERC721SafeTransferFrom.getInputData(input)
+        new ERC721SafeTransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId)
+      case _ =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def safeTransferFromWithBytes( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC721 =>
+        val (method, tokenFrom, tokenTo, tokenId, tokenBytes) = ERC721SafeTransferFromWithBytes.getInputData(input)
+        new ERC721SafeTransferFromWithBytes(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId, tokenBytes)
+      case _ =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def setApprovalForAll( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC721 =>
+        val (method, tokenOperator, tokenApproved) = ERC721SetApprovalForAll.getInputData(input)
+        new ERC721SetApprovalForAll(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOperator, tokenApproved)
+      case _ =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def transfer( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC20 =>
+        val (method, tokenTo, tokenValue) = ERC20Transfer.getInputData(input)
+        new ERC20Transfer(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenTo, tokenValue)
+      case _ =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
+
+  private def transferFrom( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
+    ERCTxCheck(to) match {
+      case TokenType.ERC20 =>
+        val (method, tokenFrom, tokenTo, tokenValue) = ERC20TransferFrom.getInputData(input)
+        new ERC20TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenValue)
+      case TokenType.ERC721 =>
+        val (method, tokenFrom, tokenTo, tokenId) = ERC721TransferFrom.getInputData(input)
+        new ERC721TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId)
+      case TokenType.None =>
+        new ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+    }
+  }
 }
+ //(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
