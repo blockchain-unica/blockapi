@@ -40,7 +40,6 @@ class ERC721BalanceOf(
 object ERC721BalanceOf {
 
   def getInputData(inputData: String): (String, EthereumAddress) = {
-    val argDim = 64
     val firstArg = 10
 
     val method: String = "balanceOf(address _owner)"

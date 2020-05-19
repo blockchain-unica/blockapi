@@ -35,7 +35,7 @@ class ERC721TransferFrom (
                            val method : String,
                            val tokenFrom :EthereumAddress,
                            val tokenTo :EthereumAddress,
-                           val tokenValue :Uint256
+                           val tokenId :Uint256
                          ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
 
 
@@ -54,7 +54,7 @@ object ERC721TransferFrom{
 
     val from :String = inputData.substring(firstArg, secondArg)
     val to :String = inputData.substring(secondArg, thirdArg)
-    val value :String = inputData.substring(thirdArg)
+    val id :String = inputData.substring(thirdArg)
 
     val refMethod = classOf[TypeDecoder].getDeclaredMethod("decode", classOf[String], classOf[Class[_]])
     refMethod.setAccessible(true)
@@ -65,9 +65,9 @@ object ERC721TransferFrom{
     val addressTo = refMethod.invoke(null, to, classOf[Address]).asInstanceOf[Address]
     val ethAddressTo = new EthereumAddress(addressTo.toString)
 
-    val amount = refMethod.invoke(null, value, classOf[Uint256]).asInstanceOf[Uint256]
+    val tokenId = refMethod.invoke(null, id, classOf[Uint256]).asInstanceOf[Uint256]
 
-    return (method, ethAddressFrom, ethAddressTo, amount)
+    return (method, ethAddressFrom, ethAddressTo, tokenId)
   }
 }
 

@@ -41,7 +41,6 @@ class ERC721OwnerOf(
 object ERC721OwnerOf {
 
   def getInputData(inputData: String): (String, Uint256) = {
-    val argDim = 64
     val firstArg = 10
 
     val method: String = "ownerOf(uint256 _tokenId)"
