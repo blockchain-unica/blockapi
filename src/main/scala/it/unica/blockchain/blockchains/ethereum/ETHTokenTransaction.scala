@@ -9,6 +9,29 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 
 import scala.io.Source
 
+/** This class is used to check if a method has been called into the transaction and
+  * find out which was.
+  *
+  * @param hash             transaction's hash
+  * @param date             date in which the transaction has been published (extracted from the containing block)
+  * @param nonce            transaction's nonce
+  * @param blockHash        hash of the block containing this transaction
+  * @param blockHeight      number of the block containing this transaction
+  * @param transactionIndex index of the transaction inside its block
+  * @param from             from
+  * @param to               to
+  * @param value            transaction's value
+  * @param gasPrice         transaction's gas price
+  * @param gas              transaction's gas
+  * @param input            input of the transaction
+  * @param addressCreated   Address of the created contract (if this transaction creates a contract)
+  * @param publicKey        transaction's public key
+  * @param raw              transaction's raw data
+  * @param r                r part
+  * @param s                s part
+  * @param v                v part
+  */
+
 class ETHTokenTransaction (
                             hash: String,
                             date: Date,
@@ -39,6 +62,8 @@ class ETHTokenTransaction (
 object  ETHTokenTransaction {
   private var web3j : Web3j = null
 
+  /** This function matches the transaction's input with the pattern of known methods
+    */
   def factory(web3j: Web3j, hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
     this.web3j = web3j
 
@@ -89,8 +114,8 @@ object  ETHTokenTransaction {
     }
   }
 
-  /**This function check out if the address is a token searching into the files. In case the address
-    * is not found it will return a None type, indicating that the address is not into those files.
+  /**This function checks out if the address is a token, searching into the files. In case the address
+    * is not found it will return a None type. None indicates that the address is not into those files.
     * @return The type of the token.
     */
   private def ERCTxCheck (address :EthereumAddress): TokenType ={
@@ -124,8 +149,8 @@ object  ETHTokenTransaction {
 
   /** This function is needed to perform an additional control to be sure that the given
     *  address is not a token
+    * @param address an EthereumAddress
     * @return a token type, None if the address is not a token
-    * @return an integer representing the divisibility for ERC20 tokens
     */
   private def additionalControl(address : EthereumAddress): TokenType ={
     val contract = contractType(address)
@@ -140,6 +165,7 @@ object  ETHTokenTransaction {
   }
 
   /**This function controls if the given address is a contract
+    * @param to an EthereumAddress
     * @return An EthereumContract or null
     */
   private def contractType (to :EthereumAddress): EthereumContract ={
@@ -274,4 +300,3 @@ object  ETHTokenTransaction {
     }
   }
 }
- //(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)

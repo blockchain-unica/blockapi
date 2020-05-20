@@ -8,6 +8,16 @@ import org.apache.commons.lang3.StringUtils
 
 import scala.util.matching.Regex
 
+/** Defines a general ethereum contract
+  *
+  * @param name               contract's name
+  * @param address            contract's address
+  * @param hashOriginatingTx  transaction's hash that originated the contract
+  * @param isVerified         contract's verification
+  * @param verificationDate   contract's date verification
+  * @param bytecode           contract's bytecode
+  * @param sourceCode         contract's source code
+  */
 
 case class EthereumContract(
                              val name: String,

@@ -6,6 +6,17 @@ import org.apache.commons.codec.DecoderException
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.StringUtils
 
+/** Defines general functions for all token's types
+  *
+  * @param name               contract's name
+  * @param address            contract's address
+  * @param hashOriginatingTx  transaction's hash that originated the contract
+  * @param isVerified         contract's verification
+  * @param verificationDate   contract's date verification
+  * @param bytecode           contract's bytecode
+  * @param sourceCode         contract's source code
+  */
+
 class EthereumToken(
                           name: String,
                           address: EthereumAddress,

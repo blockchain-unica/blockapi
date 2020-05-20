@@ -8,6 +8,31 @@ import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 
+/** Defines the ERC721 method Approve
+  *
+  * @param hash             transaction's hash
+  * @param date             date in which the transaction has been published (extracted from the containing block)
+  * @param nonce            transaction's nonce
+  * @param blockHash        hash of the block containing this transaction
+  * @param blockHeight      number of the block containing this transaction
+  * @param transactionIndex index of the transaction inside its block
+  * @param from             from
+  * @param to               to
+  * @param value            transaction's value
+  * @param gasPrice         transaction's gas price
+  * @param gas              transaction's gas
+  * @param input            input of the transaction
+  * @param addressCreated   Address of the created contract (if this transaction creates a contract)
+  * @param publicKey        transaction's public key
+  * @param raw              transaction's raw data
+  * @param r                r part
+  * @param s                s part
+  * @param v                v part
+  * @param method           the method called into the transaction
+  * @param tokenApproved    the first parameter passed to the method
+  * @param tokenId          the second parameter passed to the method
+  */
+
 class ERC721Approve (
                       hash: String,
                       date: Date,
@@ -43,6 +68,11 @@ class ERC721Approve (
 
 object ERC721Approve{
 
+  /** This method takes the transaction's input and extract the element passed
+    *
+    * @param inputData   transaction's input
+    * @return the method's name and the arguments passed
+    */
   def getInputData(inputData :String) :(String, EthereumAddress, Uint256) ={
     val argDim = 64
     val firstArg = 10
