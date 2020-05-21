@@ -88,9 +88,13 @@ object ERC721SetApprovalForAll{
     val addressOperator = refMethod.invoke(null, operator, classOf[Address]).asInstanceOf[Address]
     val ethAddressOperator = new EthereumAddress(addressOperator.toString)
 
-    val addressApproved = refMethod.invoke(null, approved, classOf[Boolean]).asInstanceOf[Boolean]
+    val addressApproved = approved.substring(approved.length-1)
+    var boolean = false
+    if(addressApproved == "1"){
+      boolean = true
+    }
 
-    return (method, ethAddressOperator, addressApproved)
+    return (method, ethAddressOperator, boolean)
   }
 }
 
