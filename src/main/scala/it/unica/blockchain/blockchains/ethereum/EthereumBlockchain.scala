@@ -1,5 +1,6 @@
 package it.unica.blockchain.blockchains.ethereum
 
+import java.io.{BufferedWriter, FileWriter, File}
 import java.math.BigInteger
 
 import org.web3j.protocol.Web3j
@@ -10,14 +11,12 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
-
 import scalaj.http.{Http, HttpResponse}
 import it.unica.blockchain.pojos.TraceBlockHttpResponse
 import it.unica.blockchain.blockchains.Blockchain
-
 import org.web3j.protocol.core.Request
-import scala.collection.JavaConverters._
 
+import scala.collection.JavaConverters._
 
 /**
   * Defines an Ethereum blockchain
@@ -53,6 +52,8 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
       f(block)
       height += 1
     }
+
+    TokenList.updateFiles()
   }
 
 

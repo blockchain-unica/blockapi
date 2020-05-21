@@ -7,6 +7,8 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.{DefaultBlockParameterName, Request}
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 
+import scala.collection.mutable
+
 import scala.io.Source
 
 /** This class is used to check if a method has been called into the transaction and
@@ -114,37 +116,21 @@ object  ETHTokenTransaction {
     }
   }
 
-  /**This function checks out if the address is a token, searching into the files. In case the address
-    * is not found it will return a None type. None indicates that the address is not into those files.
+  /**This function checks out if the address is a token, searching into the map. In case the address
+    * is not found it will return a None type. None indicates that the address is not into the map.
     * @return The type of the token.
     */
   private def ERCTxCheck (address :EthereumAddress): TokenType ={
-    val file_path_ERC20 = "src/main/scala/it/unica/blockchain/externaldata/token/ERC20.txt"
-    val file_path_ERC721 = "src/main/scala/it/unica/blockchain/externaldata/token/ERC721.txt"
+    var tipo = TokenType.None
+    val listERCAddress = TokenList.getList()
 
-    if(fileCheck(file_path_ERC20, address.address))
-      TokenType.ERC20
-    else if(fileCheck(file_path_ERC721, address.address))
-      TokenType.ERC721
-    else
-      additionalControl(address)
-  }
+    if(listERCAddress.contains(address.address)) {
+      tipo = listERCAddress(address.address)
+    } else {
+      tipo = additionalControl(address)
+    }
 
-  /** This function checks if a string is stored into a file at the given path.
-    * @param path a string representing a file source path.
-    * @param address the string to search into the file.
-    * @return true if the string has been found, false otherwise.
-    */
-  private def fileCheck(path :String, address : String): Boolean ={
-    val bufferedSource = Source.fromFile(path)
-    val list = bufferedSource.getLines.toList
-
-    bufferedSource.close
-
-    if(list.contains(address))
-      true
-    else
-      false
+    return tipo
   }
 
   /** This function is needed to perform an additional control to be sure that the given
@@ -156,8 +142,10 @@ object  ETHTokenTransaction {
     val contract = contractType(address)
     contract match {
       case _: ERC20Token =>
+        TokenList.add(address.address, TokenType.ERC20)
         TokenType.ERC20
       case _: ERC721Token =>
+        TokenList.add(address.address, TokenType.ERC721)
         TokenType.ERC721
       case _ =>
         TokenType.None

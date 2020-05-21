@@ -7,12 +7,7 @@ import org.web3j.protocol.core.{DefaultBlockParameterName, Request}
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 import it.unica.blockchain.blockchains.Transaction
-import it.unica.blockchain.blockchains.ethereum.ETHTokenTransaction.{ERCTxCheck, contractType, fileCheck}
-import it.unica.blockchain.blockchains.ethereum.TokenType.TokenType
 import it.unica.blockchain.externaldata.contracts.Etherscan.getVerifiedContractFromEtherscan
-
-import scala.io.Source
-
 
 /**
   * Defines an Ethereum Transaction
