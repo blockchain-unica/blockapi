@@ -1,5 +1,5 @@
 # BlockAPI: Blockchain analytics API
-BlockAPI is a general-purpose blockchain analytics Scala API, maintained by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu) and [Stefano Lande](http://tcs.unica.it/members/stefano-lande) of the [Blockchain@Unica Lab](http://blockchain.unica.it) at the University of Cagliari under the supervision of [Massimo Bartoletti](https://tcs.unica.it/members/bart).
+BlockAPI is a general-purpose blockchain analytics Scala API, maintained by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu) and [Stefano Lande](http://tcs.unica.it/members/stefano-lande) of the [Blockchain@Unica Lab](http://blockchain.unica.it) at the University of Cagliari, under the supervision of [Massimo Bartoletti](https://tcs.unica.it/members/bart).
 
 The standard workflow of BlockAPI consists of two steps: 
 1. construct a view of the blockchain (possibly, including external data) and save it in a database;
@@ -97,4 +97,4 @@ Once BlockAPI has built the database, you can query it using one of the availabl
 [queries](https://github.com/bitbart/blockchain-analytics-api/tree/master/queries).
 
 ### Acknowledgments
-The project has been supported by [several developers](Acknowledgments.md) at the Department of Mathematics and Computer Science of the University of Cagliari. 
+The project has been supported by [several developers](Acknowledgments.md) at the Department of Mathematics and Computer Science of the University of Cagliari, Italy. 
