@@ -1,7 +1,7 @@
 # BlockAPI: Blockchain analytics API
-A Scala framework for the development of general-purpose analytics on blockchains, maintained by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu) and [Stefano Lande](http://tcs.unica.it/members/stefano-lande) of the [Blockchain@Unica Lab](http://blockchain.unica.it) at the University of Cagliari.
+BlockAPI is a general-purpose blockchain analytics Scala API, maintained by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu) and [Stefano Lande](http://tcs.unica.it/members/stefano-lande) of the [Blockchain@Unica Lab](http://blockchain.unica.it) at the University of Cagliari.
 
-The framework allows to combine data *within* the blockchain 
+BlockAPI allows to combine data *within* the blockchain 
 with data from the *outside* (e.g. exchange rates and tags). 
 The workflow consists in two steps: 
 1. construct a view of the blockchain and save it in a database;
@@ -17,12 +17,10 @@ More material is available in the [project page](http://blockchain.unica.it/proj
 
 The Scaladoc is uploaded on this repository in the [doc folder](https://github.com/bitbart/blockchain-analytics-api/tree/master/docs).
 
-### Install prerequisites
-#### General prerequisites
-At the moment, [Java JDK 1.8](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html) is needed to run the API.
+### Prerequisites
 
-Prerequisites depends on the target analyses.
-Generally speaking the framework needs at least one blockchain client and one DBMS.
+#### General prerequisites
+BlockAPI requires [Java JDK 1.8](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html), and it supports the following blockchain clients and DBMSs:
 
 1. Blockchain clients:
     * [Bitcoin Core](https://bitcoin.org/en/bitcoin-core/) (Tested with version v0.19.0.1: extracts data from Bitcoin)
@@ -32,9 +30,11 @@ Generally speaking the framework needs at least one blockchain client and one DB
     * [MySQL](https://www.mysql.com/) (Tested with version v5.7: constructs a SQL view of the data)
     * [PostgreSQL](https://www.postgresql.org/) (Tested with version v11: constructs a SQL view of the data)
     * [Apache Jena Fuseki](https://jena.apache.org/documentation/fuseki2/index.html) (Tested with version v3.14.0: constructs a RDF view of the data)
-3. Either
-    * use an IDE for executing a Scala SBT project (we used [IntelliJ IDEA](https://www.jetbrains.com/idea/)) or
-    * use the command line in place of an IDE (Install [SBT](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html))
+
+BlockAPI may be used either as an IDE for executing a Scala SBT projects (e.g. [IntelliJ IDEA](https://www.jetbrains.com/idea/)), or
+via command line (in this case, you need to install [SBT](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html).
+
+Further prerequisites may depend on the specific analyses one wants to implement.
 
 #### Required libraries
 This step is required to sucessfully compile the project.
@@ -50,7 +50,7 @@ cd core
 mvn install -DskipTests
 ```
 
-#### Analysis dependent prerequisites 
+#### Analysis-specific prerequisites 
 
 ##### Bitcoin
 
@@ -74,7 +74,7 @@ In order to use some analyses on Bitcoin you must require the respective API key
 After doing these steps, do the following:
 Copy `EtherScan` key into `utils\Etherscan.apiKey` attribute
 
-### Install blockchain analytics API
+### Installation
 1. Execute the blockchain client in order to obtain a local copy of the target blockchain (this process may take several hours)
 2. Enable the client RPC calls.
     * In the Bitcoin Core case
@@ -85,16 +85,18 @@ Copy `EtherScan` key into `utils\Etherscan.apiKey` attribute
 4. Clone this repository.
 5. From your IntelliJ welcome screen: select "Import Project" and open the [build.sbt](https://github.com/bitbart/bitcoin-analytics-api/blob/master/build.sbt) file from your repository directory.
 
-### Running 
-1. Execute of one of the available [examples](https://github.com/blockchain-unica/blockapi/tree/master/src/main/scala/it/unica/blockchain/analyses). Either 
-    * open the file from your IDE and select run or 
-    * use the command line: from the root directory of the project, execute
+### Execution 
+
+You can test BlockAPI through one of the [use cases](https://github.com/blockchain-unica/blockapi/tree/master/src/main/scala/it/unica/blockchain/analyses) in the repository. 
+To do this, either: 
+* open the file from your IDE and select run or 
+* via command line: from the root directory of the project, execute
         ```bash
         sbt "runMain it.unica.blockchain.analyses.ClassName"
         ```
-
-Our framework will build the selected database. Then you can query it for performing your analysis.
-For each available Scala script, we provide some default [queries along with the resulting csv files](https://github.com/bitbart/blockchain-analytics-api/tree/master/queries).
+        
+Once BlockAPI has built the database, you can query it using one of the available
+[queries](https://github.com/bitbart/blockchain-analytics-api/tree/master/queries).
 
 ### Acknowledgments
-The authors thank the [following developers](Acknowledgments.md) of the Department of Mathematics and Computer Science of the University of Cagliari for their valuable contributions. 
+The project has been supported by [several developers](Acknowledgments.md) at the Department of Mathematics and Computer Science of the University of Cagliari. 
