@@ -1,21 +1,19 @@
 # BlockAPI: Blockchain analytics API
-BlockAPI is a general-purpose blockchain analytics Scala API, maintained by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu) and [Stefano Lande](http://tcs.unica.it/members/stefano-lande) of the [Blockchain@Unica Lab](http://blockchain.unica.it) at the University of Cagliari.
+BlockAPI is a general-purpose blockchain analytics Scala API, maintained by [Livio Pompianu](http://tcs.unica.it/members/livio-pompianu) and [Stefano Lande](http://tcs.unica.it/members/stefano-lande) of the [Blockchain@Unica Lab](http://blockchain.unica.it) at the University of Cagliari under the supervision of [Massimo Bartoletti](https://tcs.unica.it/members/bart).
 
-BlockAPI allows to combine data *within* the blockchain 
-with data from the *outside* (e.g. exchange rates and tags). 
-The workflow consists in two steps: 
-1. construct a view of the blockchain and save it in a database;
+The standard workflow of BlockAPI consists of two steps: 
+1. construct a view of the blockchain (possibly, including external data) and save it in a database;
 2. analyse the view by using the query language of the database.
 
-The blockchains currently supported are Bitcoin and  Ethereum.
-The DBMS currently supported are MongoDB, MySQL, PostgreSQL, and Fuseki.
+BlockAPI currently supports Bitcoin and  Ethereum, and the DBMS MongoDB, MySQL, PostgreSQL, and Fuseki.
 
-The library is dicussed in [A general framework for blockchain analytics](https://www.researchgate.net/publication/321415812_A_general_framework_for_blockchain_analytics),
-in proceeding of the [SERIAL workshop 2017](https://serial17.ibr.cs.tu-bs.de/).
+### Documentation ###
 
-More material is available in the [project page](http://blockchain.unica.it/projects/blockchain-analytics/analytics.html).
-
-The Scaladoc is uploaded on this repository in the [doc folder](https://github.com/bitbart/blockchain-analytics-api/tree/master/docs).
+* The architecture of BlockAPI and the experimental evaluation of its performance are dicussed in the paper [A general framework for blockchain analytics](https://www.researchgate.net/publication/321415812_A_general_framework_for_blockchain_analytics),
+presented at [SERIAL 2017](https://serial17.ibr.cs.tu-bs.de/).
+* Some common use cases are documented in the [project web page](http://blockchain.unica.it/projects/blockchain-analytics/analytics.html).
+* The usage of the APIs is documented in the [Scaladoc](https://github.com/bitbart/blockchain-analytics-api/tree/master/docs).
+* The installation instructions are detailed below in this document.
 
 ### Prerequisites
 
