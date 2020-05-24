@@ -48,30 +48,6 @@ cd core
 mvn install -DskipTests
 ```
 
-#### Analysis-specific prerequisites 
-
-##### Bitcoin
-
-This instructions are needed for performing analyses on CrossValidation on Bitcoin.
-
-In order to use some analyses on Bitcoin you must require the respective API key:
-1. [Blockchain.info](https://api.blockchain.info/customer/signup) 
-    * It is sufficient to sign up and then active your [APIKey](https://exchange.blockchain.com/api/#introduction)
-
-After doing this, do the following:
-Copy `Blockchain` key into `bitcoin\CrossValidationBitcoin.apiKey` attribute
-
-##### Ethereum
-
-This instructions are needed for performing analyses on CrossValidation on Ethereum.
-
-In order to use some analyses on Bitcoin you must require the respective API key:
-1. [EtherScan](https://etherscan.io) 
-    * It is sufficient to sign up and then go [here](https://etherscan.io/myapikey)
-
-After doing these steps, do the following:
-Copy `EtherScan` key into `utils\Etherscan.apiKey` attribute
-
 ### Installation
 1. Execute the blockchain client in order to obtain a local copy of the target blockchain (this process may take several hours)
 2. Enable the client RPC calls.
