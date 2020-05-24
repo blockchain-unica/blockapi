@@ -1,26 +1,30 @@
 package it.unica.blockchain.analyses.ethereum.mongo
 
 import it.unica.blockchain.blockchains.BlockchainLib
-import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Methods.{ERC20Allowance, ERC20Approve, ERC20BalanceOf, ERC20Transfer, ERC20TransferFrom}
-import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Methods.{ERC721Approve, ERC721BalanceOf, ERC721GetApproved, ERC721IsApprovedForAll, ERC721OwnerOf, ERC721SafeTransferFrom, ERC721SafeTransferFromWithBytes, ERC721SetApprovalForAll, ERC721TransferFrom}
-import it.unica.blockchain.blockchains.ethereum.tokenTransactions.{ERC20Transaction, ERC721Transaction}
 import it.unica.blockchain.blockchains.ethereum.EthereumSettings
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Methods.{ERC20Allowance, ERC20Approve, ERC20BalanceOf, ERC20Transfer, ERC20TransferFrom}
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.{ERC20Transaction, ERC721Transaction}
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Methods.{ERC721Approve, ERC721BalanceOf, ERC721GetApproved, ERC721IsApprovedForAll, ERC721OwnerOf, ERC721SafeTransferFrom, ERC721SafeTransferFromWithBytes, ERC721SetApprovalForAll, ERC721TransferFrom}
+import it.unica.blockchain.blockchains.ethereum.tokenUtils.TargetList
 import it.unica.blockchain.db.DatabaseSettings
 import it.unica.blockchain.mongo.Collection
 
-object TokenTransactions {
+object TargetedTokenResearch {
+
 
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545", false, true))
-    val mongo = new DatabaseSettings("TokenTransactions")
+    val mongo = new DatabaseSettings("TokenTarget")
     val txsCollection = new Collection("transactions", mongo)
 
-    // Iterating each block
-    blockchain.start(10058400).end(10058450).foreach(block => {
+    val startBlock : Int = 9536496
+    val endBlock : Int = 9536496
 
-      //if(block.height%100 == 0){
-      println("Current Block " + block.height)
-      //)}
+    TargetList.add("0x6b9f9d8ef588470932b693864a62021cabb65ce9") // BoxKey
+
+    // Iterating each block
+    blockchain.start(startBlock.toInt).end(endBlock.toInt).foreach(block => {
+      println(block.height)
 
       block.txs.foreach(tx => {
         tx match {
@@ -187,4 +191,5 @@ object TokenTransactions {
         )
     }
   }
+
 }

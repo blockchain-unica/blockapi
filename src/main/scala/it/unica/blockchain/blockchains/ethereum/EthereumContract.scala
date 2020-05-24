@@ -2,6 +2,7 @@ package it.unica.blockchain.blockchains.ethereum
 
 import java.util.Date
 
+import it.unica.blockchain.blockchains.ethereum.tokens.{ERC20Token, ERC721Token}
 import org.apache.commons.codec.DecoderException
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.StringUtils

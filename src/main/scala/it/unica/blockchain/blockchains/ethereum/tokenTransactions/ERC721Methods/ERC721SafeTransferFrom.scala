@@ -1,14 +1,16 @@
-package it.unica.blockchain.blockchains.ethereum
+package it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Methods
 
 import java.util.Date
 
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Transaction
+import it.unica.blockchain.blockchains.ethereum.{EthereumAddress, EthereumContract}
 import org.web3j.abi.TypeDecoder
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 
-/** Defines the ERC721 method TransferFrom
+/** Defines the ERC721 method SafeTransferFrom
   *
   * @param hash             transaction's hash
   * @param date             date in which the transaction has been published (extracted from the containing block)
@@ -34,55 +36,54 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
   * @param tokenId          the third parameter passed to the method
   */
 
-class ERC721TransferFrom (
-                           hash: String,
-                           date: Date,
+class ERC721SafeTransferFrom  (
+                                hash: String,
+                                date: Date,
 
-                           nonce: BigInt,
-                           blockHash: String,
-                           blockHeight: BigInt,
-                           transactionIndex: BigInt,
-                           from: EthereumAddress,
-                           to: EthereumAddress,
-                           value: BigInt,
-                           gasPrice: BigInt,
-                           gas: BigInt,
-                           input: String,
-                           addressCreated: EthereumAddress,
-                           publicKey: String,
-                           raw: String,
-                           r: String,
-                           s: String,
-                           v: Int,
+                                nonce: BigInt,
+                                blockHash: String,
+                                blockHeight: BigInt,
+                                transactionIndex: BigInt,
+                                from: EthereumAddress,
+                                to: EthereumAddress,
+                                value: BigInt,
+                                gasPrice: BigInt,
+                                gas: BigInt,
+                                input: String,
+                                addressCreated: EthereumAddress,
+                                publicKey: String,
+                                raw: String,
+                                r: String,
+                                s: String,
+                                v: Int,
 
-                           contract: EthereumContract,
-                           requestOpt: Option[Request[_, EthGetTransactionReceipt]],
+                                contract: EthereumContract,
+                                requestOpt: Option[Request[_, EthGetTransactionReceipt]],
 
-                           val method : String,
-                           val tokenFrom :EthereumAddress,
-                           val tokenTo :EthereumAddress,
-                           val tokenId :Uint256
-                         ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
+                                val method : String,
+                                val tokenFrom :EthereumAddress,
+                                val tokenTo :EthereumAddress,
+                                val tokenId :Uint256
+                              ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
 
 
 
 }
 
-object ERC721TransferFrom{
+object ERC721SafeTransferFrom{
 
   /** This method takes the transaction's input and extract the element passed
     *
     * @param inputData   transaction's input
     * @return the method's name and the arguments passed
     */
-
   def getInputData(inputData :String) :(String, EthereumAddress, EthereumAddress, Uint256) ={
     val argDim = 64
     val firstArg = 10
     val secondArg = firstArg + argDim
     val thirdArg = secondArg + argDim
 
-    val method :String = "transferFrom(address _from, address _to, uint256 _amount)"
+    val method :String = "safeTransferFrom(address _from, address _to, uint256 _tokenId)"
 
     val from :String = inputData.substring(firstArg, secondArg)
     val to :String = inputData.substring(secondArg, thirdArg)

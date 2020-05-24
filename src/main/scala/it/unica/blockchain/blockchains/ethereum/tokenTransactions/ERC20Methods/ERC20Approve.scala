@@ -1,14 +1,16 @@
-package it.unica.blockchain.blockchains.ethereum
+package it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Methods
 
 import java.util.Date
 
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Transaction
+import it.unica.blockchain.blockchains.ethereum.{EthereumAddress, EthereumContract}
 import org.web3j.abi.TypeDecoder
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 
-/** Defines the ERC20 method Transfer
+/** Defines the ERC20 method Approve
   *
   * @param hash             transaction's hash
   * @param date             date in which the transaction has been published (extracted from the containing block)
@@ -29,11 +31,11 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
   * @param s                s part
   * @param v                v part
   * @param method           the method called into the transaction
-  * @param tokenTo          the first parameter passed to the method
+  * @param tokenSpender     the first parameter passed to the method
   * @param tokenValue       the second parameter passed to the method
   */
 
-class ERC20Transfer(
+class ERC20Approve (
                      hash: String,
                      date: Date,
 
@@ -58,14 +60,14 @@ class ERC20Transfer(
                      requestOpt: Option[Request[_, EthGetTransactionReceipt]],
 
                      val method: String,
-                     val tokenTo: EthereumAddress,
+                     val tokenSpender: EthereumAddress,
                      val tokenValue: Uint256
                    ) extends ERC20Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
 
 
 }
 
-object ERC20Transfer {
+object ERC20Approve {
 
   /** This method takes the transaction's input and extract the element passed
     *
@@ -77,19 +79,20 @@ object ERC20Transfer {
     val firstArg = 10
     val secondArg = firstArg + argDim
 
-    val method: String = "transfer(address _to, uint256 _value)"
+    val method: String = "approve(address _spender, uint256 _value)"
 
-    val to: String = inputData.substring(firstArg, secondArg)
+    val spender: String = inputData.substring(firstArg, secondArg)
     val value: String = inputData.substring(secondArg)
 
     val refMethod = classOf[TypeDecoder].getDeclaredMethod("decode", classOf[String], classOf[Class[_]])
     refMethod.setAccessible(true)
 
-    val addressTo = refMethod.invoke(null, to, classOf[Address]).asInstanceOf[Address]
-    val ethAddressTo = new EthereumAddress(addressTo.toString)
+    val addressSpender = refMethod.invoke(null, spender, classOf[Address]).asInstanceOf[Address]
+    val ethAddressSpender = new EthereumAddress(addressSpender.toString)
 
     val amount = refMethod.invoke(null, value, classOf[Uint256]).asInstanceOf[Uint256]
 
-    return (method, ethAddressTo, amount)
+    return (method, ethAddressSpender, amount)
   }
 }
+

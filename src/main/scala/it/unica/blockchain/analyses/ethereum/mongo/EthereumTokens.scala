@@ -1,7 +1,8 @@
 package it.unica.blockchain.analyses.ethereum.mongo
 
 import it.unica.blockchain.blockchains.BlockchainLib
-import it.unica.blockchain.blockchains.ethereum.{ERC20Token, EthereumSettings, EthereumTransaction}
+import it.unica.blockchain.blockchains.ethereum.tokens.ERC20Token
+import it.unica.blockchain.blockchains.ethereum.{EthereumSettings, EthereumTransaction}
 import it.unica.blockchain.db.DatabaseSettings
 import it.unica.blockchain.mongo.Collection
 

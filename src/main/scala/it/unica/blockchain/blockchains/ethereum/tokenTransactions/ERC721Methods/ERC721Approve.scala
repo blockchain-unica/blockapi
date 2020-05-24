@@ -1,14 +1,16 @@
-package it.unica.blockchain.blockchains.ethereum
+package it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Methods
 
 import java.util.Date
 
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Transaction
+import it.unica.blockchain.blockchains.ethereum.{EthereumAddress, EthereumContract}
 import org.web3j.abi.TypeDecoder
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 
-/** Defines the ERC20 method BalanceOf
+/** Defines the ERC721 method Approve
   *
   * @param hash             transaction's hash
   * @param date             date in which the transaction has been published (extracted from the containing block)
@@ -29,10 +31,11 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
   * @param s                s part
   * @param v                v part
   * @param method           the method called into the transaction
-  * @param tokenOwner       the first parameter passed to the method
+  * @param tokenApproved    the first parameter passed to the method
+  * @param tokenId          the second parameter passed to the method
   */
 
-class ERC20BalanceOf(
+class ERC721Approve (
                       hash: String,
                       date: Date,
 
@@ -56,33 +59,41 @@ class ERC20BalanceOf(
                       contract: EthereumContract,
                       requestOpt: Option[Request[_, EthGetTransactionReceipt]],
 
-                      val method: String,
-                      val tokenOwner: EthereumAddress
-                    ) extends ERC20Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
+                      val method : String,
+                      val tokenApproved :EthereumAddress,
+                      val tokenId :Uint256
+                    ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
+
+
 
 }
 
-object ERC20BalanceOf {
+object ERC721Approve{
 
   /** This method takes the transaction's input and extract the element passed
     *
     * @param inputData   transaction's input
     * @return the method's name and the arguments passed
     */
-  def getInputData(inputData: String): (String, EthereumAddress) = {
+  def getInputData(inputData :String) :(String, EthereumAddress, Uint256) ={
     val argDim = 64
     val firstArg = 10
+    val secondArg = firstArg + argDim
 
-    val method: String = "balanceOf(address _owner)"
+    val method :String = "approve(address _approved, uint256 _tokenId) "
 
-    val owner: String = inputData.substring(firstArg)
+    val approved :String = inputData.substring(firstArg, secondArg)
+    val tokenId :String = inputData.substring(secondArg)
 
     val refMethod = classOf[TypeDecoder].getDeclaredMethod("decode", classOf[String], classOf[Class[_]])
     refMethod.setAccessible(true)
 
-    val addressOwner = refMethod.invoke(null, owner, classOf[Address]).asInstanceOf[Address]
-    val ethAddressOwner = new EthereumAddress(addressOwner.toString)
+    val addressApproved = refMethod.invoke(null, approved, classOf[Address]).asInstanceOf[Address]
+    val ethAddressApproved = new EthereumAddress(addressApproved.toString)
 
-    return (method, ethAddressOwner)
+    val id = refMethod.invoke(null, tokenId, classOf[Uint256]).asInstanceOf[Uint256]
+
+    return (method, ethAddressApproved, id)
   }
 }
+

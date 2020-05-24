@@ -1,15 +1,16 @@
-package it.unica.blockchain.blockchains.ethereum
+package it.unica.blockchain.blockchains.ethereum.tokenTransactions
 
 import java.util.Date
 
-import it.unica.blockchain.blockchains.ethereum.TokenType.TokenType
+import it.unica.blockchain.blockchains.ethereum.tokenUtils.TokenType.TokenType
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Methods._
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Methods._
+import it.unica.blockchain.blockchains.ethereum.tokens.{ERC20Token, ERC721Token}
+import it.unica.blockchain.blockchains.ethereum._
+import it.unica.blockchain.blockchains.ethereum.tokenUtils.{TokenList, TokenType}
 import org.web3j.protocol.Web3j
-import org.web3j.protocol.core.{DefaultBlockParameterName, Request}
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
-
-import scala.collection.mutable
-
-import scala.io.Source
+import org.web3j.protocol.core.{DefaultBlockParameterName, Request}
 
 /** This class is used to check if a method has been called into the transaction and
   * find out which was.

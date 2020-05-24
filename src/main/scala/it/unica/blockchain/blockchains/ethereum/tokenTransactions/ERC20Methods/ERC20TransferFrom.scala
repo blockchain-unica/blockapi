@@ -1,8 +1,9 @@
-package it.unica.blockchain.blockchains.ethereum
+package it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Methods
 
-import java.lang.reflect.Method
 import java.util.Date
 
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Transaction
+import it.unica.blockchain.blockchains.ethereum.{EthereumAddress, EthereumContract}
 import org.web3j.abi.TypeDecoder
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.generated.Uint256

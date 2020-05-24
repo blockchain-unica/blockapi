@@ -1,6 +1,6 @@
 package it.unica.blockchain.blockchains.ethereum
 
-import java.io.{BufferedWriter, FileWriter, File}
+import java.io.{BufferedWriter, File, FileWriter}
 import java.math.BigInteger
 
 import org.web3j.protocol.Web3j
@@ -14,6 +14,7 @@ import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
 import scalaj.http.{Http, HttpResponse}
 import it.unica.blockchain.pojos.TraceBlockHttpResponse
 import it.unica.blockchain.blockchains.Blockchain
+import it.unica.blockchain.blockchains.ethereum.tokenUtils.TokenList
 import org.web3j.protocol.core.Request
 
 import scala.collection.JavaConverters._

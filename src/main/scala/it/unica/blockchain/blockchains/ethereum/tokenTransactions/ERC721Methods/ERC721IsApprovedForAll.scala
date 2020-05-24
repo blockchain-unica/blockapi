@@ -1,10 +1,11 @@
-package it.unica.blockchain.blockchains.ethereum
+package it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Methods
 
 import java.util.Date
 
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Transaction
+import it.unica.blockchain.blockchains.ethereum.{EthereumAddress, EthereumContract}
 import org.web3j.abi.TypeDecoder
 import org.web3j.abi.datatypes.Address
-import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 

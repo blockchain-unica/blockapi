@@ -1,7 +1,8 @@
-package it.unica.blockchain.blockchains.ethereum
+package it.unica.blockchain.blockchains.ethereum.tokens
 
 import java.util.Date
 
+import it.unica.blockchain.blockchains.ethereum.{EthereumAddress, EthereumToken}
 import org.apache.commons.lang3.StringUtils
 
 import scala.util.matching.Regex
