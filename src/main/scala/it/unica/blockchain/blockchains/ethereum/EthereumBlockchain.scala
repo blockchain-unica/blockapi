@@ -2,6 +2,9 @@ package it.unica.blockchain.blockchains.ethereum
 
 import java.io.{BufferedWriter, File, FileWriter}
 import java.math.BigInteger
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.{Calendar, Date}
 
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.{DefaultBlockParameterName, DefaultBlockParameterNumber}
@@ -15,7 +18,11 @@ import scalaj.http.{Http, HttpResponse}
 import it.unica.blockchain.pojos.TraceBlockHttpResponse
 import it.unica.blockchain.blockchains.Blockchain
 import it.unica.blockchain.blockchains.ethereum.tokenUtils.TokenList
+import it.unica.blockchain.externaldata.contracts.Etherscan
 import org.web3j.protocol.core.Request
+import it.unica.blockchain.utils.converter.DateConverter.getDateFromTimestamp
+import it.unica.blockchain.utils.converter.DateConverter.getCalendarFromDate
+import play.api.libs.json.Json
 
 import scala.collection.JavaConverters._
 
@@ -29,7 +36,7 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
   private var startBlock: Long = 1l
   private var endBlock: Long = 0l
 
-  val web3j = Web3j.build(new HttpService(settings.url))  //Creating Web3J object connected with Parity
+  val web3j = Web3j.build(new HttpService(settings.url)) //Creating Web3J object connected with Parity
 
   /**
     * Executes the given task for each block in blockchain
@@ -87,8 +94,8 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     try {
       val block = web3j.ethGetBlockByNumber(new DefaultBlockParameterNumber(height), true).sendAsync().get().getBlock
       getEthereumBlock(block)
-    } catch{
-      case e : Exception => {
+    } catch {
+      case e: Exception => {
         e.printStackTrace
         throw e
       }
@@ -107,6 +114,9 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     this
   }
 
+  def start(startDate: Calendar): EthereumBlockchain = {
+    start(searchBlockByDate(startDate))
+  }
 
   /**
     * Set the last block in the blockchain to visit
@@ -119,17 +129,21 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     this
   }
 
+  def end(endDate: Calendar): EthereumBlockchain = {
+    end(searchBlockByDate(endDate))
+  }
+
 
   private def getEthereumBlock(currBlock: EthBlock.Block): EthereumBlock = {
     val resultBlockTraceJSON = getResultBlockTrace(currBlock.getNumberRaw)
-    val transactionReceipts : Map[String, Request[_,EthGetTransactionReceipt]] =
+    val transactionReceipts: Map[String, Request[_, EthGetTransactionReceipt]] =
       currBlock.getTransactions.asScala
         .map(_.asInstanceOf[TransactionObject])
         .map((tx) => {
-            val txHash: String = tx.get.getHash
-            val futureReceipt : Request[_, EthGetTransactionReceipt] = this.web3j.ethGetTransactionReceipt(txHash)
-            (txHash, futureReceipt)
-          }
+          val txHash: String = tx.get.getHash
+          val futureReceipt: Request[_, EthGetTransactionReceipt] = this.web3j.ethGetTransactionReceipt(txHash)
+          (txHash, futureReceipt)
+        }
         )
         .toMap
 
@@ -141,7 +155,7 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
       val resultBlockTrace = mapper.readValue[TraceBlockHttpResponse](resultBlockTraceJSON.body)
       var internalTxs: List[EthereumInternalTransaction] = List()
 
-      if(resultBlockTrace.result != null) {
+      if (resultBlockTrace.result != null) {
         resultBlockTrace.result.foreach((blockTrace) => {
           blockTrace.getTraceType match {
             case "call" =>
@@ -164,7 +178,7 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
 
     }
 
-    else{
+    else {
       return EthereumBlock.factory(currBlock, List(), transactionReceipts, settings.retrieveVerifiedContracts, settings.searchForTokens, web3j)
     }
   }
@@ -183,14 +197,36 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
   }
 
 
-  def getTransactionReceipt(transactionHash : String): Unit ={
+  def getTransactionReceipt(transactionHash: String): Unit = {
 
     val web3j = Web3j.build(new HttpService(settings.url))
 
-    var receipt : EthGetTransactionReceipt = web3j.ethGetTransactionReceipt(transactionHash).sendAsync().get();
-    if(receipt.getTransactionReceipt.isPresent){
-      var r : TransactionReceipt = receipt.getTransactionReceipt.get()
+    var receipt: EthGetTransactionReceipt = web3j.ethGetTransactionReceipt(transactionHash).sendAsync().get();
+    if (receipt.getTransactionReceipt.isPresent) {
+      var r: TransactionReceipt = receipt.getTransactionReceipt.get()
       r.getContractAddress
     }
+  }
+
+  /** This function search for blocks that have the timestamp equals to
+    * the given date.
+    *
+    * @param date block's date
+    * @return the block height
+    */
+  private def searchBlockByDate(date: Calendar): Long = {
+    val timestamp : Timestamp = new Timestamp(date.getTimeInMillis)
+    val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z")
+
+    sdf.setTimeZone(date.getTimeZone)
+    println("Searching Block for: " + sdf.format(date.getTime) + " ...")
+
+    val result = Http("https://api.etherscan.io/api?module=block&action=getblocknobytime&timestamp="+ timestamp.getTime.toString.substring(0, 10) +"&closest=before").asString.body
+    val json = Json.parse(result)
+    val block = (json \ "result").get.as[String]
+
+    Thread.sleep(3000) // wait for 3 sec to stay into rate limits
+
+    block.toLong
   }
 }
