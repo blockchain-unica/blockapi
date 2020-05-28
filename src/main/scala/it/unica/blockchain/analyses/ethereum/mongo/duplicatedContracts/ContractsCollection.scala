@@ -37,7 +37,7 @@ object ContractsCollection {
 
         if (tx.hasContract && tx.contract.sourceCode.length > 0) {
           val list = List(
-            ("contractAddress", tx.contract.address),
+            ("contractAddress", tx.contract.address.address),
             ("contractName", tx.contract.name),
             ("date", block.date),
             ("sourceCode", tx.contract.sourceCode)

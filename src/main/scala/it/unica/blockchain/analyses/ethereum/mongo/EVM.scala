@@ -22,13 +22,13 @@ object EVM {
       }
       block.txs.foreach(tx => {
         val internalTransactions = block.internalTransactions.filter(itx => itx.parentTxHash.equals(tx.hash))
-        val creates = if(tx.addressCreated == null) "" else tx.addressCreated
-        val to = if(tx.to == null) "" else tx.to
+        val creates = if(tx.addressCreated == null) "" else tx.addressCreated.address
+        val to = if(tx.to == null) "" else tx.to.address
         transactions.append(
           List(
             ("block", block.height),
             ("txHash", tx.hash),
-            ("from", tx.from),
+            ("from", tx.from.address),
             ("to", to),
             ("value", tx.value)
           )
@@ -38,7 +38,7 @@ object EVM {
           evm.append(
             List(
               ("txhash", tx.contract.hashOriginatingTx),
-              ("contractAddress", tx.contract.address),
+              ("contractAddress", tx.contract.address.address),
               ("evm", tx.contract.bytecode)
             )
           )

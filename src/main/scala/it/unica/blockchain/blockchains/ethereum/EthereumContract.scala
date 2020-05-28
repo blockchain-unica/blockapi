@@ -2,16 +2,27 @@ package it.unica.blockchain.blockchains.ethereum
 
 import java.util.Date
 
+import it.unica.blockchain.blockchains.ethereum.tokens.{ERC20Token, ERC721Token}
 import org.apache.commons.codec.DecoderException
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.StringUtils
 
 import scala.util.matching.Regex
 
+/** Defines a general ethereum contract
+  *
+  * @param name               contract's name
+  * @param address            contract's address
+  * @param hashOriginatingTx  transaction's hash that originated the contract
+  * @param isVerified         contract's verification
+  * @param verificationDate   contract's date verification
+  * @param bytecode           contract's bytecode
+  * @param sourceCode         contract's source code
+  */
 
 case class EthereumContract(
                              val name: String,
-                             val address: String,
+                             val address: EthereumAddress,
                              val hashOriginatingTx: String,
 
                              val isVerified: Boolean,
@@ -63,120 +74,31 @@ case class EthereumContract(
       bytecode.contains("23b872dd")     //checks transferFrom(address,address,uint256) declaration
   }
 
-  /**
-    * This method checks if there is a token name in bytecode, if not returns "Unknown"
-    *
-    * We must find some instruction in bytecode that loads in memory a string. The candidate opcode is PUSH32,
-    * 7f in Ethereum VM bytecode. The sequence between the first function call and return instructions is the name of the token
-    *
-    * The string "8152602001" is a sequence of instructions described by a couple of four number in hexadecimal:
-    * the first one identifies opcode, the second one the value. This sequence preceded by 7f determines a string load
-    * "81525081" are instruction of string load succeed
-    *
-    * @return token's name
-    *
-    * @author Chessa Stefano Raimondo
-    * @author Guria Marco
-    * @author Manai Alessio
-    * @author Speroni Alessio
-    */
-
-  def getTokenName(): String = {
-
-    try {   //we don't know if someone wrote name in contract code
-
-      val tokenName = new String(   //get the value of PUSH32 instruction in bytecode
-        Hex.decodeHex(              //converts value from hex to string
-          StringUtils.substringBetween(bytecode, "81526020017f", "81525081").toCharArray
-        ), "UTF-8")
-
-      if (tokenName == "address,bytes)"){ //sometimes catch something wrong like this load in memory "address,bytes)" when there is no name in bytecode
-        "Unknown"
-      } else {
-        tokenName
-      }
-
-    } catch {
-      case np : NullPointerException => "Unknown" //this happen when there's no name in bytecode
-      case de : DecoderException => "Unknown" //this happen when found strange symbol like therefore sign (∴)
-    }
-
+  def isERC721Compliant(): Boolean = {
+    bytecode.contains("70a08231") && //checks balanceOf(address) declaration
+      bytecode.contains("6352211e") && //checks ownerOf(uint256) declaration
+      bytecode.contains("095ea7b3") && //checks approve(address,uint256) declaration
+      bytecode.contains("081812fc") && //checks getApproved(uint256) declaration
+      bytecode.contains("a22cb465") && //checks setApprovalForAll(address,bool) declaration
+      bytecode.contains("e985e9c5") && //checks isApprovedForAll(address,address) declaration
+      bytecode.contains("23b872dd") && //checks transferFrom(address,address,uint256) declaration
+      bytecode.contains("42842e0e") && //checks safeTransferFrom(address,address,uint256) declaration
+      bytecode.contains("b88d4fde") && //checks safeTransferFrom(address,address,uint256,bytes) declaration
+      bytecode.contains("01ffc9a7") && //checks supportsInterface(bytes4) declaration
+      bytecode.contains("150b7a02")    //checks onERC721Received(address,address,uint256,bytes) declaration
   }
+}
 
-  /**
-    * This method checks if there is a token symbol in bytecode, if not returns "Unknown"
-    *
-    * The approach is similar to getTokenName function: we must find some instruction in bytecode that loads in memory a string.
-    * The candidate opcode is PUSH32, 7f in Ethereum VM bytecode. The sequence from the PUSH32's load name contains the symbol of the token.
-    *
-    * The string "8152602001" is a sequence of instructions described by a couple of four number in hexadecimal:
-    * the first one identifies opcode, the second one the value. This sequence preceded by 7f determines a string load
-    * "81525081" are instruction of string load succeed
-    *
-    * @return token's symbol
-    *
-    * @author Chessa Stefano Raimondo
-    * @author Guria Marco
-    * @author Manai Alessio
-    * @author Speroni Alessio
-    */
+object EthereumContract{
 
-  def getTokenSymbol(): String = {
+  def factory(name: String, address: EthereumAddress, hashOriginatingTx: String, isVerified: Boolean, verificationDate: Date, bytecode: String, sourceCode: String, searchForTokens: Boolean):EthereumContract ={
+    var contract = EthereumContract(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
 
-    try { //we don't know if someone wrote symbol in contract code
-
-      val temp = StringUtils.substringAfter(bytecode, "81526020017f")   //check every bytecode from token name load in memory, if exists
-
-      val symbol = new String(  //then, take the next string value in PUSH32 instruction. It's always a token symbol
-        Hex.decodeHex(
-          StringUtils.substringBetween(temp, "81526020017f", "81525081").toCharArray
-        ), "UTF-8")
-
-      symbol
-
-    } catch {
-      case np : NullPointerException => "Unknown" //this happen when there's no name in bytecode
-      case de : DecoderException => "Unknown" //this happen when found strange symbol like therefore sign (∴)
-    }
-
+    if (searchForTokens && contract.bytecode != null && contract.isERC20Compliant())
+      new ERC20Token(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
+    else if (searchForTokens && contract.bytecode != null && contract.isERC721Compliant())
+      new ERC721Token(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
+    else
+      contract
   }
-
-
-  /**
-    * This method finds token divisibility in bytecode, if not returns "Unknown"
-    *
-    * The idea is simple: in bytecode there are some uint8 load in memory. The challenge was find the uint8 (or PUSH1 instruction) that describes
-    * token divisibility. The occurrence that found it was described in val pattern
-    *
-    * 60 is the hexadecimal opcode for PUSH1; the previous sequence identifies a token divisibility load in memory
-    * Only token divisibility load in memory value is succeed by instruction "8156"
-    *
-    * @return token's divisibility
-    *
-    * @author Chessa Stefano Raimondo
-    * @author Guria Marco
-    * @author Manai Alessio
-    * @author Speroni Alessio
-    */
-
-  def getTokenDivisibility(): String = {
-
-    val pattern = new Regex("565b60([0-9]|[a-f])([0-9]|[a-f])8156") //catch any value until 255. The most used is 18
-
-    val stringa = StringUtils.substringBetween((pattern findAllIn bytecode).mkString(",")
-        , "565b60", "8156")   //get the value from store in VM
-
-    if (stringa == null){   //no token divisibility found?
-
-      "Unknown"
-
-    } else {
-
-      val num = Integer.parseInt(stringa, 16)   //it converts from base 16 to base 10
-
-      num.toString  //return value in string
-
-    }
-  }
-
 }

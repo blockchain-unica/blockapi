@@ -18,7 +18,7 @@ object ContractsWithCode {
       block.txs.foreach(tx => {
         if (tx.hasContract) {
           val list = List(
-            ("contractAddress", tx.addressCreated),
+            ("contractAddress", tx.addressCreated.address),
             ("contractCode", tx.contract.bytecode)
           )
           contractsWithCode.append(list)

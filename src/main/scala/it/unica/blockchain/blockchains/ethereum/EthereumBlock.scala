@@ -96,12 +96,12 @@ object EthereumBlock{
     * @param internalTransactions block's internal transactions
     * @return new EtherumBlock
     */
-  def factory(block: Block, internalTransactions: List[EthereumInternalTransaction], transactionReceipts: Map[String, Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean, web3j: Web3j): EthereumBlock = {
+  def factory(block: Block, internalTransactions: List[EthereumInternalTransaction], transactionReceipts: Map[String, Request[_, EthGetTransactionReceipt]], retrieveVerifiedContracts: Boolean, searchForTokens: Boolean, web3j: Web3j): EthereumBlock = {
 
     val transactions: List[EthereumTransaction] =
       block.getTransactions.asScala.toList
         .map(_.asInstanceOf[TransactionObject])
-        .map((tx) => EthereumTransaction.factory(tx, getDateFromTimestamp(block.getTimestamp), transactionReceipts.get(tx.get().getHash), retrieveVerifiedContracts, web3j))
+        .map((tx) => EthereumTransaction.factory(tx, getDateFromTimestamp(block.getTimestamp), transactionReceipts.get(tx.get().getHash), retrieveVerifiedContracts, searchForTokens, web3j))
     var sealFields = block.getSealFields
     if(sealFields == null){
       sealFields = List[String]().asJava

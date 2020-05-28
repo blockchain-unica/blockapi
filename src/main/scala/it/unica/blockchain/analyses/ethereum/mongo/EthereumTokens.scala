@@ -1,6 +1,7 @@
 package it.unica.blockchain.analyses.ethereum.mongo
 
 import it.unica.blockchain.blockchains.BlockchainLib
+import it.unica.blockchain.blockchains.ethereum.tokens.ERC20Token
 import it.unica.blockchain.blockchains.ethereum.{EthereumSettings, EthereumTransaction}
 import it.unica.blockchain.db.DatabaseSettings
 import it.unica.blockchain.mongo.Collection
@@ -25,26 +26,27 @@ object EthereumTokens {
 
   def main(args: Array[String]): Unit = {
 
-    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545"))
+    val blockchain = BlockchainLib.getEthereumBlockchain(new EthereumSettings("http://localhost:8545", false, true))
     val mongo = new DatabaseSettings("EthereumTokens")
     val tokens = new Collection("EthereumTokens", mongo)
 
     // Iterating each block
-    blockchain.start(2100000).end(2355000).foreach(block => {
-      if(block.height%100 == 0){
+    blockchain.start(5319926).end(5319927).foreach(block => {
+      //if(block.height%100 == 0){
         println("Current Block " + block.height)
-      }
+      //)}
       block.txs.foreach(tx => {
-          if (tx.hasContract && tx.contract.isERC20Compliant){
-
+        //println("\t tx: " + tx.hash)
+        if (tx.hasContract && tx.contract.isERC20Compliant){
+            val contract = tx.contract.asInstanceOf[ERC20Token]
             tokens.append(
               List(
-                ("contractAddress", tx.contract.address),
+                ("contractAddress", tx.contract.address.address),
                 ("txhash", tx.contract.hashOriginatingTx),
                 ("date", tx.date),
-                ("tokenName", tx.contract.getTokenName()),
-                ("tokenSymbol", tx.contract.getTokenSymbol()),
-                ("tokenDivisibility", tx.contract.getTokenDivisibility())
+                ("tokenName", contract.getTokenName()),
+                ("tokenSymbol", contract.getTokenSymbol()),
+                ("tokenDivisibility", contract.getTokenDivisibility())
               )
             )
           }
