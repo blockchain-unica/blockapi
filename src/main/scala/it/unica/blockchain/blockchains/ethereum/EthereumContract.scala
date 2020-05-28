@@ -94,9 +94,9 @@ object EthereumContract{
   def factory(name: String, address: EthereumAddress, hashOriginatingTx: String, isVerified: Boolean, verificationDate: Date, bytecode: String, sourceCode: String, searchForTokens: Boolean):EthereumContract ={
     var contract = EthereumContract(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
 
-    if (searchForTokens && contract.isERC20Compliant())
+    if (searchForTokens && contract.bytecode != null && contract.isERC20Compliant())
       new ERC20Token(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
-    else if (searchForTokens && contract.isERC721Compliant())
+    else if (searchForTokens && contract.bytecode != null && contract.isERC721Compliant())
       new ERC721Token(name, address, hashOriginatingTx, isVerified, verificationDate, bytecode, sourceCode)
     else
       contract

@@ -160,7 +160,7 @@ object  ETHTokenTransaction {
   private def contractType (to :EthereumAddress): EthereumContract ={
 
     val bytecode = getContractBytecode(to.address)
-    if(bytecode != "0x"){
+    if(bytecode != null && bytecode.length > 2){ // If the contract contains at least a method name after "0x"
       return EthereumContract.factory("", to, "", false, null, bytecode, null, false)
     }
     null

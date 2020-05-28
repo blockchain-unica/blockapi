@@ -114,7 +114,7 @@ object EthereumTransaction {
           contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
           contract, receipt)
       }
-      else if (to != null && TargetList.contains(to.address)) {
+      else if (to != null && TargetList.contains(to)) {
         ETHTokenTransaction.factory(web3j, tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
           from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
           contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
