@@ -221,12 +221,17 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
     sdf.setTimeZone(date.getTimeZone)
     println("Searching Block for: " + sdf.format(date.getTime) + " ...")
 
-    val result = Http("https://api.etherscan.io/api?module=block&action=getblocknobytime&timestamp="+ timestamp.getTime.toString.substring(0, 10) +"&closest=before").asString.body
-    val json = Json.parse(result)
-    val block = (json \ "result").get.as[String]
+    val page = Http("https://api.etherscan.io/api?module=block&action=getblocknobytime&timestamp="+ timestamp.getTime.toString.substring(0, 10) +"&closest=before").asString.body
+    val json = Json.parse(page)
+    val result = (json \ "result").get.as[String]
 
     Thread.sleep(3000) // wait for 3 sec to stay into rate limits
 
-    block.toLong
+    if(result.matches("[0-9]*"))
+      result.toLong
+    else {
+      println(result)
+      0l
+    }
   }
 }

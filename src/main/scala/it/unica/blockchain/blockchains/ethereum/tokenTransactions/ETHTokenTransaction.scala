@@ -76,6 +76,7 @@ object  ETHTokenTransaction {
     if (input != "0x" && input.length >= 10) //Is needed to be sure that there is at least the method call
       methodBytecode = input.substring(index + 2, index + 10)
 
+    //If the input contains a method call then is controlled which type of contract has been called
     methodBytecode match {
       //case "18160ddd" => //totalSupply()
 
@@ -169,6 +170,9 @@ object  ETHTokenTransaction {
   private def getContractBytecode(contractAddress : String) : String = {
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
   }
+
+  /** Each function controls which type of contract has been called
+    */
 
   private def allowance( hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
     ERCTxCheck(to) match {
