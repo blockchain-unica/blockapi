@@ -2,6 +2,7 @@ package it.unica.blockchain.blockchains.ethereum.tokenTransactions
 
 import java.util.Date
 
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Methods.{ERC20Allowance, ERC20Approve, ERC20BalanceOf, ERC20Transfer, ERC20TransferFrom}
 import it.unica.blockchain.blockchains.ethereum.{EthereumAddress, EthereumContract}
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
@@ -28,7 +29,7 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
   * @param v                v part
   */
 
-class ERC20Transaction (
+class ERC20Transaction(
                         hash: String,
                         date: Date,
 
@@ -49,10 +50,74 @@ class ERC20Transaction (
                         s: String,
                         v: Int,
 
-                        contract : EthereumContract,
+                        contract: EthereumContract,
                         requestOpt: Option[Request[_, EthGetTransactionReceipt]]
-                      ) extends ETHTokenTransaction (hash,date,nonce,blockHash,blockHeight,transactionIndex,from,to,value,gasPrice,gas,input,addressCreated,publicKey,raw,r,s,v,contract,requestOpt) {
+                      ) extends ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
 
 
+}
+
+object ERC20Transaction {
+
+  /** This function matches the transaction's input with the pattern of known methods and then creates an object
+    */
+  def findERC20Method (hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
+    val index = input.indexOf("0x")
+    var methodBytecode: String = "No Function"
+
+    if (input != "0x" && input.length >= 10) //Is needed to be sure that there is at least the method call
+    methodBytecode = input.substring(index + 2, index + 10)
+
+    //If the input contains a method call then is controlled which type of contract has been called
+    methodBytecode match {
+      //case "18160ddd" => //totalSupply()
+
+      case "dd62ed3e" => //allowance(address,address)
+        allowance(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "095ea7b3" => // approve(address,uint256)
+        approve(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "70a08231" => // balanceOf(address)
+        balanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "a9059cbb" => //transfer(address,uint256)
+        transfer(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case "23b872dd" => // transferFrom(address,address,uint256)
+        transferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt)
+
+      case _ => //Not a Token function
+        null
+    }
+  }
+
+  /** Each function controls which type of contract has been called
+    */
+
+  private def allowance(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
+    val (method, tokenOwner, tokenSpender) = ERC20Allowance.getInputData(input)
+    new ERC20Allowance(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner, tokenSpender)
+  }
+
+  private def approve(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
+    val (method, tokenSpender, tokenValue) = ERC20Approve.getInputData(input)
+    new ERC20Approve(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenSpender, tokenValue)
+  }
+
+  private def balanceOf(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
+    val (method, tokenOwner) = ERC20BalanceOf.getInputData(input)
+    new ERC20BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
+  }
+
+  private def transfer(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
+    val (method, tokenTo, tokenValue) = ERC20Transfer.getInputData(input)
+    new ERC20Transfer(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenTo, tokenValue)
+  }
+
+  private def transferFrom(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
+    val (method, tokenFrom, tokenTo, tokenValue) = ERC20TransferFrom.getInputData(input)
+    new ERC20TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenValue)
+  }
 }
 
