@@ -31,3 +31,4 @@ Students of the Cybersecurity course:
    * [Simone Balloccu](), [Andrea Bellanti](), [Federica Stocchino]() - Transaction chains
    * [Daniele Sanna](https://github.com/danielesanna), [Giovanni Usai](https://github.com/giovanniusai) - Cross validation Litecoin
    * [Soukaina Aassouss](), [Reda Belaiche](), [Khadija Zine](https://github.com/khadijazine) - Counterparty Tokens 
+   * [Stefano Di Santo](https://github.com/MrBenzene) - Ethereum: Tokens; ERC20 & ERC721 methods; Token transactions.

@@ -1,5 +1,0 @@
-/**0 means tx doesn't show SW commitment, 1 that it does**/
-
-"Signaling Segwit?",TxNumber
-0,26099
-1,214980
