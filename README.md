@@ -40,9 +40,8 @@ Before building the project, execute the following commands:
 
 ##### Bitcoinj
 ```bash
-git clone https://github.com/bitbart/bitcoinj.git
+git clone https://github.com/stefanolande/bitcoinj.git
 cd bitcoinj
-git checkout segwit
 mvn install -DskipTests
 cd core
 mvn install -DskipTests
