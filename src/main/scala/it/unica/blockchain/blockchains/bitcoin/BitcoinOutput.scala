@@ -16,7 +16,7 @@ import scala.collection.mutable
 class BitcoinOutput(
                      val index: Int,
                      val value: Long,
-                     val transOut: TransactionOutput) {
+                     val transOut: TransactionOutput)  extends HasAddress {
 
   def outScript = {
     try{
