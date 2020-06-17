@@ -1,9 +1,7 @@
 package it.unica.blockchain.analyses.bitcoin.mongo
 
-import java.security.interfaces.ECKey
-
 import it.unica.blockchain.blockchains.BlockchainLib
-import it.unica.blockchain.blockchains.bitcoin.{BitcoinSettings, MainNet}
+import it.unica.blockchain.blockchains.bitcoin.{BitcoinSettings, HasAddress, MainNet}
 import it.unica.blockchain.db.{DatabaseSettings, Mongo}
 import it.unica.blockchain.mongo.Collection
 import org.bitcoinj.core.Address
@@ -44,9 +42,9 @@ object BitcoinAbuseTransactions {
 
         val defaultAddr = Address.fromBase58(MainNetParams.get, "186M8nr7sLiz2XpUc83utqXADJ6qG7gu6W");
 
-        val inputContains = tx.inputs.map( in => addressesSet contains in.getAddress(MainNet).getOrElse(defaultAddr).toBase58).reduce(_||_)
+        val inputContains = tx.inputs.map(isAddrInSet(_, addressesSet)).reduce(_ || _)
 
-        val outputContains = tx.outputs.map( in => addressesSet contains in.getAddress(MainNet).getOrElse(defaultAddr).toBase58).reduce(_||_)
+        val outputContains = tx.outputs.map(isAddrInSet(_, addressesSet)).reduce(_ || _)
 
         if (inputContains || outputContains ){
           myBlockchain.append(List(
@@ -54,11 +52,13 @@ object BitcoinAbuseTransactions {
             ("blockHash", block.hash),
             ("date", block.date),
             ("inputs", tx.inputs),
-            ("outputs", tx.outputs)
+            ("inAddrs", tx.inputs.map(getAddrOrEmptyString)),
+            ("outputs", tx.outputs),
+            ("outAddrs", tx.outputs.map(getAddrOrEmptyString))
           ))
         }
 
-        if(i % 10000 == 0){
+        if (i % 10000 == 0) {
           println("Block: " + i)
         }
         i += 1
@@ -68,4 +68,21 @@ object BitcoinAbuseTransactions {
 
     myBlockchain.close
   }
+
+  private def isAddrInSet(x: HasAddress, set: Set[String]): Boolean = {
+    val stringAddr = getAddrOrEmptyString(x)
+
+    if (stringAddr.equals(""))
+      false
+    else
+      set contains stringAddr
+  }
+
+  private def getAddrOrEmptyString(x: HasAddress): String =
+    x.getAddress(MainNet) match {
+      case None => ""
+      case Some(address) => address.toBase58
+    }
+
+
 }
