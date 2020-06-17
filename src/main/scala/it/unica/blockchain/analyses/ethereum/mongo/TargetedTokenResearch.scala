@@ -20,7 +20,8 @@ object TargetedTokenResearch {
     val startBlock : Int = 9536496
     val endBlock : Int = 9536496
 
-    TargetList.add("0x6b9f9d8ef588470932b693864a62021cabb65ce9") // BoxKey
+    //TODO: fix type error
+    //TargetList.add("0x6b9f9d8ef588470932b693864a62021cabb65ce9") // BoxKey
 
     // Iterating each block
     blockchain.start(startBlock.toInt).end(endBlock.toInt).foreach(block => {
