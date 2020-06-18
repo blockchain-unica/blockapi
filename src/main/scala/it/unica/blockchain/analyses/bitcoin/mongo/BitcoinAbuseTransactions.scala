@@ -27,9 +27,9 @@ object BitcoinAbuseTransactions {
 
     val addressesList = bufferedSource.getLines.map(line => line.split(",").map(_.trim).apply(0))
 
-    bufferedSource.close()
-
     val addressesSet = HashSet() ++ addressesList
+
+    bufferedSource.close()
 
     val startTime = System.currentTimeMillis() / 1000
 
