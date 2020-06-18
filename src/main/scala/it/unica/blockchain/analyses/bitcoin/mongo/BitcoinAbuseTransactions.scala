@@ -5,8 +5,10 @@ import it.unica.blockchain.blockchains.bitcoin.{BitcoinSettings, HasAddress, Mai
 import it.unica.blockchain.db.{DatabaseSettings, Mongo}
 import it.unica.blockchain.mongo.Collection
 
+import scala.collection.immutable.HashSet
+
 /**
-  * Created by stefano on 13/06/17.
+  * Created by stefano on 17/06/20.
   */
 object BitcoinAbuseTransactions {
   def main(args: Array[String]): Unit = {
@@ -25,14 +27,16 @@ object BitcoinAbuseTransactions {
 
     val addressesList = bufferedSource.getLines.map(line => line.split(",").map(_.trim).apply(0))
 
-    val addressesSet = addressesList.toSet
+    bufferedSource.close()
+
+    val addressesSet = HashSet() ++ addressesList
 
     val startTime = System.currentTimeMillis() / 1000
 
     // 3) Visit the blockchain and append values to the view
     var i = 0;
 
-    blockchain.foreach(block => {
+    blockchain.start(352966).foreach(block => {
       block.txs.foreach(tx => {
 
         //map each input to a boolean value, which depends whether the input address is in the bitcoinabuse dataset
