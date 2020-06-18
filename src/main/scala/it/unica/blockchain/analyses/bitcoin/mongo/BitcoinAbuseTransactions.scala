@@ -49,7 +49,7 @@ object BitcoinAbuseTransactions {
 
         if (inputContains || outputContains ){
           myBlockchain.append(List(
-            "txid" -> tx.hash.toString,
+            "txid" -> tx.hash,
             "time" -> block.date.getTime,
 
             if (tx.inputs.head.redeemedOutIndex != -1) {
