@@ -59,10 +59,10 @@ class ERC721Approve (
                       contract: EthereumContract,
                       requestOpt: Option[Request[_, EthGetTransactionReceipt]],
 
-                      val method : String,
+                      method : String,
                       val tokenApproved :EthereumAddress,
                       val tokenId :Uint256
-                    ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
+                    ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method) {
 
 
 

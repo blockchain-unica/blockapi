@@ -51,7 +51,9 @@ class ERC721Transaction(
                          v: Int,
 
                          contract: EthereumContract,
-                         requestOpt: Option[Request[_, EthGetTransactionReceipt]]
+                         requestOpt: Option[Request[_, EthGetTransactionReceipt]],
+
+                         val method : String
                        ) extends ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
 
 
