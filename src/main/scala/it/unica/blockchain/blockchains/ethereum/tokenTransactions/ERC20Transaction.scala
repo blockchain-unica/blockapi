@@ -4,6 +4,7 @@ import java.util.Date
 
 import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Methods.{ERC20Allowance, ERC20Approve, ERC20BalanceOf, ERC20Transfer, ERC20TransferFrom}
 import it.unica.blockchain.blockchains.ethereum.{EthereumAddress, EthereumContract}
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ETHTokenTransaction.checkInputArgs
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 
@@ -98,28 +99,48 @@ object ERC20Transaction {
     */
 
   private def allowance(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
-    val (method, tokenOwner, tokenSpender) = ERC20Allowance.getInputData(input)
-    new ERC20Allowance(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner, tokenSpender)
+    if (checkInputArgs(input, 2)) {
+      val (method, tokenOwner, tokenSpender) = ERC20Allowance.getInputData(input)
+      new ERC20Allowance(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner, tokenSpender)
+    }
+    else
+      null
   }
 
   private def approve(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
-    val (method, tokenSpender, tokenValue) = ERC20Approve.getInputData(input)
-    new ERC20Approve(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenSpender, tokenValue)
+    if (checkInputArgs(input, 2)) {
+      val (method, tokenSpender, tokenValue) = ERC20Approve.getInputData(input)
+      new ERC20Approve(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenSpender, tokenValue)
+    }
+    else
+      null
   }
 
   private def balanceOf(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
-    val (method, tokenOwner) = ERC20BalanceOf.getInputData(input)
-    new ERC20BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
+    if (checkInputArgs(input, 1)) {
+      val (method, tokenOwner) = ERC20BalanceOf.getInputData(input)
+      new ERC20BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
+    }
+    else
+      null
   }
 
   private def transfer(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
-    val (method, tokenTo, tokenValue) = ERC20Transfer.getInputData(input)
-    new ERC20Transfer(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenTo, tokenValue)
+    if (checkInputArgs(input, 2)) {
+      val (method, tokenTo, tokenValue) = ERC20Transfer.getInputData(input)
+      new ERC20Transfer(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenTo, tokenValue)
+    }
+    else
+      null
   }
 
   private def transferFrom(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC20Transaction = {
-    val (method, tokenFrom, tokenTo, tokenValue) = ERC20TransferFrom.getInputData(input)
-    new ERC20TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenValue)
+    if (checkInputArgs(input, 3)) {
+      val (method, tokenFrom, tokenTo, tokenValue) = ERC20TransferFrom.getInputData(input)
+      new ERC20TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenValue)
+    }
+    else
+      null
   }
 }
 

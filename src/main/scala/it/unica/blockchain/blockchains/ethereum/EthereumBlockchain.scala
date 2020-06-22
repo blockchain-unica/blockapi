@@ -227,10 +227,11 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
 
     Thread.sleep(3000) // wait for 3 sec to stay into rate limits
 
-    if(result.matches("[0-9]*"))
+    if(result.matches("[0-9]*")) {
+      println("Found Block: " + result)
       result.toLong
+    }
     else {
-      println(result)
       0l
     }
   }

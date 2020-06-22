@@ -71,9 +71,13 @@ object  ETHTokenTransaction {
   def factory(web3j: Web3j, hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): EthereumTransaction ={
     this.web3j = web3j
 
-    val erc20Method = ERC20Transaction.findERC20Method(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]])
-    val erc721Method = ERC721Transaction.findERC721Method(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract : EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]])
+    var erc20Method: ERC20Transaction = null
+    var erc721Method: ERC721Transaction = null
 
+    if(checkInput(input)) {
+      erc20Method = ERC20Transaction.findERC20Method(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]])
+      erc721Method = ERC721Transaction.findERC721Method(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]])
+    }
     var txType = TokenType.None
 
     if(erc20Method != null || erc721Method != null) // To improve performance we check before if a method has been called
@@ -138,5 +142,36 @@ object  ETHTokenTransaction {
 
   private def getContractBytecode(contractAddress : String) : String = {
     this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
+  }
+
+
+  /** This function returns true if the input has the right length
+    *
+    * @param input the input
+    */
+  def checkInput(input: String): Boolean ={
+    val input_lenght = 64
+    val method_lenght = 10
+    if(input != null &&
+      (input.length() % input_lenght) - method_lenght == 0 && // to know if each input field has the right length
+      input.matches("[a-zA-Z0-9]*"))
+      true
+    else
+      false
+  }
+
+
+  /** This function returns true if the input has the right number of arguments required
+    *
+    * @param input The input
+    * @param numOfArgs The number of args required
+    */
+  def checkInputArgs(input: String, numOfArgs: Int): Boolean ={
+    val input_lenght = 64
+    val method_lenght = 10
+    if((input.length() - method_lenght) / input_lenght == numOfArgs)
+      true
+    else
+      false
   }
 }
