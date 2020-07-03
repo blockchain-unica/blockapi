@@ -1,0 +1,4 @@
+ db.test.aggregate([
+    {$match: { methodCalled: 'transfer(address _to, uint256 _value)' }},
+    { $group: { _id: "$timestamp", total: { $sum: 1} }}
+])
