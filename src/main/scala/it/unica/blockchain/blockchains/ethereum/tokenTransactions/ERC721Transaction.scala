@@ -8,7 +8,7 @@ import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ETHTokenTransa
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 
-/** Defines a transaction that called an ERC721 function
+/** Defines a transaction which called an ERC721 function
   *
   * @param hash             transaction's hash
   * @param date             date in which the transaction has been published (extracted from the containing block)

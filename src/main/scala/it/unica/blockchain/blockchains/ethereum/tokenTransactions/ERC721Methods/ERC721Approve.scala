@@ -80,7 +80,7 @@ object ERC721Approve{
     val firstArg = 10
     val secondArg = firstArg + argDim
 
-    val method :String = "approve(address _approved, uint256 _tokenId) "
+    val method :String = "approve(address _approved, uint256 _tokenId)"
 
     val approved :String = inputData.substring(firstArg, secondArg)
     val tokenId :String = inputData.substring(secondArg)

@@ -17,7 +17,7 @@ import org.web3j.protocol.core.methods.response.EthBlock.TransactionObject
 import scalaj.http.{Http, HttpResponse}
 import it.unica.blockchain.pojos.TraceBlockHttpResponse
 import it.unica.blockchain.blockchains.Blockchain
-import it.unica.blockchain.blockchains.ethereum.tokenUtils.TokenList
+import it.unica.blockchain.blockchains.ethereum.tokenUtils.TokenMap
 import it.unica.blockchain.externaldata.contracts.Etherscan
 import org.web3j.protocol.core.Request
 import it.unica.blockchain.utils.converter.DateConverter.getDateFromTimestamp
@@ -61,7 +61,7 @@ class EthereumBlockchain(val settings: EthereumSettings) extends Traversable[Eth
       height += 1
     }
 
-    TokenList.updateFiles()
+    TokenMap.updateFiles()
   }
 
 

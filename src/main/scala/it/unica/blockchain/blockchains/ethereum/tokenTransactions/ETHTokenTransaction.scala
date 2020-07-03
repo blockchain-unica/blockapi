@@ -7,7 +7,7 @@ import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC20Methods._
 import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Methods._
 import it.unica.blockchain.blockchains.ethereum.tokens.{ERC20Token, ERC721Token}
 import it.unica.blockchain.blockchains.ethereum._
-import it.unica.blockchain.blockchains.ethereum.tokenUtils.{TokenList, TokenType}
+import it.unica.blockchain.blockchains.ethereum.tokenUtils.{TokenMap, TokenType}
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 import org.web3j.protocol.core.{DefaultBlockParameterName, Request}
@@ -80,7 +80,7 @@ object  ETHTokenTransaction {
     }
     var txType = TokenType.None
 
-    if(erc20Method != null || erc721Method != null) // To improve performance we check before if a method has been called
+    if(erc20Method != null || erc721Method != null)  // To improve performance we check before if a method has been called
       txType = ERCTxCheck(to)
 
     if(erc20Method != null && txType == TokenType.ERC20)
@@ -97,12 +97,14 @@ object  ETHTokenTransaction {
     */
   private def ERCTxCheck (address :EthereumAddress): TokenType ={
     var tipo = TokenType.None
-    val listERCAddress = TokenList.getList()
+    val ERCMapAddress = TokenMap.getMap()
 
-    if(listERCAddress.contains(address.address)) {
-      tipo = listERCAddress(address.address)
-    } else {
-      tipo = additionalControl(address)
+    if(address != null) {
+      if (ERCMapAddress.contains(address.address)) {
+        tipo = ERCMapAddress(address.address)
+      } else {
+        tipo = additionalControl(address)
+      }
     }
 
     return tipo
@@ -117,10 +119,10 @@ object  ETHTokenTransaction {
     val contract = contractType(address)
     contract match {
       case _: ERC20Token =>
-        TokenList.add(address.address, TokenType.ERC20)
+        TokenMap.add(address.address, TokenType.ERC20)
         TokenType.ERC20
       case _: ERC721Token =>
-        TokenList.add(address.address, TokenType.ERC721)
+        TokenMap.add(address.address, TokenType.ERC721)
         TokenType.ERC721
       case _ =>
         TokenType.None
@@ -135,7 +137,7 @@ object  ETHTokenTransaction {
 
     val bytecode = getContractBytecode(to.address)
     if(bytecode != null && bytecode.length > 2){ // If the contract contains at least a method name after "0x"
-      return EthereumContract.factory("", to, "", false, null, bytecode, null, false)
+      return EthereumContract.factory("", to, "", false, null, bytecode, null, true)
     }
     null
   }
@@ -167,9 +169,9 @@ object  ETHTokenTransaction {
     * @param numOfArgs The number of args required
     */
   def checkInputArgs(input: String, numOfArgs: Int): Boolean ={
-    val input_lenght = 64
-    val method_lenght = 10
-    if((input.length() - method_lenght) / input_lenght == numOfArgs)
+    val input_length = 64
+    val method_length = 10
+    if((input.length() - method_length) / input_length == numOfArgs)
       true
     else
       false
