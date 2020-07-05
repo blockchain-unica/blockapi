@@ -1,0 +1,3 @@
+db.transactions.aggregate([{
+    $group: { _id: "$methodCalled", total: { $sum: 1} }}
+])
