@@ -4,10 +4,11 @@ import java.util.Date
 
 import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ERC721Methods.{ERC721Approve, ERC721BalanceOf, ERC721GetApproved, ERC721IsApprovedForAll, ERC721OwnerOf, ERC721SafeTransferFrom, ERC721SafeTransferFromWithBytes, ERC721SetApprovalForAll, ERC721TransferFrom}
 import it.unica.blockchain.blockchains.ethereum.{EthereumAddress, EthereumContract}
+import it.unica.blockchain.blockchains.ethereum.tokenTransactions.ETHTokenTransaction.checkInputArgs
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 
-/** Defines a transaction that called an ERC721 function
+/** Defines a transaction which called an ERC721 function
   *
   * @param hash             transaction's hash
   * @param date             date in which the transaction has been published (extracted from the containing block)
@@ -51,7 +52,9 @@ class ERC721Transaction(
                          v: Int,
 
                          contract: EthereumContract,
-                         requestOpt: Option[Request[_, EthGetTransactionReceipt]]
+                         requestOpt: Option[Request[_, EthGetTransactionReceipt]],
+
+                         val method : String
                        ) extends ETHTokenTransaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
 
 
@@ -106,47 +109,83 @@ object ERC721Transaction {
     */
 
   private def approve(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction = {
-    val (method, tokenApproved, tokenId) = ERC721Approve.getInputData(input)
-    new ERC721Approve(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenApproved, tokenId)
+    if (checkInputArgs(input, 2)) {
+      val (method, tokenApproved, tokenId) = ERC721Approve.getInputData(input)
+      new ERC721Approve(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenApproved, tokenId)
+    }
+    else
+      null
   }
 
   private def balanceOf(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction = {
-    val (method, tokenOwner) = ERC721BalanceOf.getInputData(input)
-    new ERC721BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
+    if (checkInputArgs(input, 1)) {
+      val (method, tokenOwner) = ERC721BalanceOf.getInputData(input)
+      new ERC721BalanceOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner)
+    }
+    else
+      null
   }
 
   private def getApproved(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction = {
-    val (method, tokenId) = ERC721GetApproved.getInputData(input)
-    new ERC721GetApproved(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenId)
+    if (checkInputArgs(input, 1)) {
+      val (method, tokenId) = ERC721GetApproved.getInputData(input)
+      new ERC721GetApproved(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenId)
+    }
+    else
+      null
   }
 
   private def isApprovedForAll(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction = {
-    val (method, tokenOwner, tokenOperator) = ERC721IsApprovedForAll.getInputData(input)
-    new ERC721IsApprovedForAll(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner, tokenOperator)
+    if (checkInputArgs(input, 2)) {
+      val (method, tokenOwner, tokenOperator) = ERC721IsApprovedForAll.getInputData(input)
+      new ERC721IsApprovedForAll(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOwner, tokenOperator)
+    }
+    else
+      null
   }
 
   private def ownerOf(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction = {
-    val (method, tokenId) = ERC721OwnerOf.getInputData(input)
-    new ERC721OwnerOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenId)
+    if (checkInputArgs(input, 1)) {
+      val (method, tokenId) = ERC721OwnerOf.getInputData(input)
+      new ERC721OwnerOf(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenId)
+    }
+    else
+      null
   }
 
   private def safeTransferFrom(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction = {
-    val (method, tokenFrom, tokenTo, tokenId) = ERC721SafeTransferFrom.getInputData(input)
-    new ERC721SafeTransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId)
+    if (checkInputArgs(input, 3)) {
+      val (method, tokenFrom, tokenTo, tokenId) = ERC721SafeTransferFrom.getInputData(input)
+      new ERC721SafeTransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId)
+    }
+    else
+      null
   }
 
   private def safeTransferFromWithBytes(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction = {
-    val (method, tokenFrom, tokenTo, tokenId, tokenBytes) = ERC721SafeTransferFromWithBytes.getInputData(input)
-    new ERC721SafeTransferFromWithBytes(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId, tokenBytes)
+    if (checkInputArgs(input, 4)) {
+      val (method, tokenFrom, tokenTo, tokenId, tokenBytes) = ERC721SafeTransferFromWithBytes.getInputData(input)
+      new ERC721SafeTransferFromWithBytes(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId, tokenBytes)
+    }
+    else
+      null
   }
 
   private def setApprovalForAll(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction = {
-    val (method, tokenOperator, tokenApproved) = ERC721SetApprovalForAll.getInputData(input)
-    new ERC721SetApprovalForAll(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOperator, tokenApproved)
+    if (checkInputArgs(input, 2)) {
+      val (method, tokenOperator, tokenApproved) = ERC721SetApprovalForAll.getInputData(input)
+      new ERC721SetApprovalForAll(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenOperator, tokenApproved)
+    }
+    else
+      null
   }
 
   private def transferFrom(hash: String, date: Date, nonce: BigInt, blockHash: String, blockHeight: BigInt, transactionIndex: BigInt, from: EthereumAddress, to: EthereumAddress, value: BigInt, gasPrice: BigInt, gas: BigInt, input: String, addressCreated: EthereumAddress, publicKey: String, raw: String, r: String, s: String, v: Int, contract: EthereumContract, requestOpt: Option[Request[_, EthGetTransactionReceipt]]): ERC721Transaction = {
-    val (method, tokenFrom, tokenTo, tokenId) = ERC721TransferFrom.getInputData(input)
-    new ERC721TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId)
+    if (checkInputArgs(input, 3)) {
+      val (method, tokenFrom, tokenTo, tokenId) = ERC721TransferFrom.getInputData(input)
+      new ERC721TransferFrom(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method, tokenFrom, tokenTo, tokenId)
+    }
+    else
+      null
   }
 }

@@ -1,7 +1,7 @@
 package it.unica.blockchain.blockchains.ethereum.tokenUtils
 
 /** Defines the types of Token actually supported.
-  * None doesn't reppresent any token.
+  * None doesn't represent any token.
   */
 
 object TokenType extends Enumeration {

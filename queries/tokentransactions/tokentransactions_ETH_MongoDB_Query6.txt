@@ -1,0 +1,4 @@
+db.test.aggregate([
+    { $match: {methodCalled: 'approve(address _spender, uint256 _value)'}},
+    { $group: { _id: "$timestamp", total: { $sum: 1} }}
+])

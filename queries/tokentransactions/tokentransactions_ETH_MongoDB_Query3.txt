@@ -1,0 +1,3 @@
+db.transactions.aggregate([{
+    $group: { _id: "$timestamp", total: { $sum: 1} }}
+])

@@ -10,17 +10,21 @@ import scala.collection.mutable.ListBuffer
   */
 
 object TargetList {
-  private val listTarget: ListBuffer[String] = ListBuffer()
+  private var listTarget: ListBuffer[String] = ListBuffer()
 
-  def getList(): ListBuffer[String] ={
+  def getList: ListBuffer[String] ={
     listTarget
   }
 
   def add(address: EthereumAddress){
-    listTarget += address.address
+    if(address != null)
+      listTarget += address.address
   }
 
   def contains(address : EthereumAddress): Boolean ={
-    listTarget.contains(address.address)
+    if(address != null)
+      getList.contains(address.address)
+    else
+      false
   }
 }

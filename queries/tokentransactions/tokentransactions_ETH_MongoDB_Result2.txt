@@ -1,0 +1,4 @@
+{ "_id" : "approve(address _spender, uint256 _value)", "total" : 1053 }
+{ "_id" : "transfer(address _to, uint256 _value)", "total" : 9270 }
+{ "_id" : "transferFrom(address _from, address _to, uint256 _amount)", "total" : 1465 }
+{ "_id" : "approve(address _approved, uint256 _tokenId) ", "total" : 1125 }

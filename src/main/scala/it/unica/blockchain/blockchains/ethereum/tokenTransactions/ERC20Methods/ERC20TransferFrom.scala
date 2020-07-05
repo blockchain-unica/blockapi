@@ -61,11 +61,11 @@ class ERC20TransferFrom(
                          contract: EthereumContract,
                          requestOpt: Option[Request[_, EthGetTransactionReceipt]],
 
-                         val method : String,
+                         method : String,
                          val tokenFrom :EthereumAddress,
                          val tokenTo :EthereumAddress,
                          val tokenValue :Uint256
-                       ) extends ERC20Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
+                       ) extends ERC20Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method) {
 
 
 
