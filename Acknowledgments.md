@@ -5,9 +5,10 @@ Members of Blockchain@Unica lab:
    * [Nicola Atzei](http://tcs.unica.it/members/nicola-atzei), [Sergio Serusi](https://sites.google.com/site/tcsunica/members/sergio-serusi) - Improvements on software architecture and testing
    
 Interns at Blockchain@Unica lab:
+   * [Davide Curcio](https://github.com/davidecurcio) - Fuseki Database
+   * [Stefano Di Santo](https://github.com/MrBenzene) - Ethereum: Tokens; ERC20 & ERC721 methods; Token transactions
    * [Giulia Argiolas](https://github.com/giuliamorgen) - Introduction of Litecoin blockchain
    * [Daniele Stefano Ferru](https://github.com/ferruvich) - Introduction of Ethereum blockchain, analysis of ICOs
-   * [Davide Curcio](https://github.com/davidecurcio) - Fuseki Database
    
 Students of the Cybersecurity course:
    * [Andrea Corriga](https://github.com/AsoStrife), [Omar Desogus](https://github.com/cedoor), [Enrico Podda](https://github.com/EnricoPodda) - Empty blocks on Ethereum
@@ -31,4 +32,3 @@ Students of the Cybersecurity course:
    * [Simone Balloccu](), [Andrea Bellanti](), [Federica Stocchino]() - Transaction chains
    * [Daniele Sanna](https://github.com/danielesanna), [Giovanni Usai](https://github.com/giovanniusai) - Cross validation Litecoin
    * [Soukaina Aassouss](), [Reda Belaiche](), [Khadija Zine](https://github.com/khadijazine) - Counterparty Tokens 
-   * [Stefano Di Santo](https://github.com/MrBenzene) - Ethereum: Tokens; ERC20 & ERC721 methods; Token transactions.
