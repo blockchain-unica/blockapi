@@ -19,7 +19,7 @@ import scala.collection.mutable
   * @param isCoinbase True if the enclosing transaction is coninbase.
   * @param inScript Input script.
   */
-class BitcoinInput(
+class BitcoinInput (
                     val redeemedTxHash: Sha256Hash,
                     val value: Long,
                     val redeemedOutIndex: Int,
@@ -27,7 +27,7 @@ class BitcoinInput(
                     val inScript: BitcoinScript,
                     val sequenceNo: Long,
                     val outPoint: TransactionOutPoint
-                  ) {
+                  )  extends HasAddress {
 
   /**
     * String representation of a BitcoinInput.
