@@ -27,7 +27,7 @@ object TargetedTokenResearch {
     val mongo = new DatabaseSettings("TokenTarget")
     val txsCollection = new Collection("transactions", mongo)
 
-    val startBlock: Int = 1916600
+    val startBlock: Int = 1916600 //Jul-20-2016 12:06:51 AM +UTC
     val endDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))  //Coordinated Universal Time
     endDate.set(2016, Calendar.AUGUST, 2, 0, 0)
 
