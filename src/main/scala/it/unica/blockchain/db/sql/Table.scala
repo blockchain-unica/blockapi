@@ -1,10 +1,9 @@
 package it.unica.blockchain.db.sql
 
-import javax.sql.DataSource
-
 import com.zaxxer.hikari.HikariDataSource
-import scalikejdbc._
 import it.unica.blockchain.db.{DatabaseSettings, PostgreSQL}
+import javax.sql.DataSource
+import scalikejdbc._
 
 import scala.collection.mutable.ListBuffer
 
@@ -12,7 +11,7 @@ import scala.collection.mutable.ListBuffer
   * Created by Livio on 11/09/2017.
   */
 
-object Table{
+object Table {
   private var writeTime = 0l
 
   def getWriteTime = writeTime
@@ -75,6 +74,10 @@ class Table(
     if ((buffer.size >= bulkInsertLimit)) writeValues
   }
 
+  def flush(): Unit = {
+    writeValues
+  }
+
 
   def close = writeValues
 
@@ -82,7 +85,7 @@ class Table(
   private def writeValues = {
     val batchTxParams: Seq[Seq[Any]] = buffer.toList
     using(ConnectionPool.borrow()) { db =>
-      val startTime = System.currentTimeMillis()/1000
+      val startTime = System.currentTimeMillis() / 1000
       insertQuery.batch(batchTxParams: _*).apply()
       Table.writeTime = Table.writeTime + (System.currentTimeMillis()/1000 - startTime)
     }
