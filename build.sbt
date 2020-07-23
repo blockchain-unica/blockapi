@@ -42,7 +42,9 @@ libraryDependencies += "com.codesnippets4all" % "quick-json" % "1.0.4"
 libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.6.4"
 
 libraryDependencies ++= Seq(
-  "org.scalikejdbc" %% "scalikejdbc" % "3.0.2",
+  "org.scalikejdbc" %% "scalikejdbc" % "3.5.0",
+  "com.h2database" % "h2" % "1.4.200",
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
   "mysql" % "mysql-connector-java" % "6.0.6",
   "org.postgresql" % "postgresql" % "42.2.0",
   "com.zaxxer" % "HikariCP" % "2.7.1"
