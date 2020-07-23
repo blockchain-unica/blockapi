@@ -59,10 +59,10 @@ class ERC721Approve (
                       contract: EthereumContract,
                       requestOpt: Option[Request[_, EthGetTransactionReceipt]],
 
-                      val method : String,
+                      method : String,
                       val tokenApproved :EthereumAddress,
                       val tokenId :Uint256
-                    ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
+                    ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt, method) {
 
 
 
@@ -80,7 +80,7 @@ object ERC721Approve{
     val firstArg = 10
     val secondArg = firstArg + argDim
 
-    val method :String = "approve(address _approved, uint256 _tokenId) "
+    val method :String = "approve(address _approved, uint256 _tokenId)"
 
     val approved :String = inputData.substring(firstArg, secondArg)
     val tokenId :String = inputData.substring(secondArg)

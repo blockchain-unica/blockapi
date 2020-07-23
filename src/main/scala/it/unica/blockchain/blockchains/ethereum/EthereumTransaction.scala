@@ -107,74 +107,60 @@ object EthereumTransaction {
       }
     }
 
-    if (searchForTokens) {
-      if (TargetList.getList().isEmpty) {
-        ETHTokenTransaction.factory(web3j, tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
-          from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-          contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
-          contract, receipt)
-      }
-      else if (to != null && TargetList.contains(to)) {
-        ETHTokenTransaction.factory(web3j, tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
-          from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-          contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
-          contract, receipt)
-      }
-      else {
-          new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
-            from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-            contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
-            contract, receipt)
-        }
-      }
-      else {
-        new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
-          from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
-          contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
-          contract, receipt)
-      }
+    if (searchForTokens && (TargetList.getList.isEmpty || TargetList.contains(to))) {
+      ETHTokenTransaction.factory(web3j, tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
+        from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
+        contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+        contract, receipt)
     }
-
-    /** */
-    def getContract(tx: TransactionObject, searchForTokens: Boolean): EthereumContract = {
-      EthereumContract.factory("", EthereumAddress.factory(tx.getCreates), tx.getHash, false, null, getContractBytecode(tx.getCreates), null, searchForTokens)
-    }
-
-
-    /**
-      * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified.
-      * If so, it finds its name on the platform and its date of verification, then creates an EthereumContract.
-      *
-      * @param tx Web3J representation of the transaction containing data about the contract
-      * @return An Ethereum contract. In case of success, its fields will be populated with the aforementioned data.
-      *         Otherwise it returns a null value.
-      */
-    private def getVerifiedContract(tx: TransactionObject, searchForTokens: Boolean): EthereumContract = {
-
-      var contract: EthereumContract = null
-
-      try {
-
-        val (name, date, source, isVerified) = getVerifiedContractFromEtherscan(tx)
-        return EthereumContract.factory(name, EthereumAddress.factory(tx.getCreates), tx.getHash, isVerified, date, getContractBytecode(tx.getCreates), source, searchForTokens)
-
-      } catch {
-        case ioe: java.io.IOException => {
-          ioe.printStackTrace();
-          return contract
-        }
-        case ste: java.net.SocketTimeoutException => {
-          ste.printStackTrace();
-          return contract
-        }
-        case e: Exception => {
-          e.printStackTrace();
-          return contract
-        }
-      }
-    }
-
-    private def getContractBytecode(contractAddress: String): String = {
-      this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
+    else {
+      new EthereumTransaction(tx.getHash, txDate, tx.getNonce, tx.getBlockHash, tx.getBlockNumber, tx.getTransactionIndex,
+        from, to, tx.getValue, tx.getGasPrice, tx.getGas, tx.getInput,
+        contractAddress, tx.getPublicKey, tx.getRaw, tx.getR, tx.getS, tx.getV,
+        contract, receipt)
     }
   }
+
+  /** */
+  def getContract(tx: TransactionObject, searchForTokens: Boolean): EthereumContract = {
+    EthereumContract.factory("", EthereumAddress.factory(tx.getCreates), tx.getHash, false, null, getContractBytecode(tx.getCreates), null, searchForTokens)
+  }
+
+
+  /**
+    * This method parses HTML pages from etherscan.io to find whether or not a contract has been verified.
+    * If so, it finds its name on the platform and its date of verification, then creates an EthereumContract.
+    *
+    * @param tx Web3J representation of the transaction containing data about the contract
+    * @return An Ethereum contract. In case of success, its fields will be populated with the aforementioned data.
+    *         Otherwise it returns a null value.
+    */
+  private def getVerifiedContract(tx: TransactionObject, searchForTokens: Boolean): EthereumContract = {
+
+    var contract: EthereumContract = null
+
+    try {
+
+      val (name, date, source, isVerified) = getVerifiedContractFromEtherscan(tx)
+      return EthereumContract.factory(name, EthereumAddress.factory(tx.getCreates), tx.getHash, isVerified, date, getContractBytecode(tx.getCreates), source, searchForTokens)
+
+    } catch {
+      case ioe: java.io.IOException => {
+        ioe.printStackTrace();
+        return contract
+      }
+      case ste: java.net.SocketTimeoutException => {
+        ste.printStackTrace();
+        return contract
+      }
+      case e: Exception => {
+        e.printStackTrace();
+        return contract
+      }
+    }
+  }
+
+  private def getContractBytecode(contractAddress: String): String = {
+    this.web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send().getCode
+  }
+}

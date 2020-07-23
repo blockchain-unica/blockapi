@@ -23,7 +23,7 @@ object EthereumAddress{
       address.length() == address_length &&
       address.startsWith("0x") &&
       address.matches("[a-zA-Z0-9]*")){
-      new EthereumAddress(address)
+      new EthereumAddress(address.toLowerCase)
     }
     else
       null

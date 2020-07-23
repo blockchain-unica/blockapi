@@ -16,26 +16,23 @@ import org.bitcoinj.core.Base58
 import scala.collection.mutable.ListBuffer
 
 
-
-object UTXOChainFinder{
+object UTXOChainFinder {
 
   def main(args: Array[String]): Unit = {
     val blockchain = BlockchainLib.getBitcoinBlockchain(new BitcoinSettings("user", "password", "8332", MainNet, true))
     val mongo = new DatabaseSettings("utxoAnalysis200mila")
     var cont: Int = 0
-    var transactionList : ListBuffer[(BitcoinTransaction, BitcoinOutput, ListBuffer[BitcoinOutput])] = ListBuffer()
-    var chain : ListBuffer[(BitcoinTransaction, BitcoinOutput, ListBuffer[BitcoinOutput])] = ListBuffer()
+    var transactionList: ListBuffer[(BitcoinTransaction, BitcoinOutput, ListBuffer[BitcoinOutput])] = ListBuffer()
+    var chain: ListBuffer[(BitcoinTransaction, BitcoinOutput, ListBuffer[BitcoinOutput])] = ListBuffer()
     var listUTXOout: ListBuffer[BitcoinOutput] = ListBuffer()
-    var spentOutput : BitcoinOutput = null
-    var size : Int = 0
-    var id : Int = 0
-    var outputUnspentList : ListBuffer[Option[Any]] = ListBuffer()
-    var hashList : ListBuffer[String] = ListBuffer()
-    var i : Int = 0
-    var k : Int = 0
-    var mimeType : MimeType = null
-
-
+    var spentOutput: BitcoinOutput = null
+    var size: Int = 0
+    var id: Int = 0
+    var outputUnspentList: ListBuffer[Option[Any]] = ListBuffer()
+    var hashList: ListBuffer[String] = ListBuffer()
+    var i: Int = 0
+    var k: Int = 0
+    var mimeType: MimeType = null
 
 
     val transactionChains = new Collection("transactionChains", mongo)
@@ -44,160 +41,156 @@ object UTXOChainFinder{
 
     blockchain.end(50000).foreach(block => {
       block.txs.foreach(tx => {
-        //per ogni transazione di ogni blocco si prende l'output
+
         tx.outputs.foreach(out => {
-         //se l'output e` contenuto nelle set di transazioni unspent
-          if (utxoSet.contains(tx.hash, out.index)){
-            // si contano le transazioni unspent
-            cont+=1
-            //si salva l'output nella lista di output
+          //if the output is contained into unspent transactions
+          if (utxoSet.contains(tx.hash, out.index)) {
+            // unspent transactions are counted
+            cont += 1
+            //the output is saved
             listUTXOout.append(out)
-          }else{
-              //se trova un output speso si salva
-            spentOutput=out;
+          } else {
+            //if the output is spent, is saved
+            spentOutput = out;
           }
         })
-        // se il numero di transazioni totali meno il numero di transazioni unspent e' uguale a 1 (quindi esiste un output speso)
-        // e cont (numero di transazioni unspent) e' meggiore di 0 quindi esistono output unspent
-        if((tx.outputs.size-cont)==1 && cont > 0){
-          //si salvano i dati delle transazioni con un solo output speso
-          transactionList.append((tx, spentOutput,listUTXOout))
+        // if the number of total transactions minus the number of unspent transactions is equal to 1 (therefore there is a spent output)
+        // and cont (number of unspent transactions) is better than 0 so unspent output exists
+        if ((tx.outputs.size - cont) == 1 && cont > 0) {
+          //transaction data are saved with only one output spent
+          transactionList.append((tx, spentOutput, listUTXOout))
           listUTXOout = ListBuffer()
         }
-        cont=0;
+        cont = 0;
       })
     })
-
 
 
     var inPutString: String = null
     var outPutString: String = null
     var indexList: ListBuffer[Int] = ListBuffer()
 
-    // se la contiene siamo arrivati all'ultima transazione
-    while(k<transactionList.size) {
-      //ad ogni iterazione si tiene conto dell'indice delle transazioni gia' visitate, se gia' visitate vengono saltate in caso contrario no
-        if (indexList.contains(k)){
-            //se nella lista di indici e' gia' presente l'indice corrente, la transazione e' stata gia' inclusa in un'altra catena quindi si incrementa k
-            k += 1
-        }else {
+    // if it contains it we arrived at the last transaction
+    while (k < transactionList.size) {
+      //at each iteration the index of transactions already visited is taken into account,
+      // if already visited they are skipped otherwise they are not
+      if (indexList.contains(k)) {
+        //if the current index is already present in the list of indexes, the transaction has already been included in another chain then increase k
+        k += 1
+      } else {
 
-          // outputString equivale all'hash della transazione
-          outPutString = transactionList(k)._1.hash;
-          //si salva la prima transazione della catena se si tratta della prima transazione della catena
-          if(i == 0){
-            chain.append((transactionList(k)._1, transactionList(k)._2, transactionList(k)._3));
-          }
-
-          // per ogni transazione nella lista delle transazioni con un solo output speso
-          transactionList.foreach(pair => {
-            //per ogni input della transazione
-            pair._1.inputs.foreach(in => {
-              //si salva l'hash della transazione di cui quell'input fa il redeem
-              inPutString = in.redeemedTxHash.toString;
-              // si confronta l'hash della transazione attuale con l'hash della transazione di cui ogni input ha fatto il redeem
-              if (inPutString.equals(outPutString)) {
-                //trovato l'input si prende la transazione a cui quell'input appartiene, l'output speso e la lista di output non spesi
-                chain.append((pair._1, pair._2, pair._3));
-                // il nuovo controllo sara' relativo all'hash della nuova transazione
-                outPutString = pair._1.hash;
-                //si aggiorna la lista degli indici
-                indexList.append(i)
-              }
-            })
-            i += 1
-          })
-          i = 0
-          //si prendono in considerazione solo le catene con almeno 5 elementi
-          if(chain.size >= 5){
-            id+=1
-            saveData(chain, id) //salvataggio dei dati nel DB
-          }
+        // outputString is equivalent to the hash of the transaction
+        outPutString = transactionList(k)._1.hash;
+        //you save the first transaction in the chain if it is the first transaction in the chain
+        if (i == 0) {
+          chain.append((transactionList(k)._1, transactionList(k)._2, transactionList(k)._3));
         }
-      chain = ListBuffer() // si cancella la catena
+
+        // for each transaction in the transaction list with only one output spent
+        transactionList.foreach(pair => {
+          //for each input of the transaction
+          pair._1.inputs.foreach(in => {
+            //save the hash of the transaction that is redeemed by that input
+            inPutString = in.redeemedTxHash.toString;
+            // compare the hash of the current transaction with the hash of the transaction redeemed for each input
+            if (inPutString.equals(outPutString)) {
+              //found the input takes the transaction to which that input belongs, the output spent and the list of unspent outputs
+              chain.append((pair._1, pair._2, pair._3));
+              // the new check will be related to the hash of the new transaction
+              outPutString = pair._1.hash;
+              //the list of indexes is updated
+              indexList.append(i)
+            }
+          })
+          i += 1
+        })
+        i = 0
+        //only chains with at least 5 elements are considered
+        if (chain.size >= 5) {
+          id += 1
+          saveData(chain, id) //saving data in the DB
+        }
+      }
+      chain = ListBuffer() // the chain is canceled
       k += 1
     }
 
 
+    def saveData(chain: ListBuffer[(BitcoinTransaction, BitcoinOutput, ListBuffer[BitcoinOutput])], id: Int): Unit = {
+      var k: Int = 0
 
-    def saveData(chain : ListBuffer[(BitcoinTransaction, BitcoinOutput, ListBuffer[BitcoinOutput])], id:Int): Unit = {
-      var k : Int = 0
-
-      //si scorre la catena
       chain.foreach(tuple => {
-        // salva per ogni catena gli hash delle transazioni appartenenti alla stessa
+        // save for each chain the hashes of the transactions belonging to the same
         hashList.append(tuple._1.hash)
         k += 1;
         tuple._3.foreach(output => {
-            //per ogni output di ogni transazione non speso, si prende l'indirizzo (campo in cui sono contenuti i dati in caso di catena)
+          //for each output of each unspent transaction, take the address (field in which the data is contained in case of chain)
           outputUnspentList.append(output.getAddress(MainNet))
         })
       })
 
-        // scrittura dei dati nel DB
-        transactionChains.append(List(
-          ("_id", id),
-          ("txNumber", k),
-          ("hashes", hashList),
-          ("Type", fileReader(outputUnspentList)(0)),
-          ("TikaType", fileReader(outputUnspentList)(1)),
-          ("MimeType", fileReader(outputUnspentList)(2)),
-          ("OutputList", outputUnspentList)
-        ))
-      //pulizia delle liste
+      transactionChains.append(List(
+        ("_id", id),
+        ("txNumber", k),
+        ("hashes", hashList),
+        ("Type", fileReader(outputUnspentList)(0)),
+        ("TikaType", fileReader(outputUnspentList)(1)),
+        ("MimeType", fileReader(outputUnspentList)(2)),
+        ("OutputList", outputUnspentList)
+      ))
       hashList = ListBuffer()
       outputUnspentList = ListBuffer()
       k = 0
     }
 
 
-    def fileReader(outPutAddresses :ListBuffer[Option[Any]]) : ListBuffer[String] ={
-      var buffer : String = ""
-      var file : File = null
-      var stream : BufferedInputStream = null
-      var tikaConfig : TikaConfig = TikaConfig.getDefaultConfig
-      var mediaType : MediaType = tikaConfig.getMimeRepository.detect(stream, new Metadata())
+    def fileReader(outPutAddresses: ListBuffer[Option[Any]]): ListBuffer[String] = {
+      var buffer: String = ""
+      var file: File = null
+      var stream: BufferedInputStream = null
+      var tikaConfig: TikaConfig = TikaConfig.getDefaultConfig
+      var mediaType: MediaType = tikaConfig.getMimeRepository.detect(stream, new Metadata())
       var mimeType = tikaConfig.getMimeRepository.forName(mediaType.toString)
       var writer: FileOutputStream = null
-      var tipo, tikaType, mimetype : String = ""
-      var typeList : ListBuffer[String] = ListBuffer()
+      var tipo, tikaType, mimetype: String = ""
+      var typeList: ListBuffer[String] = ListBuffer()
       val typeTika: Tika = new Tika()
 
 
       file = new File("./temp")
       file.createNewFile()
-      writer= new FileOutputStream(file)
+      writer = new FileOutputStream(file)
 
-      /*presa ogni frazione di dato presente come fake-address la si ripulisce (dalla keyword Some presente dai passi
-      * precedenti, si decodifica in base58 o li scrive su un file temporaneo privo di estensione*/
-      outPutAddresses.foreach(dataOfOutput =>{
-          buffer = dataOfOutput.toString.substring(5).replace(")","")
-          writer.write(Base58.decode(buffer))
+      /*taken every fraction of data present as fake-address it is cleaned (from the keyword Some present from the steps
+      * previous, it is decoded in base58 or it is written to a temporary file without extension */
+      outPutAddresses.foreach(dataOfOutput => {
+        buffer = dataOfOutput.toString.substring(5).replace(")", "")
+        writer.write(Base58.decode(buffer))
       })
       writer.close
 
 
-      /*** Diversi metodi per definire il tipo del file***/
+      /** * Different methods to define the type of the file ***/
 
-      /*** SIMPLE MAGIC***/
-      var util : ContentInfoUtil = new ContentInfoUtil(file.getPath)
-      var info : ContentInfo = new ContentInfo("","","")
+      /** * SIMPLE MAGIC ***/
+      var util: ContentInfoUtil = new ContentInfoUtil(file.getPath)
+      var info: ContentInfo = new ContentInfo("", "", "")
       info = util.findMatch(file)
 
-      if(info == null){
+      if (info == null) {
         tipo = "null"
-      }else{
+      } else {
         tipo = info.getMimeType
       }
       typeList.append(tipo)
 
 
-      /*** TIKA ***/
+      /** * TIKA ***/
       tikaType = typeTika.detect(file)
       typeList.append(tikaType)
 
-      /*** TIKA 2ND***/
-      stream= new BufferedInputStream(new FileInputStream(file))
+      /** * TIKA 2ND ***/
+      stream = new BufferedInputStream(new FileInputStream(file))
       tikaConfig = TikaConfig.getDefaultConfig
       mediaType = tikaConfig.getMimeRepository.detect(stream, new Metadata())
       mimeType = tikaConfig.getMimeRepository.forName(mediaType.toString)
@@ -207,10 +200,11 @@ object UTXOChainFinder{
       typeList
     }
 
-    def valueOf(bytes : Array[Byte]) = bytes.map{
+    def valueOf(bytes: Array[Byte]) = bytes.map {
       b => String.format("%02X", new java.lang.Integer(b & 0xff))
     }.mkString
-        System.out.println("saved")
+
+    System.out.println("saved")
 
     transactionChains.close
   }

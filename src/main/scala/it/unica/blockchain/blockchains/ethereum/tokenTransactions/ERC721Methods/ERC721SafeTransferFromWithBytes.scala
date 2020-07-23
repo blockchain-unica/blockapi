@@ -61,12 +61,12 @@ class ERC721SafeTransferFromWithBytes (
                                         contract: EthereumContract,
                                         requestOpt: Option[Request[_, EthGetTransactionReceipt]],
 
-                                        val method : String,
+                                        method : String,
                                         val tokenFrom :EthereumAddress,
                                         val tokenTo :EthereumAddress,
                                         val tokenId :Uint256,
                                         val tokenBytes :Object
-                                      ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt) {
+                                      ) extends ERC721Transaction(hash, date, nonce, blockHash, blockHeight, transactionIndex, from, to, value, gasPrice, gas, input, addressCreated, publicKey, raw, r, s, v, contract, requestOpt,method) {
 
 
 
