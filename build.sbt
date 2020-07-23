@@ -45,7 +45,7 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc" % "3.5.0",
   "com.h2database" % "h2" % "1.4.200",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
-  "mysql" % "mysql-connector-java" % "6.0.6",
+  "mysql" % "mysql-connector-java" % "8.0.11",
   "org.postgresql" % "postgresql" % "42.2.0",
   "com.zaxxer" % "HikariCP" % "2.7.1"
 )
